@@ -53,8 +53,9 @@ Changes
 `dbs_update'
 ============
 
-`--columns' can be used to exclude columns explicitlyfirst field may contain
-table name and start column instead of table name only
+`--columns' can be used to exclude columns explicitlystrip blanks from
+parameter list for `--columns'first field may contain table name and start
+column instead of table name only
 
 0.07
 ****

@@ -74,7 +74,7 @@ if ($opts{'columns'}) {
     $colflag = ! ($opts{'columns'} =~ s/\s*[^\!]//);
 
     # setup positive/negative list for columns
-    for (@columns = split(/,/, $opts{'columns'})) {
+    for (@columns = split(/\s*,\s*/, $opts{'columns'})) {
         $usecol{$_} = $colflag;
     }
 }

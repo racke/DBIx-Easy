@@ -55,8 +55,9 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
 ============
 
 `--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt werden
-Das erste Feld kann sowohl den Tabellennamen als auch eine Startspalte
-enthalten anstatt nur den Tabellennamen.
+Leerzeichen werden aus der Parameterliste für `--columns' entferntDas erste
+Feld kann sowohl den Tabellennamen als auch eine Startspalte enthalten
+anstatt nur den Tabellennamen.
 
 0.07
 ****

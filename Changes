@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Sep  3 19:03:08 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): strip blanks from parameter list for --columns
+
 * Sun Sep  3 17:03:46 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): --columns can be used to exclude columns
 explicitly
