@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Sep  3 17:03:46 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): --columns can be used to exclude columns
+explicitly
+
 * Fri Sep  1 02:20:09 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): first field may contain table name and
 start column

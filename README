@@ -29,12 +29,12 @@ Scripts
 The `DBIx::Easy' package contains the following scripts: 
 
 
-Name                Description                             Remarks
-`dbs_dumptabdata'   creates file set with SQL table data    
-`dbs_dumptabstruct' creates file set with SQL table schemas 
-`dbs_empty'         erases all data from a SQL database     
-`dbs_printtab'      prints data from SQL table              New in 0.07
-`dbs_update'        update SQL database from text file      
+Name                Description                             Remarks     
+`dbs_dumptabdata'   creates file set with SQL table data                
+`dbs_dumptabstruct' creates file set with SQL table schemas             
+`dbs_empty'         erases all data from a SQL database                 
+`dbs_printtab'      prints data from SQL table              New in 0.07 
+`dbs_update'        update SQL database from text file                  
 
 
 Debian Package
@@ -46,6 +46,15 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
 
 Changes
 *******
+
+0.08 (under development)
+************************
+
+`dbs_update'
+============
+
+`--columns' can be used to exclude columns explicitlyfirst field may contain
+table name and start column instead of table name only
 
 0.07
 ****

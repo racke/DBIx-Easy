@@ -30,12 +30,12 @@ Skripte
 Das `DBIx::Easy'-Paket enthält die folgenden Skripte: 
 
 
-Name                Beschreibung                                   Bemerkungen
-`dbs_dumptabdata'   erzeugt Dateisatz mit SQL-Tabellendaten        
-`dbs_dumptabstruct' erzeugt Dateisatz mit SQL-Tabellen strukturen  
-`dbs_empty'         löscht alle Daten aus einer SQL-Datenbank      
-`dbs_printtab'      gibt Daten einer SQL-Tabelle aus               Neu in 0.07
-`dbs_update'        aktualisiert SQL-Datenbank aus einer Textdatei 
+Name                Beschreibung                                   Bemerkungen 
+`dbs_dumptabdata'   erzeugt Dateisatz mit SQL-Tabellendaten                    
+`dbs_dumptabstruct' erzeugt Dateisatz mit SQL-Tabellen strukturen              
+`dbs_empty'         löscht alle Daten aus einer SQL-Datenbank                  
+`dbs_printtab'      gibt Daten einer SQL-Tabelle aus               Neu in 0.07 
+`dbs_update'        aktualisiert SQL-Datenbank aus einer Textdatei             
 
 
 Debianpaket
@@ -47,6 +47,16 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
 
 Änderungen
 **********
+
+0.08 (in der Entwicklung)
+*************************
+
+`dbs_update'
+============
+
+`--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt werden
+Das erste Feld kann sowohl den Tabellennamen als auch eine Startspalte
+enthalten anstatt nur den Tabellennamen.
 
 0.07
 ****
