@@ -1066,18 +1066,23 @@ sub money2num
 	$money;
   }
 
-# METHOD: filter HANDLE FUNC [TABLE]
+# METHOD: filter HANDLE FUNC [TABLE] OPT
 
 sub filter {
-	my ($self, $handle, $func, $table) = @_;
-	my ($proc);
-	
+	my ($self, $handle, $func, $table, $opt) = @_;
+	my ($proc, @ret);
+
+    $opt->{return} ||= '';
+
 	if ($func eq 'tab_with_table') {
 		$proc = sub {
 			my ($sth, $table) = @_;
 			my ($row);
 
 			while ($row = $sth->fetch()) {
+                if ($opt->{return} eq 'keys') {
+                    push(@ret, $row->[0]);
+                }
 				print $table, join ("\t", '',
 									map {defined $_ ? (s/\n/\\n/sg, s/\t/\\t/g, $_) : ''} @$row), "\n";
 			}
@@ -1087,7 +1092,7 @@ sub filter {
 	}
 
 	&$proc($handle, $table);
-	''
+	@ret;
 }
 
 # -----------------------------------------------------
