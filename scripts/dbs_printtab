@@ -5,11 +5,11 @@
 # This script queries a SQL database and creates one file for each
 # table in the database containing the data of the table.
 
-# Copyright (C) 2000 Stefan Hornburg
+# Copyright (C) 2000,2001 Stefan Hornburg
 
-# Author: Stefan Hornburg <racke@linuxia.de>
-# Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.07
+# Author: Stefan Hornburg (Racke) <racke@linuxia.de>
+# Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
+# Version: 0.13
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -34,7 +34,8 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'columns|c=s')) {
+unless (GetOptions (\%opts, 'columns|c=s',
+					'sort=s')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -63,7 +64,7 @@ $dbif -> install_handler (\&fatal);
 $dbif -> connect;
 
 # query records in table
-print $dbif -> view ($table, columns => $opts{'columns'});
+print $dbif -> view ($table, columns => $opts{'columns'}, order => $opts{'sort'});
 
 # Destroy database object as written in manpage
 undef $dbif;
@@ -155,13 +156,23 @@ and the table name. The fourth parameter is optionally
 and specifies the database user and/or the host where the
 database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
+=head1 COMMAND LINE OPTIONS
+
+=head2 B<-c>=COLUMN[,COLUMN], B<--columns>=COLUMN[,COLUMN]
+
+The output is restricted to the given COLUMN arguments.
+
+=head2 B<--sort>=KEY[,KEY]
+
+The output is sorted by the KEY arguments.
+
 =head1 BUGS
 
 msql is not fully supported.
 
 =head1 AUTHOR
 
-Stefan Hornburg, racke@linuxia.de
+Stefan Hornburg (Racke), racke@linuxia.de
 
 =head1 SEE ALSO
 

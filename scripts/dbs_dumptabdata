@@ -7,9 +7,9 @@
 
 # Copyright (C) 1999,2000,2001 Stefan Hornburg
 
-# Author: Stefan Hornburg <racke@linuxia.de>
-# Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.10
+# Author: Stefan Hornburg (Racke) <racke@linuxia.de>
+# Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
+# Version: 0.13
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -33,9 +33,12 @@ use Term::ReadKey;
 
 # process commandline parameters
 my %opts;
+my $printtabopts = '';
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'tables|t=s',
+unless (GetOptions (\%opts, 'exclude-matching-tables=s',
+					'sort=s',
+					'tables|t=s',
                     'use-printtab')) {
     exit 1;
 }
@@ -48,6 +51,12 @@ if (exists $opts{'exclude-matching-tables'}) {
         $@ =~ s%at /.*$%%;
         die "$0: $@";
     }
+}
+if (exists $opts{'sort'}) {
+	unless ($opts{'use-printtab'}) {
+		die "$0: option --sort is valid only if --use-printtab is specified\n";
+	}
+	$printtabopts = "--sort='$opts{'sort'}'"
 }
 
 my $dbif;
@@ -75,7 +84,7 @@ if ($opts{'use-printtab'}) {
         
         unless (defined $user) {$user = ''};
 		open (DUMP,
-			  "$FindBin::RealBin/dbs_printtab $driver $database $table $user|")
+			  "$FindBin::RealBin/dbs_printtab $printtabopts $driver $database $table $user|")
 			|| die ("$0: Couldn't launch $FindBin::RealBin/dbs_printtab: $!\n");
 		print <DUMP>;
 		close (DUMP)
@@ -250,6 +259,11 @@ Comma-separated list of tables to dump.
 =head2 B<--exclude-matching-tables>=REGEXP
 
 Excludes any table matching the regular expression REGEXP from dumping.
+
+=head2 B<--sort>=KEY[,KEY]
+
+The output is sorted by the KEY arguments. This option is valid only
+in conjunction with B<--use-printtab>.
 
 =head2 B<--use-printtab>
 

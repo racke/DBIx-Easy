@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Mon Aug  6 12:16:17 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(scripts/dbs_dumptabdata, scripts/dbs_printtab): new option --sort
+
 * Tue Jul 24 16:25:10 2001 CEST Dennis Schön <dennis@cobolt.net>
 (Easy.pm): database port is configurable now
 
