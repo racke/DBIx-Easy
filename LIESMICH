@@ -54,10 +54,14 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
 `dbs_update'
 ============
 
-`--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt werden
-Leerzeichen werden aus der Parameterliste für `--columns' entferntDas erste
-Feld kann sowohl den Tabellennamen als auch eine Startspalte enthalten
-anstatt nur den Tabellennamen.
+   * Fehler behoben, der bei der Kombination von `--headline' und `--map'
+     auftreten kann
+   * `--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt
+     werden
+   * Leerzeichen werden aus der Parameterliste für `--columns' entfernt
+   * Das erste Feld kann sowohl den Tabellennamen als auch eine Startspalte
+     enthalten anstatt nur den Tabellennamen.
+   * Dokumentation um Beispiel für `--routine' erweitert
 
 0.07
 ****

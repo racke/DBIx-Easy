@@ -1,5 +1,10 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Sep  3 20:37:41 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): bug fixed that may be trigged by the combination 
+of --headline and --map, assorted error messages improved, example
+for --routine added to documentation
+
 * Sun Sep  3 19:03:08 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): strip blanks from parameter list for --columns
 

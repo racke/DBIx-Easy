@@ -61,7 +61,7 @@ my %fieldmap;
 my $fd_input = \*STDIN;
 
 my ($sth, $keyfield, $update, $msg);
-my ($table, $key, $fieldnames, @values, $headline);
+my ($table, $fieldnames, @values, $headline);
 my (@columns, $routine, %colmap);
 
 # whether to consider column
@@ -114,6 +114,8 @@ if ($opts{'headline'}) {
         foreach (@columns) {
             if (exists $colmap{$_}) {
                 push (@newcolumns, $colmap{$_});
+            } else {
+                push (@newcolumns, $_);
             }
         }
         @columns = @newcolumns;
@@ -264,8 +266,6 @@ while (<$fd_input>) {
         filter_input ($routine, $table, $fieldnames, \@values);
     }
     
-    $key = $values[0];
-
     # determine column names
     @names = column_names ($dbif, $table, $startcol);
     $fieldnames = \@names;
@@ -295,14 +295,15 @@ while (<$fd_input>) {
 		push (@keys, $$fieldnames[$i]);
 		push (@terms, $$fieldnames[$i] . ' = ' . $dbif->quote($values[$i]));
 	}
-	
+    
     $sth = $dbif -> process ('SELECT ' . join(', ', @keys)
 							 . " FROM $table WHERE "
 							 . join (' AND ', @terms));
     while ($sth -> fetch) {}
 
     if ($sth -> rows () > 1) {
-        die ("$0: duplicate key $key in table $table\n");
+        $" = ', ';
+        die ("$0: duplicate key(s) @keys in table $table\n");
     }
 
     $update = $sth -> rows ();
@@ -314,11 +315,9 @@ while (<$fd_input>) {
         if (keys %usecol) {
             # note: we do not check the actual value !!
             if ($colflag && ! exists $usecol{$$fieldnames[$i]}) {
-                $numkeysleft++;
                 next;
             }
             if (! $colflag && exists $usecol{$$fieldnames[$i]}) {
-                $numkeysleft++;
                 next;
             }
         }
@@ -334,7 +333,8 @@ while (<$fd_input>) {
         $dbif -> update ($table, join (' AND ', @terms), @data);
     } else {
         if ($opts{'update-only'}) {
-            die ("$0: key $key not found\n");
+            $" = ', ';
+            die ("$0: key(s) @keys not found\n");
         }
 #        print "INSERTING $.\n";
         $dbif -> insert ($table, @data);
@@ -686,6 +686,12 @@ Applies I<ROUTINE> to any data record. I<ROUTINE> must be a subroutine.
 dbs_update passes the table name and a hash reference to this subroutine.
 The keys of the hash are the column names and the values are the
 corresponding field values.
+
+C<sub {my ($table, $valref) = @_;
+    unless (defined $$valref{country} && $$valref{country} !~ /\S/) {
+        $$valref{country} = "Germany";
+    }
+}>
 
 =head2 B<--skipbadlines>
 

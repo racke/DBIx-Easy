@@ -53,9 +53,13 @@ Changes
 `dbs_update'
 ============
 
-`--columns' can be used to exclude columns explicitlystrip blanks from
-parameter list for `--columns'first field may contain table name and start
-column instead of table name only
+   * bug fixed that may be triggered by the combination of `--headline' and `
+     --map'
+   * `--columns' can be used to exclude columns explicitly
+   * strip blanks from parameter list for `--columns'
+   * first field may contain table name and start column instead of table
+     name only
+   * example for `--routine' added to documentation
 
 0.07
 ****
