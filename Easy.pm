@@ -914,16 +914,7 @@ sub tables
   {
   my $self = shift;
 
-  # mSQL/mysql doesn't support DBI method tables yet
-  if ($self -> {DRIVER} eq 'mSQL' || $self -> {DRIVER} eq 'mysql')
-	{
-	  $self -> connect () -> func('_ListTables');
-	}
-  else
-	{
-	  # standard method
-	  $self -> connect () -> tables ();
-	}
+  $self -> connect () -> tables ();
   }
 
 =over 4
