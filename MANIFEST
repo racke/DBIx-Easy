@@ -6,4 +6,5 @@ debian/rules
 debian/control
 scripts/dbs_dumptabdata
 scripts/dbs_dumptabstruct
+scripts/dbs_empty
 scripts/dbs_update

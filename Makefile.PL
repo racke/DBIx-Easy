@@ -3,7 +3,8 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 
 # List here scripts that should be installed 
-my @scripts = ("./scripts/dbs_update",
+my @scripts = ("./scripts/dbs_empty",
+               "./scripts/dbs_update",
                "./scripts/dbs_dumptabdata");
                "./scripts/dbs_dumptabstruct");
 
