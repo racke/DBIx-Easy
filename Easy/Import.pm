@@ -54,45 +54,64 @@ sub update {
 	$self->_do_import(%params);
 }
 
+sub initialize {
+	my ($self, $file, $format) = @_;
+	my ($sep_char);
+	
+	$format = uc($format);
+
+	if ($format =~ /^CSV/) {
+		$format = 'CSV';
+		if ($') {
+			$sep_char = $';
+			$sep_char =~ s/^\s+//;
+			$sep_char =~ s/\s+$//;
+		}
+		eval {
+			require Text::CSV_XS;
+		};
+		if ($@) {
+			die "$0: couldn't load module Text::CSV_XS\n";
+		}
+		$self->{func} = \&get_columns_csv;
+		$self->{parser} = new Text::CSV_XS ({'binary' => 1, 'sep_char' => $sep_char});
+	} elsif ($format eq 'XLS') {
+		eval {
+			require Spreadsheet::ParseExcel;
+		};
+		if ($@) {
+			die "$0: couldn't load module Spreadsheet::ParseExcel\n";
+		}
+		$self->{parser} = new Spreadsheet::ParseExcel;
+	} elsif ($format eq 'TAB') {
+		$self->{func} = \&get_columns_tab;
+	} else {
+		die qq{$0: unknown format "$format"}, "\n";
+	}
+
+	if ($file) {
+		# read input from file
+		require IO::File;
+		$self->{fd_input} = new IO::File;
+		$self->{fd_input}->open($file)
+			|| die "$0: couldn't open $file: $!\n";
+	} else {
+		# read input from standard input
+		require IO::Handle;
+		$self->{fd_input} = new IO::Handle;
+		$self->{fd_input}->fdopen(fileno(STDIN),'r');
+	}
+
+}
+
 sub _do_import {
 	my ($self, %params) = @_;
 	my ($format, $sep_char, %colmap, %hcolmap);
 
 	$self->{colflag} = 1;
+
+	$self->initialize($params{file}, $params{'format'});
 	
-	if ($params{'format'}) {
-		$format = uc($params{'format'});
-
-		if ($format =~ /^CSV/) {
-			$format = 'CSV';
-			if ($') {
-				$sep_char = $';
-				$sep_char =~ s/^\s+//;
-				$sep_char =~ s/\s+$//;
-			}
-			eval {
-				require Text::CSV_XS;
-			};
-			if ($@) {
-				die "$0: couldn't load module Text::CSV_XS\n";
-			}
-			$self->{func} = \&get_columns_csv;
-			$self->{parser} = new Text::CSV_XS ({'binary' => 1, 'sep_char' => $sep_char});
-		} elsif ($format eq 'XLS') {
-			eval {
-				require Spreadsheet::ParseExcel;
-			};
-			if ($@) {
-				die "$0: couldn't load module Spreadsheet::ParseExcel\n";
-			}
-			$self->{parser} = new Spreadsheet::ParseExcel;
-		} elsif ($format eq 'TAB') {
-			$self->{func} = \&get_columns_tab;
-		} else {
-			die qq{$0: unknown format "$params{format}"}, "\n";
-		}
-	}
-
 	my @columns;
 
 	if ($params{'columns'}) {
@@ -102,19 +121,6 @@ sub _do_import {
 		for (split(/\s*,\s*/, $params{'columns'})) {
 			$self->{usecol}->{$_} = $self->{colflag};
 		}
-	}
-
-	if ($params{file}) {
-		# read input from file
-		require IO::File;
-		$self->{fd_input} = new IO::File;
-		$self->{fd_input}->open($params{file})
-			|| die "$0: couldn't open $params{file}: $!\n";
-	} else {
-		# read input from standard input
-		require IO::Handle;
-		$self->{fd_input} = new IO::Handle;
-		$self->{fd_input}->fdopen(fileno(STDIN),'r');
 	}
 
 	if ($params{'map'}) {
@@ -460,6 +466,12 @@ sub get_columns_xls {
 			@{$iref->{worksheet}->{Cells}[$iref->{row}++]};
 		return @$colref;
 	}
+}
+
+sub get_columns {
+	my ($self, $colref) = @_;
+
+	return $self->{func}->($self, $colref);
 }
 
 1;
