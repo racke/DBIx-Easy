@@ -1,9 +1,9 @@
 #! /usr/bin/perl -w
 
-# Copyright (C) 1999,2000,2001 Stefan Hornburg
+# Copyright (C) 1999,2000 Stefan Hornburg
 
-# Author: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
+# Author: Stefan Hornburg <racke@linuxia.de>
+# Maintainer: Stefan Hornburg <racke@linuxia.de>
 # Version: 0.11
 
 # This file is free software; you can redistribute it and/or modify it
@@ -33,7 +33,7 @@ $SIG{__WARN__} = sub {print STDERR "$0: @_";};
 unless (GetOptions (\%opts, 'cleanse', 'columns|c=s',
                     'file|f=s', 'format=s', 'headline|h',
 					'rows=s', 'keys|k=s',
-					'map|m=s', 'routine|r=s', 'skipbadlines',
+					'map|m=s', 'match-sql=s', 'routine|r=s', 'skipbadlines',
 					'table|t=s', 'update-only|o')) {
     exit 1;
 }
@@ -81,6 +81,8 @@ my %userow;
 my $currow = 0;
 # input with table as first field may specify start column
 my $startcol;
+# variables for --match-sql option
+my (%matchmap, $matchcol);
 
 if ($opts{'columns'}) {
     $colflag = ! ($opts{'columns'} =~ s/\s*[\!^]//);
@@ -206,11 +208,11 @@ my (@keys, @cleansekeys, %cleansemap, $numkeysleft, %recmap, @names);
 
 if ($opts{'cleanse'}) {
     # determine column names
-    @names = &column_names ($dbif, $table);
+    @names = column_names ($dbif, $table);
     $fieldnames = \@names;
 
     # determine keys
-    %cleansemap = &key_names ($dbif, $table, $opts{'keys'}, 1);
+    %cleansemap = key_names ($dbif, $table, $opts{'keys'}, 1);
     @cleansekeys = sort (keys %cleansemap);
 	
 	# get records
@@ -233,11 +235,25 @@ if ($opts{'cleanse'}) {
             die "$0: duplicate key: ", join (",", @$row), "\n";
         }
         # record last key
-        $href->{$$row[$i] || ''}=1;
+      
+        $href->{$$row[$i]}=1;
     }
 }
 
-while (<$fd_input>) {
+if ($opts{'match-sql'}) {
+	unless ($opts{'match-sql'} =~ /^(.*?):\{(.*?)\}$/) {
+		die "$0: invalid format for option --match-sql: $opts{'match-sql'}\n";
+	}
+	$matchcol = $1;
+	$sth = $dbif -> process ($2);
+	
+	my $row;
+	while ($row = $sth->fetch()) {
+		$matchmap{$$row[0]} = 1;
+	}
+}
+
+MAIN: while (<$fd_input>) {
     my (@data);
 
     # skip empty/blank/comment lines
@@ -298,13 +314,26 @@ while (<$fd_input>) {
     }
     
     # determine column names
-    @names = &column_names ($dbif, $table, $startcol);
+    @names = column_names ($dbif, $table, $startcol);
     $fieldnames = \@names;
 
     if ($opts{'routine'}) {
         # filter input first
         next unless filter_input ($routine, $table, $fieldnames, \@values);
     }
+
+	# filter out non-matching rows
+	MATCHSQL: {
+			if ($opts{'match-sql'}) {
+				for (my $i = 0; $i < @$fieldnames; $i++) {
+					if ($$fieldnames[$i] eq $matchcol) {
+						last MATCHSQL if $matchmap{$values[$i]};
+						print "Not accepted record @values\n";
+						next MAIN;
+					}
+				}
+			}
+		}
 
     # sanity checks on input data
     my $typeref = $dbif -> typemap ($table);
@@ -363,7 +392,7 @@ while (<$fd_input>) {
     }
 
     # check if record exists
-    my %keymap = &key_names ($dbif, $table, $opts{'keys'}, 1);
+    my %keymap = key_names ($dbif, $table, $opts{'keys'}, 1);
     @keys = (keys(%keymap));
     my @terms = map {$_ . ' = ' . $dbif->quote($values[$keymap{$_}])}
         (@keys);
