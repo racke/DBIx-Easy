@@ -30,7 +30,7 @@ my %opts;
 $opts{'keys'} = 1;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'file|f=s', 'format=s', 'headline|h',
+unless (GetOptions (\%opts, 'columns|c=s', 'file|f=s', 'format=s', 'headline|h',
 					'keys|k=i',
 					'map|m=s', 'routine|r=s', 'skipbadlines',
 					'table|t=s', 'update-only|o')) {
@@ -62,6 +62,15 @@ my $fd_input = \*STDIN;
 my ($sth, $keyfield, $update, $msg);
 my ($table, $key, $fieldnames, @values, $headline);
 my (@columns, $routine, %colmap);
+# whether to consider column
+my %usecol;
+
+if ($opts{'columns'}) {
+    # setup positive list for columns
+    for (split(/,/, $opts{'columns'})) {
+        $usecol{$_} = 1;
+    }
+}
 
 if ($opts{'file'}) {
     # read input from file instead from standard input
@@ -196,8 +205,15 @@ while (<$fd_input>) {
     }
     
     # check if record exists
-	my (@keys, @terms);
-	for (my $i = 0; $i < $opts{'keys'} && $i < @$fieldnames; $i++) {
+	my (@keys, @terms, $numkeysleft);
+    $numkeysleft = $opts{'keys'};
+	for (my $i = 0; $i < $numkeysleft && $i < @$fieldnames; $i++) {
+        if (keys %usecol) {
+            $numkeysleft++;
+            next unless exists $usecol{$$fieldnames[$i]}
+                && $usecol{$$fieldnames[$i]};
+        }
+
 		push (@keys, $$fieldnames[$i]);
 		push (@terms, $$fieldnames[$i] . ' = ' . $dbif->quote($values[$i]));
 	}
@@ -216,6 +232,11 @@ while (<$fd_input>) {
     
     # generate SQL statement
     for (my $i = 0; $i <= $#$fieldnames; $i++) {
+        # check for column exclusion
+        if (keys %usecol) {
+            next unless exists $usecol{$$fieldnames[$i]}
+                && $usecol{$$fieldnames[$i]};
+        }
 		# expand newlines
 		if (defined $values[$i]) {
 			$values[$i] =~ s/\\n/\n/g;
@@ -425,6 +446,10 @@ database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
 =head1 OPTIONS
 
+=head2 B<-c> I<COLUMN,COLUMN,...>, B<--columns>=I<COLUMN,COLUMN,...>
+
+Update only the table columns given by the I<COLUMN> parameters.
+
 =head2 B<-f> I<FILE>, B<--file>=I<FILE>
 
 Reads records from file I<FILE> instead of from standard input.
@@ -450,7 +475,7 @@ This is used for the detection of existing records.
 Maps the names found in the first line of input to the actual column
 names in the database. The alias and the column name are separated
 with C<=> signs and the different entries are separated by C<;> signs,
-e.g. C<Art-No.=code;Short Description=shortdescr'.
+e.g. C<Art-No.=code;Short Description=shortdescr'>.
 
 =head2 B<-o>, B<--update-only>
 
