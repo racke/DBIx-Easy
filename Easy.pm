@@ -919,12 +919,16 @@ Returns list of all tables in this database.
 
 =cut
 
-sub tables
-  {
-  my $self = shift;
-
-  $self -> connect () -> tables ();
-  }
+sub tables {
+	my $self = shift;
+	my @t;
+	
+	if ($self->{DRIVER} eq 'mysql') {
+		map {s/^`(.*)`$/$1/; $_}  ($self -> connect () -> tables ());
+	} else {
+		$self -> connect () -> tables ();
+	}
+}
 
 =over 4
 
@@ -975,9 +979,9 @@ sub columns {
 	}
     
     $sth = $self -> process ("SELECT * FROM $table WHERE 0 = 1");
-
+	
 	cache($table, 'NAME', $sth);
-    
+	
     @{$sth->{NAME}};
 }
 
