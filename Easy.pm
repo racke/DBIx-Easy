@@ -1051,6 +1051,71 @@ sub sizemap {
     $self->info_proc ($table, 'PRECISION', 1);
 }
 
+# ---------------------------------------------------------------
+# METHOD: create_table
+#
+# Creates table from a representation supplied by describe_table.
+# ---------------------------------------------------------------
+
+sub create_table {
+	my ($self, $table, $repref) = @_;
+	my $crtstr = '';
+	my (@stmts, $line, $null, %icols, $colstr);
+	
+	for my $cref (@{$repref->{columns}}) {
+		if ($cref->{Null} ne 'YES') {
+			$null = ' NOT NULL ';
+		} else {
+			$null = '';
+		}
+		$line = qq{$cref->{Field} $cref->{Type}$null $cref->{Extra} default '$cref->{Default}'};
+		push (@stmts, $line);
+	}
+
+	for my $cref (@{$repref->{indices}}) {
+		push (@{$icols{$cref->{Key_name}}}, $cref->{Column_name});
+	}
+
+	for my $cref (@{$repref->{indices}}) {
+		next unless exists $icols{$cref->{Key_name}};
+		$colstr = join(', ', @{$icols{$cref->{Key_name}}});
+		if ($cref->{Key_name} eq 'PRIMARY') {
+			$line = qq{PRIMARY KEY ($colstr)};
+		} else {
+			$line = qq{KEY $cref->{Key_name} ($colstr)};
+		}
+		push (@stmts, $line);
+		delete $icols{$cref->{Key_name}};
+	}
+	$crtstr = "create table $table (\n" . join(",\n", @stmts) . ")";
+	$self->process($crtstr);
+}
+
+# ------------------------------------------
+# METHOD: describe_table
+#
+# Returns representation of the given table.
+# ------------------------------------------
+
+sub describe_table {
+	my ($self, $table) = @_;
+	my ($sth, $href);
+	my %rep = (columns => [], indices => []);
+	
+	$sth = $self->process("show columns from $table");
+	while (my $href = $sth->fetchrow_hashref()) {
+		push (@{$rep{columns}}, $href);
+	}
+	$sth->finish();
+	
+	$sth = $self->process("show index from $table");
+	while (my $href = $sth->fetchrow_hashref()) {
+		push (@{$rep{indices}}, $href);
+	}
+	$sth->finish();
+	\%rep;
+}
+
 # --------------------------------------------
 # METHOD: now
 #
