@@ -127,9 +127,10 @@ while (<$fd_input>) {
 
     # skip empty/blank/comment lines
     next if /^\#/; next if /^\s*$/;
-    # remove newlines
+    # remove newlines and carriage returns
     chomp;
-
+    s/\r$//;
+    
     if ($opts{'headline'} || $opts{'table'}) {
         # table name already known
         @values = split /\t/;
