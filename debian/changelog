@@ -1,4 +1,4 @@
-dbix-easy-perl (0.16-0.4) unstable; urgency=low
+dbix-easy-perl (0.16-0.5) unstable; urgency=low
 
   * New upstream version
   * New Debian maintainer
@@ -6,7 +6,7 @@ dbix-easy-perl (0.16-0.4) unstable; urgency=low
   * Added new drivers from 0.15 release to package description
   * Bumped up Standards-Version
 
- -- Stefan Hornburg (Racke) <racke@linuxia.de>  Mon, 16 Jun 2003 14:08:49 +0200
+ -- Stefan Hornburg (Racke) <racke@linuxia.de>  Wed, 21 Jan 2004 18:16:45 +0100
 
 dbix-easy-perl (0.15-1) unstable; urgency=low
 

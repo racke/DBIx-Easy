@@ -4,6 +4,9 @@ Revision history for Perl module DBIx::Easy.
 
 DBIx::Easy v0.16 released
 
+* Wed Jan 21 18:15:03 2004 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(dbs_update): don't insert a column twice if used both in --map and --columns
+
 * Sat Oct  4 00:04:24 2003 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): rollback method added
 
