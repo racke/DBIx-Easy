@@ -11,5 +11,5 @@ Recommends: libterm-readkey-perl
 Description: Easy to Use DBI Interface
  DBIx::Easy is an easy to use DBI interface.
  Currently only the Pg, mSQL and mysql drivers are supported.
- Note that you also need one of the DBD::* drivers to use this modul.
+ Note that you also need one of the DBD::* drivers to use this module.
  For additional information please refer to the manpage.
