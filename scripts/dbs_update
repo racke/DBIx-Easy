@@ -117,6 +117,11 @@ while (<STDIN>) {
         $sth -> finish ();
     }
 
+    if ($opts{'routine'}) {
+        # filter input first
+        filter_input ($routine, $table, $fieldnames, \@values);
+    }
+    
     # check if record exists
     $sth = $dbif -> process ("SELECT $$fieldnames[0] FROM $table WHERE $$fieldnames[0] = "
                              . $dbif -> quote ($key));
