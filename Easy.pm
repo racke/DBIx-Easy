@@ -584,9 +584,9 @@ sub makemap {
     \%map;
 }
 
-# ------------------------------
-# METHOD: random_row TABLE [MAP]
-# ------------------------------
+# -----------------------------------------
+# METHOD: random_row TABLE CONDITIONS [MAP]
+# -----------------------------------------
 
 =over 4
 
@@ -604,7 +604,7 @@ is returned.
 
 sub random_row {
 	my ($self, $table, $conditions, $map) = @_;
-	my ($sth, $aref);
+	my ($sth, $aref, $row);
 
 	if ($conditions) {
 		$sth = $self -> process ("select * from $table where $conditions");
@@ -612,9 +612,19 @@ sub random_row {
 		$sth = $self -> process ("select * from $table");
 	}
 	
+	$self->cache ($table, 'NAME', $sth);
+	
 	$aref = $sth -> fetchall_arrayref ();
 	if (@$aref) {
-		$aref->[int(rand(@$aref))];
+		$row = $aref->[int(rand(@$aref))];
+
+		if ($map) {
+			# pass back hash reference
+			fold ($self->columns($table), $row);
+		} else {
+			# pass back array reference
+			$row;
+		}				   
 	}
 }
 
@@ -879,18 +889,15 @@ Returns list of the column names of I<TABLE>.
 sub columns {
     my ($self, $table) = @_;
     my ($sth);
-    
-    if ($cache_structs) {
-        if (exists $structs{$table} && exists $structs{$table}->{NAME}) {
-            return @{$structs{$table}->{NAME}};
-        }
-    }
+    my (@cols);
+
+	if (@cols = cache($table, 'NAME')) {
+		return @cols;
+	}
     
     $sth = $self -> process ("SELECT * FROM $table WHERE 0 = 1");
 
-    if ($cache_structs) {
-        $structs{$table}->{NAME} = $sth->{NAME};
-    }
+	cache($table, 'NAME', $sth);
     
     @{$sth->{NAME}};
 }
@@ -1140,11 +1147,37 @@ sub quote {$_[0] -> connect () -> quote ($_[1]);}
 
 # auxiliary functions
 
+# ----------------------------------------------------------------
+# FUNCTION: cache TABLE TYPE [HANDLE]
+#
+# This function handles the internal caching of table informations
+# like column names and types.
+#
+# If HANDLE is provided, the information will be fetched from
+# HANDLE and stored cache, otherwise the information from the
+# cache will be returned.
+# ----------------------------------------------------------------
+
+sub cache {
+	my ($table, $type, $handle) = @_;
+	my (@types);
+
+    if ($cache_structs) {
+		if ($handle) {
+			$structs{$table}->{$type} = $handle->{$type};
+		} else {
+			if (exists $structs{$table} && exists $structs{$table}->{$type}) {
+				return @{$structs{$table}->{$type}};
+			}
+		}
+	}
+}
+
 # ----------------------------------------------
 # FUNCTION: fold ARRAY1 ARRAY2
 #
 # Returns mapping between the elements of ARRAY1
-# and tehe elements fo ARRAY2.
+# and the elements fo ARRAY2.
 # ----------------------------------------------
 
 sub fold {
