@@ -148,8 +148,6 @@ while (<STDIN>) {
     }
 }
 
-$dbif -> commit ();
-
 # ---------------------------------------------------------
 # FUNCTION: filter_input ROUTINE TABLE FIELDNAMES VALREF
 #
