@@ -5,7 +5,7 @@ Maintainer: Dennis Schoen <dschoen@mini.gt.owl.de>
 Standards-Version: 3.0.1
 
 Package: libdbix-easy-perl
-Architecture: any
+Architecture: all
 Depends: ${perl:Depends}, libdbi-perl
 Recommends: libterm-readkey-perl
 Description: Easy to Use DBI Interface
