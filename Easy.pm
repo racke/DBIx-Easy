@@ -4,7 +4,7 @@
 # Copyright (C) 2003,2004 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
-#          Dennis Schön <dennis@cobolt.net>
+#          Dennis Schön <ds@1d10t.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
 # Version: 0.16
 
@@ -1462,7 +1462,7 @@ __END__
 =head1 AUTHORS
 
 Stefan Hornburg (Racke), racke@linuxia.de
-Dennis Schön, dennis@cobolt.net
+Dennis Schön, ds@1d10t.de
 
 Support for Sybase and ODBC provided by
 David B. Bitton <david@codenoevil.com>.
