@@ -748,16 +748,29 @@ sub money2num
 	$money;
   }
 
+# ------------------------------------------
 # METHOD: passwd
+#
+# Determines password for current user.
+# This method is implemented only for Mysql,
+# where we can look it up in ~/my.cnf.
+# ------------------------------------------
 
 sub passwd {
     my ($self) = shift;
-    my ($mycnf) = $ENV{'HOME'} . "/.my.cnf";
     my $clientsec = 0;
-    my ($option, $value);
+    my ($mycnf, $option, $value);
     
     # implemented only for mysql
     return unless $self->{'DRIVER'} eq 'mysql';
+
+    # determine home directory
+    if (exists $ENV{'HOME'} && -d $ENV{'HOME'}) {
+        $mycnf = $ENV{'HOME'};
+    } else {
+        $mycnf = (getpwent()) [7];
+    }
+    $mycnf .= '/my.cnf';
     
     # just give up if file is not accessible
     open (CNF, $mycnf) || return;
