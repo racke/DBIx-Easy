@@ -874,6 +874,12 @@ names in the database. The alias and the column name are separated
 with C<=> signs and the different entries are separated by C<;> signs,
 e.g. C<Art-No.=code;Short Description=shortdescr'>.
 
+=head2 B<--match-sql>=I<FIELD:{STATEMENT}>
+
+Updates only records where the value of the column I<FIELD> is in
+the result set of the SQL statement I<STATEMENT>,
+e.g. C<category:{select distinct name from categories}>.
+
 =head2 B<-o>, B<--update-only>
 
 Updates existing database entries only, stops if it detects
