@@ -1,10 +1,15 @@
 #! /usr/bin/perl -w
 
+# dumptabstruct.pl - creates file set with SQL table schemas
+
+# This script queries a SQL database and creates one file for each
+# table in the database containing the schema of the table.
+
 # Copyright (C) 1999 Stefan Hornburg
 
 # Author: Stefan Hornburg <racke@linuxia.net>
 # Maintainer: Stefan Hornburg <racke@linuxia.net>
-# Version: 0.06
+# Version: 0.05_01
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -21,14 +26,14 @@
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 use strict;
-use DBIx::CGI;
+use DBIx::Easy;
 use Term::ReadKey;
 
 my $dbif;
 my $pwdused = 0;
 
 my ($driver, $database, $user) = @ARGV;
-$dbif = new DBIx::CGI (undef, $driver, $database, $user);
+$dbif = new DBIx::Easy ($driver, $database, $user);
 
 # handler for DBI error messages and missing password
 $dbif -> install_handler (\&fatal);
@@ -37,8 +42,49 @@ $dbif -> install_handler (\&fatal);
 # for the case that a password is needed
 $dbif -> connect;
 
+# dump procedures for the different drivers
+my $dumpproc;
+if ($driver eq 'mysql') {
+  $dumpproc = sub {
+    my ($database, $table) = @_;
+    
+    my $header;
+    open (DUMP, "mysqldump $database -d $table |")
+      || die ("$0: Couldn't not launch mysqldump: $!\n");
+    while (<DUMP>) {
+      if ($header) {
+        print;
+        next;
+      }
+      # skip header
+      $header = 1 unless (/\S/);
+    }
+    close (DUMP)
+      || die ("$0: mysqldump execution errors\n");
+    }
+} elsif ($driver eq 'Pg') {
+  $dumpproc = sub {
+    my ($database, $table) = @_;
+    
+    open (DUMP, "pg_dump $database -x -s -t $table |")
+      || die ("$0: Couldn't not launch pg_dump: $!\n");
+    while (<DUMP>) {
+      print;
+    }
+    close (DUMP)
+      || die ("$0: pg_dump execution errors\n");
+  }
+}    
+
 foreach my $table ($dbif->tables()) {
-  print $table, "\n";
+  my $outfile = lc($table) . '.sql';
+
+  # call driver dependent dump procedure and fill
+  # output file with the results
+  open (OUT, ">$outfile") || die ("$0: Couldn't open $outfile: $!\n");
+  select (OUT);
+  &$dumpproc ($database, $table);
+  close (OUT);
 }
 
 # ----------------------------------
@@ -59,7 +105,7 @@ sub fatal {
     
       # retry the connection
       if (length ($pwd)) {
-        $dbif = new DBIx::CGI (undef, $driver, $database, $user, $pwd);
+        $dbif = new DBIx::Easy ($driver, $database, $user, $pwd);
         $dbif -> install_handler (\&fatal);
         $dbif -> connect ();
         return;
