@@ -15,5 +15,5 @@ WriteMakefile(
     'INSTALLMAN3DIR' => '/usr/share/man/man3',
 	'INSTALLHTMLSCRIPTDIR' => '/usr/share/doc',
 	'INSTALLHTMLSITELIBDIR' => '/usr/share/doc',
-    'EXE_FILES' => \@scripts
+    'EXE_FILES' => \@scripts,
 );

@@ -2,6 +2,7 @@ Changes
 README
 LIESMICH
 Easy.pm
+Easy/Import.pm
 Makefile.PL
 debian/changelog
 debian/rules
