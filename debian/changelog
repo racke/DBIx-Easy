@@ -1,11 +1,12 @@
 dbix-easy-perl (0.16-0.1) unstable; urgency=low
 
   * New upstream version
+  * New Debian maintainer
   * Added Suggests for the supported DBD packages in Debian
   * Added new drivers from 0.15 release to package description
   * Bumped up Standards-Version
 
- -- Stefan Hornburg (Racke) <racke@linuxia.de>  Thu, 28 Mar 2002 17:31:10 +0100
+ -- Stefan Hornburg (Racke) <racke@linuxia.de>  Thu, 27 Feb 2003 17:00:12 +0100
 
 dbix-easy-perl (0.15-1) unstable; urgency=low
 
