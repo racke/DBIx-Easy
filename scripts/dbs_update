@@ -187,19 +187,19 @@ sub fatal {
 
 =head1 NAME
 
-updatedb.pl - Update SQL Databases
+dbs_update - Update SQL Databases
 
 =head1 DESCRIPTION
 
-updatedb is an utility to update SQL databases from text files.
+dbs_update is an utility to update SQL databases from text files.
 
 =head2 FORMAT OF THE TEXT FILES
 
-updatedb assumes that each line of the input contains a data record
+dbs_update assumes that each line of the input contains a data record
 and that the field within the records are separated by tabulators.
 The first field of the data record is used as table name.
 
-Alternatively updatedb can read the column names from the first line
+Alternatively dbs_update can read the column names from the first line
 of input (see the B<-h>/B<--headline> option).
 
 =head1 OPTIONS
@@ -218,7 +218,7 @@ first field name.
 =head2 B<-r> I<ROUTINE>, B<--routine>=I<ROUTINE>
 
 Applies I<ROUTINE> to any data record. I<ROUTINE> must be a subroutine.
-updatedb passes the table name and a hash reference to this subroutine.
+dbs_update passes the table name and a hash reference to this subroutine.
 The keys of the hash are the column names and the values are the
 corresponding field values.
 
