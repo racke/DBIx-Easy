@@ -1,3 +1,9 @@
+dbix-easy-perl (0.07-1) unstable; urgency=low
+
+  * New upstream Version
+
+ -- Dennis Schoen and Alexander Koch <perl@argh.org>  Fri, 23 Jun 2000 18:29:55 +0200
+
 dbix-easy-perl (0.06-2) unstable; urgency=low
 
   * Sponsoring upload for Dennis Schoen
