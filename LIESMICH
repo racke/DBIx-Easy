@@ -1,0 +1,80 @@
+DBIx::Easy - Einfache DBI-Schnittstelle
+***************************************
+
+   * Die Homepage von `DBIx::Easy' ist http://www.linuxia.de/DBIx/Easy/.
+   * Die aktuelle Version (zur Zeit 0.07) ist erhältlich als 
+     http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
+   * Für weitere Informationen ist die Manpage heranzuziehen.
+
+Anforderungen
+*************
+
+   * DBI (URL: http://www.symbolstone.org/technology/perl/DBI/index.html)
+   * `DBD::Pg', `DBD::mysql' oder `DBD::mSQL' (andere Datenbanktreiber auf
+     Anfrage)
+
+Installation
+************
+
+
+tar -xzf DBIx-Easy.tar.gz
+cd DBIx-Easy-0.07
+perl Makefile.PL
+make
+make install
+
+
+Skripte
+*******
+
+Das `DBIx::Easy'-Paket enthält die folgenden Skripte: 
+
+
+Name                Beschreibung                                   Bemerkungen
+`dbs_dumptabdata'   erzeugt Dateisatz mit SQL-Tabellendaten        
+`dbs_dumptabstruct' erzeugt Dateisatz mit SQL-Tabellen strukturen  
+`dbs_empty'         löscht alle Daten aus einer SQL-Datenbank      
+`dbs_printtab'      gibt Daten einer SQL-Tabelle aus               Neu in 0.07
+`dbs_update'        aktualisiert SQL-Datenbank aus einer Textdatei 
+
+
+Debianpaket
+***********
+
+Diese Anwendung ist auch als Debianpaket verfügbar. Der Maintainer ist
+Dennis Schön <dschoen@rio.gt.owl.de>. Die Downloadadresse ist 
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
+
+Änderungen
+**********
+
+0.07
+****
+
+   * neues Skript `dbs_printtab'
+   * aussagekräftiger im Falle einer fehlgeschlagenen Verbindung
+   * Methode `view' verbessert im Hinblick auf die `limit'-Option, neue
+     Option `separator' hinzugefügt, Tabulator ist jetzt das voreingestellte
+     Trennzeichen, Zeilenendezeichen werden umgewandelt
+   * neue Option `--exclude-matching-tables' für `dbs_dumptabdata', `
+     dbs_dumptabstruct' und `dbs_empty'
+   * neue Option `--tables' für `dbs_empty', `dbs_dumptabstruct' and `
+     dbs_dumptabdata'
+   * neue Option `--format', `--keys', `--map', `--skipbadlines' und `
+     --update-only' für `dbs_update'
+   * neue Option `--use-printtab' für `dbs_dumptabdata'
+   * zusätzlicher optionaler Parameter CONDITION für Methode `makemap'
+   * aussagekräftigere Fehlermeldungen von `dbs_update', Bestätigung der Verä
+     nderungen, Zeilenendezeichen werden wieder hergestellt, Tabellenname wird
+     gemerkt wenn er mit `--table' angegeben wurde, Wagenrückläufe werden aus der
+     Eingabe entfernt
+   * Aufruf von `rollback' in der Fehlerbehandlungsroutine wird nicht getä
+     tigt, sollte `AutoCommit' aktiviert sein.
+   * neue Methode `is_table'
+
+Autoren
+*******
+
+Stefan Hornburg <racke@linuxia.de>
+
+Dennis Schön <dschoen@rio.gt.owl.de>
