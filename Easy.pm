@@ -1091,6 +1091,9 @@ sub passwd {
     # implemented only for mysql
     return unless $self->{'DRIVER'} eq 'mysql';
 
+	# makes sense only for the localhost
+	return if $self->{'HOST'};
+	
     # determine home directory
     if (exists $ENV{'HOME'} && -d $ENV{'HOME'}) {
         $mycnf = $ENV{'HOME'};
