@@ -3,7 +3,7 @@ dbix-easy-perl (0.08-1) unstable; urgency=high
   * New upstream version
   * HTMLized manual pages added
   
- -- Stefan Hornburg <racke@linuxia.de>  Tue,  5 Sep 2000 15:20:44 +0200
+ -- Dennis Schoen <dennis@debian.org>  Tue,  5 Sep 2000 15:20:44 +0200
 
 dbix-easy-perl (0.07-1) unstable; urgency=low
 
