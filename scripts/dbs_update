@@ -68,8 +68,9 @@ my %fieldmap;
 my $fd_input = \*STDIN;
 
 my ($sth, $keyfield, $update, $msg);
-my ($table, $fieldnames, @values, $headline, $linebuf);
+my ($table, $fieldnames, @values, $headline);
 my (@columns, $routine, %colmap);
+my $linebuf = '';
 
 # whether to consider column
 my $colflag = 1;
@@ -480,7 +481,7 @@ MAIN: while (<$fd_input>) {
 		if ($href->{$values[$cleansemap{$cleansekeys[$i]}]} == 0) {
             my $j = 0;
 			warn (prefix () . "duplicate key(s) in input: ",
-				  join (", ", map {"$_ = \"" . $values[$cleansemap{$cleansekeys[$j++]}] . "\""} @cleansekeys), "\n");
+				  join (", ", map {"$_ = \"" . $values[$cleansemap{$cleansekeys[$j++]}] . "\""} @cleansekeys) . "\n");
 		}
         $href->{$values[$cleansemap{$cleansekeys[$i]}]} = 0;
     }
