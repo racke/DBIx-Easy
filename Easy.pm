@@ -212,7 +212,7 @@ sub fatal {
     } elsif (defined $self -> {CONN}) {
 		die "$info (DBERR: $err, DBMSG: $errstr)\n";
     } else {
-		die "$info\n";
+		die "$info ($err)\n";
     }
 }
 
@@ -643,7 +643,8 @@ sub view
     my ($self, $table, %options) = @_;
     my ($view, $sth);
     my ($orderstr, $condstr) = ('', '');
-    
+
+    unless (exists $options{'limit'}) {$options{'limit'} = 0}
     # anonymous function for cells in top row
     # get contents of the table
     if ((exists ($options{'order'}) && $options{'order'})) {
@@ -655,10 +656,11 @@ sub view
     $sth = $self -> process ("SELECT * FROM $table$condstr$orderstr");
     my $names = $sth -> {NAME};
     $view = join(" | ", map {$_} @$names) . "\n";
-    my $count;
-    while((my $ref = $sth->fetch) && ($count != $options{'limit'})) {
+    my ($count, $ref);
+    while($ref = $sth->fetch) {
       $count++;
       $view .= join("| ", map {$_} @$ref) . "\n";
+      last if $count == $options{'limit'};
     }
     my $rows = $sth -> rows;
     $view .="($rows rows)";
