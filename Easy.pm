@@ -178,7 +178,7 @@ sub new
 
 sub DESTROY {
 	my $self = shift;
-
+    
 	if (defined ($self -> {CONN})) {
         unless ($self -> {CONN} -> {AutoCommit}) {
             $self -> {CONN} -> commit;
@@ -264,7 +264,7 @@ sub connect ()
             return;
 		  }
 	  }
-
+    
 	# no need to see SQL errors twice
 	$self -> {CONN} -> {'PrintError'} = 0;
 	$self -> {CONN};
@@ -628,6 +628,8 @@ B<order>: Which column to sort the row after.
 
 B<limit>: Maximum number of rows to display.
 
+B<separator>: Separator inserted between the columns.
+
 B<where>: Display only rows matching this condition.
 
   print $dbi_interface -> view ($table,
@@ -645,6 +647,8 @@ sub view
     my ($orderstr, $condstr) = ('', '');
 
     unless (exists $options{'limit'}) {$options{'limit'} = 0}
+    unless (exists $options{'separator'}) {$options{'separator'} = "\t"}
+    
     # anonymous function for cells in top row
     # get contents of the table
     if ((exists ($options{'order'}) && $options{'order'})) {
@@ -655,15 +659,15 @@ sub view
     } 
     $sth = $self -> process ("SELECT * FROM $table$condstr$orderstr");
     my $names = $sth -> {NAME};
-    $view = join(" | ", map {$_} @$names) . "\n";
+    $view = join($options{'separator'}, map {$_} @$names) . "\n";
     my ($count, $ref);
     while($ref = $sth->fetch) {
       $count++;
-      $view .= join("| ", map {$_} @$ref) . "\n";
+      $view .= join($options{'separator'}, map {$_} @$ref) . "\n";
       last if $count == $options{'limit'};
     }
-    my $rows = $sth -> rows;
-    $view .="($rows rows)";
+#    my $rows = $sth -> rows;
+#    $view .="($rows rows)";
     $view;
   }
 
