@@ -151,7 +151,7 @@ $dbif -> install_handler (\&fatal);
 $dbif -> connect;
 
 my $linebuf = '';
-my (@keys, $numkeysleft, %recmap, @names);
+my (@keys, $numkeysleft, %recmap, @names, @rectypes);
 
 if ($opts{'cleanse'}) {
     # determine column names
@@ -175,7 +175,8 @@ if ($opts{'cleanse'}) {
 
     $sth = $dbif -> process ('SELECT ' . join(', ', @keys)
 							 . " FROM $table");
-
+    @rectypes = @{$sth->{TYPE}};
+    
     while ($row = $sth -> fetch()) {
         # build chain of all keys but the last
         $href = \%recmap;
@@ -293,20 +294,30 @@ while (<$fd_input>) {
         $dbif -> insert ($table, @data);
     }
 
-    if ($opts{'cleanse'}) {
+    if ($opts{'cleanse'} && $update) {
         my ($href, $i);
         
         # now unregister key combination
         $href = \%recmap;
+
+        # Mysql strips trailing blanks from VARCHAR fields, so we do
+        if ($dbif->{DRIVER} eq 'mysql') {
+            for ($i = 0; $i < @keys; $i++) {
+                if ($rectypes[$i] == DBI::SQL_VARCHAR) {
+                    $values[$i] =~ s/\s+$//;
+                }
+            }
+        }
+        
         for ($i = 0; $i < $#keys; $i++) {
             unless (exists $href->{$values[$i]}) {
-                die ("$0: internal error: key not found: ",
+                die ("$0: internal error - $i -: key not found: ",
                      join (",", @values), "\n");
             }
             $href = $href->{$values[$i]};
         }
         unless (exists $href->{$values[$i]}) {
-            die ("$0: internal error: key not found: ",
+            die ("$0: internal error - $i - : key not found: ",
                  join (",", @values), "\n");
         }
         delete $href->{$values[$i]};
