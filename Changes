@@ -19,6 +19,9 @@ in the update method as well
 * Thu Mar 13 17:38:09 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): fixed fallback in passwd method
 
+* Wed Mar  5 18:15:09 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): new method put
+
 * Sun Feb  2 11:28:27 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): makemap now can be directed to put the whole record into the
 values of the resulting hash
