@@ -550,7 +550,14 @@ all rows are deleted. Returns the number of rows deleted.
 
 sub delete {
 	my ($self, $table, $conditions) = @_;
-	my $sth = $self -> process ("delete from $table where $conditions");
+	my $sth;
+
+    if ($conditions) {
+		$sth = $self -> process ("delete from $table where $conditions");
+	} else {
+		$sth = $self -> process ("delete from $table");
+	}
+
 	$sth -> rows();
 }
 
