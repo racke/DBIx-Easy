@@ -169,7 +169,7 @@ while (<$fd_input>) {
     
     # check if record exists
 	my (@keys, @terms);
-	for (my $i = 0; $i < $opts{'keys'}; $i++) {
+	for (my $i = 0; $i < $opts{'keys'} && $i < @$fieldnames; $i++) {
 		push (@keys, $$fieldnames[$i]);
 		push (@terms, $$fieldnames[$i] . ' = ' . $dbif->quote($values[$i]));
 	}
