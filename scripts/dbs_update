@@ -354,7 +354,7 @@ while (<$fd_input>) {
         }
 #        push (@data, $$fieldnames[$i], $values[$i]);
     }
-print "VALUES: @values\n";
+
     # check if record exists
     my %keymap = key_names ($dbif, $table, $opts{'keys'}, 1);
     @keys = (keys(%keymap));
