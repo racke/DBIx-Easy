@@ -1,8 +1,8 @@
-dbix-easy-perl (0.13-0.1) unstable; urgency=low
+dbix-easy-perl (0.13-0.2) unstable; urgency=low
 
   * New upstream version
 
- -- Stefan Hornburg (Racke) <racke@linuxia.de>  Mon,  6 Aug 2001 11:37:02 +0200
+ -- Stefan Hornburg (Racke) <racke@linuxia.de>  Wed,  8 Aug 2001 00:16:29 +0200
 
 dbix-easy-perl (0.12-1) unstable; urgency=low
 

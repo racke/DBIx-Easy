@@ -1,6 +1,7 @@
 Revision history for Perl module DBIx::Easy.
 
 * Wed Aug  8 00:15:25 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): don't use password from ~/.my.cnf for databases on other hosts
 (dbs_dumptabdata): dbs_printtab is emulated instead called as program
 
 * Tue Aug  7 23:50:54 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
