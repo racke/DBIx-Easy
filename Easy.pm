@@ -161,12 +161,13 @@ sub new
 	if (defined $self->{USER} && $self->{USER} =~ /@/) {
 		$self->{HOST} = $';
 		$self->{USER} = $`;
-		if ($self->{HOST} =~ /:/) {
-			$self->{PORT} = $';
-			$self->{HOST} = $`;
-		}
+		
 	}
-    $self ->{PASS} = shift;
+    if (defined $self->{HOST} && $self->{HOST} =~ /:/) {
+		$self->{PORT} = $';
+		$self->{HOST} = $`;
+	}
+	$self ->{PASS} = shift;
 	$self ->{CONN} = undef;
 	$self ->{HANDLER} = undef;		# error handler
 
