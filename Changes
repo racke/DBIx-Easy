@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Jun 25 17:14:35 2000 CEST Stefan Hornburg <racke@linuxia.de>
+
+DBIx::Easy v0.07 released
+
 * Fri Jun 23 11:36:27 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): several new options
 
