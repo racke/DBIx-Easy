@@ -135,7 +135,8 @@ while (<STDIN>) {
 
     if ($update) {
 #        print "UPDATING $.\n";
-        $dbif -> update ($table, "$$fieldnames[0] = $key", @data);
+        $dbif -> update ($table, "$$fieldnames[0] = "
+                         . $dbif->quote($key), @data);
     } else {
 #        print "INSERTING $.\n";
         $dbif -> insert ($table, @data);
