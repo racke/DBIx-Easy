@@ -1,13 +1,24 @@
 Revision history for Perl module DBIx::Easy.
 
+* Thu Mar 23 20:15:13 2000 CET Stefan Hornburg <racke@linuxia.de>
+(Easy.pm): better method to determine directory
+
 * Thu Mar 23 16:05:33 2000 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): expand newlines
 (Easy.pm): escape newlines in view method
+
+* Wed Mar 22 16:16:22 2000 CET Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_empty): new option --tables
+
+* Mon Mar 20 00:22:14 2000 CET Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): more verbose error messages, ensure that
+all changes are committed
 
 * Sun Mar 19 11:20:25 2000 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_dumptab*): typo fixed
 (scripts/dbs_dumptabdata): new option --use-printtab
 
+>>>>>>> 1.15
 * Sat Mar 18 23:15:22 2000 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_printtab): new script
 (Easy.pm): added option separator to view method
