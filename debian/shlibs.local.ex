@@ -1,1 +1,1 @@
-libdbi-easy-perl 0.06 dbi-easy-perl (>> 0.06-0), dbi-easy-perl (<< 0.06-99)
+libdbix-easy-perl 0.06 dbix-easy-perl (>> 0.06-0), dbix-easy-perl (<< 0.06-99)

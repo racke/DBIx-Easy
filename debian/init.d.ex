@@ -9,12 +9,12 @@
 #
 # Version:	@(#)skeleton  1.8  03-Mar-1998  miquels@cistron.nl
 #
-# This file was automatically customized by dh-make on Mon, 22 Nov 1999 18:48:11 +0100
+# This file was automatically customized by dh-make on Thu, 25 Nov 1999 19:03:09 +0100
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/sbin/dbi-easy-perl
-NAME=dbi-easy-perl
-DESC=dbi-easy-perl
+DAEMON=/usr/sbin/dbix-easy-perl
+NAME=dbix-easy-perl
+DESC=dbix-easy-perl
 
 test -f $DAEMON || exit 0
 

@@ -1,5 +1,5 @@
 #! /bin/sh
-# preinst script for dbi-easy-perl
+# preinst script for dbix-easy-perl
 #
 # see: dh_installdeb(1)
 
@@ -16,8 +16,8 @@ case "$1" in
 #        if [ "$1" = "upgrade" ]
 #        then
 #            start-stop-daemon --stop --quiet --oknodo  \
-#                --pidfile /var/run/dbi-easy-perl.pid  \
-#                --exec /usr/sbin/dbi-easy-perl 2>/dev/null || true
+#                --pidfile /var/run/dbix-easy-perl.pid  \
+#                --exec /usr/sbin/dbix-easy-perl 2>/dev/null || true
 #        fi
     ;;
 

@@ -1,5 +1,5 @@
 #! /bin/sh
-# postinst script for dbi-easy-perl
+# postinst script for dbix-easy-perl
 #
 # see: dh_installdeb(1)
 

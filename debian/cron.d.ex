@@ -1,4 +1,4 @@
 #
-# Regular cron jobs for the dbi-easy-perl package
+# Regular cron jobs for the dbix-easy-perl package
 #
-0 4	* * *	root	dbi-easy-perl_maintenance
+0 4	* * *	root	dbix-easy-perl_maintenance

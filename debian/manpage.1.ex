@@ -2,16 +2,16 @@
 .\" NAME should be all caps, SECTION should be 1-8, maybe w/ subsection
 .\" other parms are allowed: see man(7), man(1)
 .SH NAME
-dbi-easy-perl \- programs to do something
+dbix-easy-perl \- programs to do something
 .SH SYNOPSIS
-.B dbi-easy-perl
+.B dbix-easy-perl
 .I "[options] files ..."
 .br
 .B bar
 .I "[options] files ..."
 .SH DESCRIPTION
 This manual page documents briefly the
-.BR dbi-easy-perl ,
+.BR dbix-easy-perl ,
 and
 .B bar
 commands.
@@ -19,7 +19,7 @@ This manual page was written for the Debian GNU/Linux distribution
 because the original program does not have a manual page.
 Instead, it has documentation in the GNU Info format; see below.
 .PP
-.B dbi-easy-perl
+.B dbix-easy-perl
 is a program that...
 .SH OPTIONS
 The programs follow the usual GNU command line syntax, with long
@@ -37,5 +37,5 @@ The programs are documented fully by
 .IR "The Rise and Fall of a Fooish Bar" ,
 available via the Info system.
 .SH AUTHOR
-This manual page was written by Dennis Schoen <dschoen@rio.gt.owl.de>,
+This manual page was written by Dennis Schoen <dschoen@mini.gt.owl.de>,
 for the Debian GNU/Linux system (but may be used by others).

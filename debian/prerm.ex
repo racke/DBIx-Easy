@@ -1,5 +1,5 @@
 #! /bin/sh
-# prerm script for dbi-easy-perl
+# prerm script for dbix-easy-perl
 #
 # see: dh_installdeb(1)
 
@@ -17,7 +17,7 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-#       install-info --quiet --remove /usr/info/dbi-easy-perl.info.gz
+#       install-info --quiet --remove /usr/info/dbix-easy-perl.info.gz
         ;;
     failed-upgrade)
         ;;
