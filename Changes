@@ -1,6 +1,11 @@
 Revision history for Perl module DBIx::Easy.
 
+* Fri Sep  1 02:20:09 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): first field may contain table name and
+start column
+
 * Mon Aug 28 23:42:36 2000 CEST Stefan Hornburg <racke@linuxia.de>
+
 DBIx::Easy v0.07 released
 
 * Wed Jul 19 00:07:26 2000 CEST Stefan Hornburg <racke@linuxia.de>
@@ -74,7 +79,6 @@ method view fixed in respect to limit option
 new option --exclude-matching-tables
 
 * Sat Jan 15 15:24:30 2000 CET Stefan Hornburg <racke@linuxia.de>
-
 (Easy.pm): don't call rollback within error handler 
 if AutoCommit is enabled
 
@@ -88,16 +92,13 @@ if AutoCommit is enabled
 DBIx::Easy v0.06 released
 
 * Sat Dec  4 23:19:20 1999 CET Stefan Hornburg <racke@linuxia.de>
-
 (scripts/dbs_update): asks for a password if authentification fails,
 option -f/--file added
 (Easy.pm): new method passwd
 
 * Wed Dec  1 11:45:00 1999 CET Stefan Hornburg <racke@linuxia.de>
-
 (scripts/dbs_dumptabdata, scripts/dbs_empty): new script(s)
 
 * Fri Nov 26 01:01:22 1999 CET Stefan Hornburg <racke@linuxia.de>
-
 (scripts/dbs_dumptabstruct): POD documentation added
 (scripts/dbs_update): fixed old script name in POD section
