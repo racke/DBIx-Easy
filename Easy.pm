@@ -592,6 +592,67 @@ sub fill
 	  }
   }
 
+# ------------------------------------------------------
+# METHOD: view TABLE
+#
+# Produces text representation for database table TABLE.
+# ------------------------------------------------------
+
+=over 4
+
+=item view I<table> [I<name> I<value> ...]
+
+  foreach my $table (sort $dbi_interface -> tables)
+    {
+    print $cgi -> h2 ('Contents of ', $cgi -> code ($table));
+    print $dbi_interface -> view ($table);
+    }
+
+Produces plain text representation of the database table
+I<table>. This method accepts the following options as I<name>/I<value>
+pairs:
+
+B<order>: Which column to sort the row after.
+
+B<limit>: Maximum number of rows to display.
+
+B<where>: Display only rows matching this condition.
+
+  print $dbi_interface -> view ($table,
+                                order => $cgi -> param ('order') || '',
+                                where => "price > 0");
+
+=back
+
+=cut
+
+sub view
+  {
+    my ($self, $table, %options) = @_;
+    my ($view, $sth);
+    my ($orderstr, $condstr) = ('', '');
+    
+    # anonymous function for cells in top row
+    # get contents of the table
+    if ((exists ($options{'order'}) && $options{'order'})) {
+      $orderstr = " ORDER BY $options{'order'}";
+    }
+    if ((exists ($options{'where'}) && $options{'where'})) {
+      $condstr = " WHERE $options{'where'}";
+    } 
+    $sth = $self -> process ("SELECT * FROM $table$condstr$orderstr");
+    my $names = $sth -> {NAME};
+    $view = join(" | ", map {$_} @$names) . "\n";
+    my $count;
+    while((my $ref = $sth->fetch) && ($count != $options{'limit'})) {
+      $count++;
+      $view .= join("| ", map {$_} @$ref) . "\n";
+    }
+    my $rows = $sth -> rows;
+    $view .="($rows rows)";
+    $view;
+  }
+
 # --------------------------------------------
 # METHOD: now
 #
