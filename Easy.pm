@@ -1070,17 +1070,23 @@ sub money2num
 
 my %filter_default_opts = (col_delim => "\t",
                            col_delim_rep => '\t',
+                           prepend_key => undef,
                            row_delim => "\n",
                            row_delim_rep => '\n',
-                           return => '');
+                           return => '',
+                           prepend_row => undef);
 
 sub filter {
 	my ($self, $sth, $opt) = @_;
-	my ($row, @ret);
+	my (@keys, $row, @ret);
 
     for (keys %filter_default_opts) {
         $opt->{$_} = $filter_default_opts{$_}
             unless defined $opt->{$_};
+    }
+
+    if ($opt->{prepend_key}) {
+        @keys = @{$sth->{NAME}};
     }
 
 	while ($row = $sth->fetch()) {
@@ -1088,11 +1094,18 @@ sub filter {
             push(@ret, $row->[0]);
         }
         my @f;
+        my $i = 0;
         for my $f (@$row) {
             $f = '' unless defined $f;
             $f =~ s/$opt->{row_delim}/$opt->{row_delim_rep}/g;
             $f =~ s/$opt->{col_delim}/$opt->{col_delim_rep}/g;
+            if (defined $opt->{prepend_key}) {
+                $f = $keys[$i++] . $opt->{prepend_key} . $f;
+            }
             push(@f, $f);
+        }
+        if (defined $opt->{prepend_row}) {
+            print $opt->{prepend_row};
         }
         print join($opt->{col_delim}, @f), $opt->{row_delim};
 	}
