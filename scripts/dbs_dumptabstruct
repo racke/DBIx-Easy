@@ -137,7 +137,7 @@ foreach my $table (@tables) {
     select (STDOUT);
 }
 # Destroy Database object as written in manpage
-undef $dbif
+undef $dbif;
 
 # -----------------------------------
 # FUNCTION: fatal
