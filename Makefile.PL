@@ -13,5 +13,7 @@ WriteMakefile(
     'NAME'	=> 'DBIx::Easy',
     'VERSION_FROM' => 'Easy.pm', # finds $VERSION
     'INSTALLMAN3DIR' => '/usr/share/man/man3',
+	'INSTALLHTMLSCRIPTDIR' => '/usr/share/doc',
+	'INSTALLHTMLSITELIBDIR' => '/usr/share/doc',
     'EXE_FILES' => \@scripts
 );
