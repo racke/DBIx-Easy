@@ -5,6 +5,7 @@ use ExtUtils::MakeMaker;
 # List here scripts that should be installed 
 my @scripts = ("./scripts/dbs_empty",
                "./scripts/dbs_update",
+               "./scripts/dbs_printtab",
                "./scripts/dbs_dumptabdata",
                "./scripts/dbs_dumptabstruct");
 

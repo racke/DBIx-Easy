@@ -9,4 +9,5 @@ debian/copyright
 scripts/dbs_dumptabdata
 scripts/dbs_dumptabstruct
 scripts/dbs_empty
+scripts/dbs_printtab
 scripts/dbs_update
