@@ -177,7 +177,7 @@ while (<$fd_input>) {
     for (my $i = 0; $i <= $#$fieldnames; $i++) {
 		# expand newlines
 		if (defined $values[$i]) {
-			$values[$i] =~ s/\\n/\n/;
+			$values[$i] =~ s/\\n/\n/g;
 		}
         push (@data, $$fieldnames[$i], $values[$i]);
     }
