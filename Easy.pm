@@ -1,11 +1,11 @@
 # Easy.pm - Easy to Use DBI interface
 
-# Copyright (C) 1999,2000,2001 Stefan Hornburg, Dennis Schön
+# Copyright (C) 1999,2000,2001,2002 Stefan Hornburg, Dennis Schön
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <dennis@cobolt.net>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.14
+# Version: 0.15
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -37,7 +37,7 @@ require Exporter;
 
 # Public variables
 use vars qw($cache_structs);
-$VERSION = '0.14';
+$VERSION = '0.15';
 $cache_structs = 1;
 
 use DBI;
@@ -64,7 +64,7 @@ DBIx::Easy - Easy to Use DBI interface
 =head1 DESCRIPTION
 
 DBIx::Easy is an easy to use DBI interface.
-Currently only the Pg, mSQL and mysql drivers are supported.
+Currently the Pg, mSQL, mysql, sybase and ODBC drivers are supported.
 
 =head1 CREATING A NEW DBI INTERFACE OBJECT
 
@@ -116,12 +116,15 @@ disabled by setting I<$DBIx::Easy::cache_structs> to 0.
 my $maintainer_adr = 'racke@linuxia.de';
 
 # Keywords for connect()
-my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname');
-my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host');
+my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname',
+			sybase => 'database', ODBC => '');
+my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host',
+				 sybase => 'server', ODBC => '');
 my %kwportmap = (mysql => 'port', Pg => 'port');
 
 # Whether the DBMS supports transactions
-my %transactmap = (mSQL => 0, mysql => 0, Pg => 1);
+my %transactmap = (mSQL => 0, mysql => 0, Pg => 1, sybase => 'server',
+				  ODBC => 0);
   
 # Statement generators for serial()
 my %serialstatmap = (mSQL => sub {"SELECT _seq FROM $_[0]";},
@@ -136,12 +139,20 @@ my %obtstatmap = (mSQL => sub {my $table = shift;
                                  . " FROM $table WHERE 0 = 1";},
 				  Pg => sub {my $table = shift;
 							 "SELECT " . join (', ', @_)
-							   . " FROM $table WHERE FALSE";});
+							   . " FROM $table WHERE FALSE";},
+				  sybase => sub {my $table = shift;
+							   "SELECT " . join (', ', @_)
+                                 . " FROM $table WHERE 0 = 1";},
+				  ODBC => sub {my $table = shift;
+							   "SELECT " . join (', ', @_)
+                                 . " FROM $table WHERE 0 = 1";});
   
 # Supported functions
 my %funcmap = (mSQL => {COUNT => 0},
 			   mysql => {COUNT => 1},
-			   Pg => {COUNT => 1});
+			   Pg => {COUNT => 1},
+			   sybase => {COUNT => 1},
+			   ODBC => {COUNT => 0});
 
 # Cache
 my %structs;
@@ -266,8 +277,12 @@ sub connect ()
 		# build the data source string for DBI
 		# ... the driver name
 		$dsn .= 'dbi:' . $self -> {DRIVER} . ':';
-		# ... the database part
-		$dsn .= $kwmap{$self -> {DRIVER}} . "=" . $self -> {DATABASE};
+		# ... optionally the var part (ODBC has no vars)
+		if ($kwmap{$self -> {DRIVER}}) {
+			$dsn .= $kwmap{$self -> {DRIVER}} . "=";
+		}
+		# ... database name
+		$dsn .= $self -> {DATABASE};
 		# ... optionally the host part
 		if ($self -> {HOST}) {
 			$dsn .= ';' . $kwhostmap{$self->{DRIVER}}
@@ -1108,7 +1123,7 @@ sub passwd {
         $mycnf = (getpwent()) [7];
     }
     $mycnf .= '/.my.cnf';
-    
+
     # just give up if file is not accessible
     open (CNF, $mycnf) || return;
     while (<CNF>) {
@@ -1234,8 +1249,15 @@ __END__
 Stefan Hornburg (Racke), racke@linuxia.de
 Dennis Schön, dennis@cobolt.net
 
+Support for Sybase and ODBC provided by
+David B. Bitton <david@codenoevil.com>.
+
+=head1 VERSION
+
+0.15
+
 =head1 SEE ALSO
 
-perl(1), DBI(3), DBD::Pg(3), DBD::mysql(3), DBD::msql(3).
+perl(1), DBI(3), DBD::Pg(3), DBD::mysql(3), DBD::msql(3), DBD::sybase(3), DBD::ODBC(3).
 
 =cut
