@@ -65,7 +65,7 @@ binary-arch: build install
 	dh_installcron
 	dh_installmanpages
 	dh_installinfo
-	dh_undocumented dbs_dumptabstruct.1p
+#	dh_undocumented dbs_dumptabstruct.1p
 	dh_installchangelogs 
 	dh_link
 	dh_strip
