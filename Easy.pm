@@ -5,7 +5,7 @@
 # Authors: Stefan Hornburg <racke@linuxia.de>
 #          Dennis Schön <dennis@cobolt.net>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.10
+# Version: 0.11
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -37,7 +37,7 @@ require Exporter;
 
 # Public variables
 use vars qw($cache_structs);
-$VERSION = '0.10';
+$VERSION = '0.11';
 $cache_structs = 1;
 
 use DBI;
@@ -56,6 +56,7 @@ DBIx::Easy - Easy to Use DBI interface
                    time => \$dbi_interface -> now);
 
   $dbi_interface -> update ('components', "table='ram'", price => 100);
+  $rows_deleted = $dbi_interface -> delete ('components', 'stock = 0');
   $dbi_interface -> makemap ('components', 'id', 'price', 'price > 10');
   $components = $dbi_interface -> rows ('components');
   $components_needed = $dbi_interface -> rows ('components', 'stock = 0');
@@ -460,6 +461,29 @@ sub update
     } else {
         $self -> fatal ("Couldn't execute statement \"$statement\"");
     }
+}
+
+# ---------------------------------
+# METHOD: delete TABLE [CONDITIONS]
+# ---------------------------------
+
+=over 4
+
+=item delete I<table> I<conditions>
+
+  $dbi_interface -> delete ('components', "stock=0");
+
+Deletes any row of I<table> which fulfill the I<conditions>. Without conditions
+all rows are deleted. Returns the number of rows deleted.
+
+=back
+
+=cut
+
+sub delete {
+	my ($self, $table, $conditions) = @_;
+	my $sth = $self -> process ("delete from $table where $conditions");
+	$sth -> rows();
 }
 
 # -------------------------------
