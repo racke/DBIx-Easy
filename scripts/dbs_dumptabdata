@@ -35,7 +35,8 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'use-printtab')) {
+unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'tables|t=s',
+                    'use-printtab')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -51,6 +52,8 @@ if (exists $opts{'exclude-matching-tables'}) {
 
 my $dbif;
 my $pwdused = 0;
+my $pwd;
+my @tables;
 
 my ($driver, $database, $user) = @ARGV;
 $dbif = new DBIx::Easy ($driver, $database, $user);
@@ -84,8 +87,19 @@ if ($opts{'use-printtab'}) {
 			my ($database, $table) = @_;
     
 			my $header;
+            my $optstr = '';
+
+            if ($dbif -> {USER}) {
+                $optstr = " -u " . $dbif -> {USER};
+            }
+            if ($dbif -> {HOST}) {
+                $optstr .= " -h " . $dbif -> {HOST};
+            }
+            if (defined $pwd) {
+                $optstr .= " -p";
+            }
 			# -c: Use complete insert statements.
-			open (DUMP, "mysqldump $database -t -c $table |")
+			open (DUMP, "mysqldump $database -t $optstr -c $table |")
 				|| die ("$0: Couldn't launch mysqldump: $!\n");
 			while (<DUMP>) {
 				if ($header) {
@@ -114,7 +128,13 @@ if ($opts{'use-printtab'}) {
 	}    
 }
 
-foreach my $table ($dbif->tables()) {
+if ($opts{'tables'}) {
+    @tables = split (/,/, $opts{'tables'});
+} else {
+    @tables = $dbif->tables ();
+}
+
+foreach my $table (@tables) {
     my $outfile = lc($table) . '.sql';
 
     # skip tables unwanted by user
@@ -137,7 +157,6 @@ foreach my $table ($dbif->tables()) {
 
 sub fatal {
   my ($statement, $err, $msg) = @_;
-  my $pwd;
 
   if (is_auth_error ($driver, $err)) {
     unless ($pwdused) {
@@ -219,6 +238,10 @@ and specifies the database user and/or the host where the
 database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
 =head1 COMMAND LINE OPTIONS
+
+=head2 B<-t> TABLE[,TABLE,...], B<--tables>=TABLE[,TABLE,...]
+
+Comma-separated list of tables to dump.
 
 =head2 B<--exclude-matching-tables>=REGEXP
 
