@@ -57,26 +57,26 @@ binary-arch: build install
 	dh_testroot
 #	dh_installdebconf	
 	dh_installdocs README LIESMICH
-	dh_installexamples
-	dh_installmenu
+#	dh_installexamples
+#	dh_installmenu
 #	dh_installemacsen
 #	dh_installpam
 #	dh_installinit
-	dh_installcron
+#	dh_installcron
 	dh_installmanpages
-	dh_installinfo
+#	dh_installinfo
 #	dh_undocumented dbs_dumptabstruct.1p
 	dh_installchangelogs Changes
-	dh_link
-	dh_strip
+#	dh_link
+#	dh_strip
 	dh_compress
 	dh_fixperms
-	# You may want to make some executables suid here.
-	dh_suidregister
-	dh_makeshlibs
+# You may want to make some executables suid here.
+#	dh_suidregister
+#	dh_makeshlibs
 	dh_installdeb
 	dh_perl
-	dh_shlibdeps
+#	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
