@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Jul 16 16:24:49 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): --table and --columns are working together now,
+handle keys excessing the column size
+
 * Sun Jul 16 13:01:44 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): problems with --cleanse fixed
 

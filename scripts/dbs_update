@@ -68,7 +68,7 @@ my %usecol;
 
 if ($opts{'columns'}) {
     # setup positive list for columns
-    for (split(/,/, $opts{'columns'})) {
+    for (@columns = split(/,/, $opts{'columns'})) {
         $usecol{$_} = 1;
     }
 }
@@ -134,6 +134,10 @@ if ($opts{'routine'}) {
 if ($opts{'table'}) {
     # set fixed table name
     $table = $opts{'table'};
+	# use defined columns
+	if (! $opts{'headline'} && $opts{'columns'}) {
+		$fieldmap{$table} = \@columns;
+	}
 }
 
 my $dbif;
@@ -151,7 +155,7 @@ $dbif -> install_handler (\&fatal);
 $dbif -> connect;
 
 my $linebuf = '';
-my (@keys, @cleansekeys, $numkeysleft, %recmap, @names, @rectypes);
+my (@keys, @cleansekeys, $numkeysleft, %recmap, @names, @rectypes, @recsizes);
 
 if ($opts{'cleanse'}) {
     # determine column names
@@ -176,7 +180,8 @@ if ($opts{'cleanse'}) {
     $sth = $dbif -> process ('SELECT ' . join(', ', @cleansekeys)
 							 . " FROM $table");
     @rectypes = @{$sth->{TYPE}};
-    
+    @recsizes = @{$sth->{PRECISION}};
+	
     while ($row = $sth -> fetch()) {
         # build chain of all keys but the last
         $href = \%recmap;
@@ -302,13 +307,20 @@ while (<$fd_input>) {
 
         # Mysql strips trailing blanks from VARCHAR fields, so we do
         if ($dbif->{DRIVER} eq 'mysql') {
-            for ($i = 0; $i < @keys; $i++) {
+            for ($i = 0; $i < @cleansekeys; $i++) {
                 if ($rectypes[$i] == DBI::SQL_VARCHAR) {
                     $values[$i] =~ s/\s+$//;
                 }
             }
         }
-        
+
+		# data from input file may exceed column capacity
+		for ($i = 0; $i < @cleansekeys; $i++) {
+			if ($rectypes[$i] == DBI::SQL_CHAR) {
+				$values[$i] = substr($values[$i],0,$recsizes[$i]);
+			}
+		}
+		
         for ($i = 0; $i < $#cleansekeys; $i++) {
             unless (exists $href->{$values[$i]}) {
                 die ("$0: internal error - $i -: key not found: ",
