@@ -1,0 +1,7 @@
+# Automatically added by dh_installdocs
+if [ "$1" = "configure" ]; then
+	if [ -d /usr/doc -a ! -e /usr/doc/libdbi-easy-perl -a -d /usr/share/doc/libdbi-easy-perl ]; then
+		ln -sf ../share/doc/libdbi-easy-perl /usr/doc/libdbi-easy-perl
+	fi
+fi
+# End automatically added section

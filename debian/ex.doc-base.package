@@ -1,0 +1,22 @@
+Document: dbi-easy-perl
+Title: Debian dbi-easy-perl Manual
+Author: <insert document author here>
+Abstract: This manual describes what dbi-easy-perl is
+ and how it can be used to
+ manage online manuals on Debian systems.
+Section: unknown
+
+Format: debiandoc-sgml
+Files: /usr/doc/dbi-easy-perl/dbi-easy-perl.sgml.gz
+
+Format: postscript
+Files: /usr/doc/dbi-easy-perl/dbi-easy-perl.ps.gz
+
+Format: text
+Files: /usr/doc/dbi-easy-perl/dbi-easy-perl.text.gz
+
+Format: HTML
+Index: /usr/doc/dbi-easy-perl/html/index.html
+Files: /usr/doc/dbi-easy-perl/html/*.html
+
+  
