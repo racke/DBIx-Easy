@@ -707,6 +707,74 @@ sub view
     $view;
   }
 
+=head1 DATABASE INFORMATION
+
+=over 4
+
+=item is_table I<NAME>
+
+Returns truth value if there exists a table NAME in
+this database.
+
+=back
+
+=cut
+
+sub is_table {
+    my ($self, $name) = shift;
+    
+    grep {$_ eq $name} ($self->tables);
+}
+
+=over 4
+
+=item tables
+
+Returns list of all tables in this database.
+
+=back
+
+=cut
+
+sub tables
+  {
+  my $self = shift;
+
+  # mSQL/mysql doesn't support DBI method tables yet
+  if ($self -> {DRIVER} eq 'mSQL' || $self -> {DRIVER} eq 'mysql')
+	{
+	  $self -> connect () -> func('_ListTables');
+	}
+  else
+	{
+	  # standard method
+	  $self -> connect () -> tables ();
+	}
+  }
+
+=over 4
+
+=item sequences
+
+Returns list of all sequences in this database (Postgres only).
+
+=back
+
+=cut
+
+sub sequences {
+    my $self = shift;
+    my (@sequences, $sth, $row);
+
+    if ($self->{DRIVER} eq 'Pg') {
+        $sth = $self -> process ("SELECT relname FROM pg_class WHERE relkind = 'S'");
+        while ($row = $sth -> fetch ()) {
+            push (@sequences, $$row[0]);
+        }
+    }
+    return @sequences;
+}
+
 # --------------------------------------------
 # METHOD: now
 #
@@ -833,28 +901,6 @@ sub install_handler {$_[0] -> {'HANDLER'} = $_[1];}
 sub prepare {my $self = shift; $self -> prepare (@_);}
 sub commit {$_[0] -> connect () -> commit ();}
 sub quote {$_[0] -> connect () -> quote ($_[1]);}
-
-sub tables
-  {
-  my $self = shift;
-
-  # mSQL/mysql doesn't support DBI method tables yet
-  if ($self -> {DRIVER} eq 'mSQL' || $self -> {DRIVER} eq 'mysql')
-	{
-	  $self -> connect () -> func('_ListTables');
-	}
-  else
-	{
-	  # standard method
-	  $self -> connect () -> tables ();
-	}
-  }
-
-sub is_table {
-    my ($self, $name) = shift;
-    
-    grep {$_ eq $name} ($self->tables);
-}
 
 1;
 __END__
