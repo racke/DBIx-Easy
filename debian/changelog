@@ -1,3 +1,9 @@
+dbix-easy-perl (0.06-2) unstable; urgency=low
+
+  * Sponsoring upload for Dennis Schoen
+
+ -- Dennis Schoen and Alexander Koch <perl@argh.org>  Mon,  1 Jan 2000 10:04:13 +0100
+
 dbix-easy-perl (0.06-1) unstable; urgency=low
 
   * Initial Release.
