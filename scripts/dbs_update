@@ -4,7 +4,7 @@
 
 # Author: Stefan Hornburg <racke@linuxia.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.000_02
+# Version: 0.000_03
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -40,8 +40,15 @@ while (<STDIN>) {
     chomp;
     
     ($table, @values) = split /\t/;
-    $key = $values[0];
+
+    # sanity check on the table name
+    if ($table =~ /\s/) {
+        warn ("$0: $.: skipping record (\"$table\" not accepted as table name)\n");
+        next;
+    }
     
+    $key = $values[0];
+#    print join ('.', @values), "\n";
     # get key for table
     if (exists $fieldmap{$table}) {
         $fieldnames = $fieldmap{$table};
@@ -66,12 +73,12 @@ while (<STDIN>) {
     for (my $i = 0; $i <= $#$fieldnames; $i++) {
         push (@data, $$fieldnames[$i], $values[$i]);
     }
-    
+
     if ($update) {
-        print "UPDATING $.\n";
+#        print "UPDATING $.\n";
         $dbif -> update ($table, "$$fieldnames[0] = $key", @data);
     } else {
-        print "INSERTING $.\n";
+#        print "INSERTING $.\n";
         $dbif -> insert ($table, @data);
     }
 }
@@ -81,3 +88,21 @@ sub fatal {
     die ("$0: Statement \"$statement\" failed (ERRNO: $err, ERRMSG: $msg)\n");
 }
 
+# script documentation (POD style)
+
+=head1 NAME
+
+updatedb.pl - Update SQL Databases
+
+=head1 DESCRIPTION
+
+
+=head1 AUTHOR
+
+Stefan Hornburg, racke@linuxia.net
+
+=head1 SEE ALSO
+
+perl(1), DBIx::CGI(3)
+
+=cut    
