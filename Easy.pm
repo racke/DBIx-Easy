@@ -612,7 +612,7 @@ sub random_row {
 		$sth = $self -> process ("select * from $table");
 	}
 	
-	$self->cache ($table, 'NAME', $sth);
+	cache ($table, 'NAME', $sth);
 	
 	$aref = $sth -> fetchall_arrayref ();
 	if (@$aref) {
@@ -620,7 +620,7 @@ sub random_row {
 
 		if ($map) {
 			# pass back hash reference
-			fold ($self->columns($table), $row);
+			fold ([$self->columns($table)], $row);
 		} else {
 			# pass back array reference
 			$row;
