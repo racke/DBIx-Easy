@@ -210,6 +210,8 @@ sub new
 		}
     }
 
+	return $self if $^O eq 'MSWin32';
+
     # we may try to get password from DBMS specific
     # configuration file
 

@@ -4,6 +4,9 @@ Revision history for Perl module DBIx::Easy.
 
 DBIx::Easy v0.16 released
 
+* Mon Jul  5 15:30:56 2004 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): don't call passwd method on Win32 machines
+
 * Tue Feb 10 14:10:04 2004 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): return on connections errors from various methods to allow failover with
 custom error handler
