@@ -171,7 +171,7 @@ undef $dbif;
 sub fatal {
   my ($statement, $err, $msg) = @_;
 
-  if (is_auth_error ($driver, $err)) {
+  if ($dbif->is_auth_error ($err)) {
     unless ($pwdused) {
       print "We need a password.\n";
       $pwd = querypwd();
@@ -189,28 +189,6 @@ sub fatal {
     }
   }
   die ("$statement.\n");
-}
-
-# -----------------------------------------------------------------
-# FUNCTION: is_auth_error DRIVER ERR
-#
-# Determines from the error message ERR and the database DRIVER
-# if the connection couldn't established due to an authentification
-# error or an other cause. Returns a truth value in the first case.
-# -----------------------------------------------------------------
-
-sub is_auth_error ($$) {
-  my ($driver, $err) = @_;
-  
-  if ($driver eq 'mysql') {
-    if (index ($err, "DBI->connect failed: Access denied for user:") == 0) {
-      return 1;
-    }
-  } elsif ($driver eq 'Pg') {
-    if ($err =~ /^DBI->connect failed.+no password supplied/) {
-      return 1;
-    }
-  }
 }
 
 # ----------------------------

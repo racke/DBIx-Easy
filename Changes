@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Tue Aug  7 23:50:54 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): new method is_auth_error
+
 * Tue Aug  7 22:20:36 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (scripts/dbs_update): --headline and --format=CSV weren't fully compatible
 

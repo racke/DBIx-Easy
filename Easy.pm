@@ -1044,6 +1044,37 @@ sub money2num
 	$money;
   }
 
+# -----------------------------------------------------
+# METHOD: is_auth_error MSG
+# -----------------------------------------------------
+
+=head2 MISCELLANEOUS
+
+=over 4
+
+=item is_auth_error I<msg>
+
+This method decides if the error message I<msg>
+is caused by an authentification error or not.
+
+=back
+
+=cut
+
+sub is_auth_error {
+	my ($self, $msg) = @_;
+
+	if ($self->{DRIVER} eq 'mysql') {
+		if ($msg =~ /^DBI->connect(\(database=.*?(;host=.*?)?\))? failed: Access denied for user:/) {
+			return 1;
+		}
+	} elsif ($self->{DRIVER} eq 'Pg') {
+		if ($msg =~ /^DBI->connect failed.+no password supplied/) {
+			return 1;
+		}
+	}
+}
+
 # ------------------------------------------
 # METHOD: passwd
 #

@@ -2,11 +2,11 @@
 
 # dbs_empty - erases any data from a given SQL database
 
-# Copyright (C) 1999,2000 Stefan Hornburg
+# Copyright (C) 1999,2000,2001 Stefan Hornburg
 
-# Author: Stefan Hornburg <racke@linuxia.de>
-# Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.07
+# Author: Stefan Hornburg (Racke) <racke@linuxia.de>
+# Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
+# Version: 0.13
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -92,7 +92,7 @@ sub fatal {
   my ($statement, $err, $msg) = @_;
   my $pwd;
 
-  if (is_auth_error ($driver, $err)) {
+  if ($dbif->is_auth_error ($err)) {
     unless ($pwdused) {
       print "We need a password.\n";
       $pwd = querypwd();
@@ -110,28 +110,6 @@ sub fatal {
     }
   }
   die ("$statement: $msg.\n");
-}
-
-# -----------------------------------------------------------------
-# FUNCTION: is_auth_error DRIVER ERR
-#
-# Determines from the error message ERR and the database DRIVER
-# if the connection couldn't established due to an authentification
-# error or an other cause. Returns a truth value in the first case.
-# -----------------------------------------------------------------
-
-sub is_auth_error ($$) {
-  my ($driver, $err) = @_;
-  
-  if ($driver eq 'mysql') {
-    if (index ($err, "DBI->connect failed: Access denied for user:") == 0) {
-      return 1;
-    }
-  } elsif ($driver eq 'Pg') {
-    if ($err =~ /^DBI->connect failed.+no password supplied/) {
-      return 1;
-    }
-  }
 }
 
 # ----------------------------
@@ -183,7 +161,7 @@ Remove tables from database too.
 
 =head1 AUTHOR
 
-Stefan Hornburg, racke@linuxia.de
+Stefan Hornburg (Racke), racke@linuxia.de
 
 =head1 SEE ALSO
 
