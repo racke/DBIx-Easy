@@ -1,3 +1,10 @@
+dbix-easy-perl (0.11-2) unstable; urgency=low
+
+  * no longer ship .packlist file
+  * Closes:Bug#104756
+
+ -- Dennis Schoen <dennis@debian.org>  Tue, 17 Jul 2001 11:51:08 +0200
+
 dbix-easy-perl (0.11-1) unstable; urgency=low
 
   * New upstream version
