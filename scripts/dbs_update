@@ -418,7 +418,6 @@ while (<$fd_input>) {
                 }
             }
         }
-		print "VALUES: @values\n";
 		# data from input file may exceed column capacity
 		for ($i = 0; $i < @cleansekeys; $i++) {
 			if ($$typeref{$cleansekeys[$i]} == DBI::SQL_CHAR) {
@@ -427,7 +426,6 @@ while (<$fd_input>) {
                            0,$$sizeref{$cleansekeys[$i]});
 			}
 		}
-print "VALUES: @values\n";
         for ($i = 0; $i < $#cleansekeys; $i++) {
             unless (exists $href->{$values[$cleansemap{$cleansekeys[$i]}]}) {
                 die ("$0: internal error: key $cleansekeys[$i] not found: ",
