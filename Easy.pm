@@ -1,11 +1,11 @@
 # Easy.pm - Easy to Use DBI interface
 
-# Copyright (C) 1999 Stefan Hornburg, Dennis Schön
+# Copyright (C) 1999,2000 Stefan Hornburg, Dennis Schön
 
-# Authors: Stefan Hornburg <racke@linuxia.net>
+# Authors: Stefan Hornburg <racke@linuxia.de>
 #          Dennis Schön <dschoen@rio.gt.owl.de>
-# Maintainer: Stefan Hornburg <racke@linuxia.net>
-# Version: 0.06
+# Maintainer: Stefan Hornburg <racke@linuxia.de>
+# Version: 0.07
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -34,7 +34,7 @@ require Exporter;
 # Do not simply export all your public functions/methods/constants.
 @EXPORT = qw(
 );
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 use DBI;
 
@@ -52,7 +52,7 @@ DBIx::Easy - Easy to Use DBI interface
                    time => \$dbi_interface -> now);
 
   $dbi_interface -> update ('components', "table='ram'", price => 100);
-  $dbi_interface -> makemap ('components', 'id', 'price');
+  $dbi_interface -> makemap ('components', 'id', 'price', 'price > 10');
   $components = $dbi_interface -> rows ('components');
   $components_needed = $dbi_interface -> rows ('components', 'stock = 0');
 
@@ -66,7 +66,7 @@ Currently only the Pg, mSQL and mysql drivers are supported.
   $dbi_interface = new DBIx::Easy qw(Pg template1);
   $dbi_interface = new DBIx::Easy qw(Pg template1 racke);
   $dbi_interface = new DBIx::Easy qw(Pg template1 racke aF3xD4_i);
-  $dbi_interface = new DBIx::Easy qw(Pg template1 racke@linuxia.net aF3xD4_i);
+  $dbi_interface = new DBIx::Easy qw(Pg template1 racke@linuxia.de aF3xD4_i);
 
 The required parameters are the database driver
 and the database name. Additional parameters are the database user
@@ -90,7 +90,7 @@ called.
 # Variables
 # =========
 
-my $maintainer_adr = 'racke@linuxia.net';
+my $maintainer_adr = 'racke@linuxia.de';
 
 # Keywords for connect()
 my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname');
@@ -476,30 +476,38 @@ sub rows
 	$rows;
   }
 
-# ---------------------------------------------
-# METHOD: makemap TABLE KEYCOL VALCOL
-# ---------------------------------------------
+# -----------------------------------------------
+# METHOD: makemap TABLE KEYCOL VALCOL [CONDITION]
+# -----------------------------------------------
 
 =over 4
 
-=item makemap I<table> I<keycol> I<valcol>
+=item makemap I<table> I<keycol> I<valcol> [I<condition>]
 
     $dbi_interface -> makemap ('components', 'id', 'price');
-    
+    $dbi_interface -> makemap ('components', 'id', 'price', 'price > 10');
+
 Produces a mapping between the values within column
-I<keycol> and column I<valcol> from I<table>.
+I<keycol> and column I<valcol> from I<table>. If an
+I<condition> is given, only rows matching this
+I<condition> are used for the mapping.    
 
 =back
 
 =cut
 
 sub makemap {
-    my ($self, $table, $keycol, $valcol) = @_;
+    my ($self, $table, $keycol, $valcol, $condition) = @_;
     my ($sth, $row, %map);
 
-    # read all rows from the specified table
-    $sth = $self -> process ("SELECT $keycol, $valcol FROM $table");
-
+    if (defined $condition) {
+        # read matching rows from the specified table
+        $sth = $self -> process ("SELECT $keycol, $valcol FROM $table WHERE $condition");
+    } else {
+        # read all rows from the specified table
+        $sth = $self -> process ("SELECT $keycol, $valcol FROM $table");
+    }
+    
     while ($row = $sth -> fetch) {
         $map{$$row[0]} = $$row[1];
     }
@@ -798,7 +806,7 @@ __END__
 
 =head1 AUTHORS
 
-Stefan Hornburg, racke@linuxia.net
+Stefan Hornburg, racke@linuxia.de
 Dennis Schön, dschoen@rio.gt.owl.de
 
 =head1 SEE ALSO

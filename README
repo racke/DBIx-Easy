@@ -50,7 +50,10 @@ Changes
 
    * new option `--exclude-matching-tables' for `dbs_dumptabdata', `
      dbs_dumptabstruct' and `dbs_empty'
+   * new option `--map' for `dbs_update'
+   * optional parameter CONDITION added to method `makemap'
    * don't call `rollback' within error handler if `AutoCommit' is enabled
+   * new method `is_table'
 
 Authors
 *******

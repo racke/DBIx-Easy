@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Fri Jan 21 10:59:03 2000 CET Stefan Hornburg <racke@linuxia.de>
+(Easy.pm): optional parameter CONDITION added to method makemap
+
 * Thu Jan 20 12:56:10 2000 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_empty, scripts/dbs_dumptabstruct, scripts/dumptabdata):
 new option --exclude-matching-tables
