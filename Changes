@@ -1,6 +1,7 @@
 Revision history for Perl module DBIx::Easy.
 
 * Thu Mar 23 16:05:33 2000 CET Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): expand newlines
 (Easy.pm): escape newlines in view method
 
 * Sun Mar 19 11:20:25 2000 CET Stefan Hornburg <racke@linuxia.de>
