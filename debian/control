@@ -3,7 +3,7 @@ Section: interpreters
 Priority: optional
 Maintainer: Dennis Schoen <dennis@debian.org>
 Standards-Version: 3.0.1
-Build-Depends: debhelper
+Build-Depends-Indep: debhelper
 
 Package: libdbix-easy-perl
 Architecture: all
