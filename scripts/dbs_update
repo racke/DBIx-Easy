@@ -33,7 +33,8 @@ $SIG{__WARN__} = sub {print STDERR "$0: @_";};
 unless (GetOptions (\%opts, 'cleanse', 'columns|c=s',
                     'file|f=s', 'format=s', 'headline|h',
 					'rows=s', 'keys|k=s',
-					'map|m=s', 'match-sql=s', 'routine|r=s', 'skipbadlines',
+					'map|m=s', 'map-filter=s', 'match-sql=s', 'routine|r=s',
+					'skipbadlines',
 					'table|t=s', 'update-only|o')) {
     exit 1;
 }
@@ -45,13 +46,22 @@ my %inforef = ();
 my %funcref = (CSV => {get_columns => \&get_columns_csv},
 			   TAB => {get_columns => \&get_columns_tab},
 			   XLS => {get_columns => \&get_columns_xls});
+my %mfref = (lc => sub {lc(shift)});
 my $sep_char = ',';
+my $mfsub;
 
 if ($opts{'cleanse'} || $opts{'headline'}) {
     unless ($opts{'table'}) {
         die ("$0: missing table name\n");
     }
 }
+if ($opts{'map-filter'}) {
+	unless (exists($mfref{$opts{'map-filter'}})) {
+		die qq{$0: unknown column name filter "$opts{'map-filter'}"}, "\n";
+	}
+	$mfsub = $mfref{$opts{'map-filter'}};
+}
+
 if ($opts{'format'}) {
 	$format = uc($opts{'format'});
 
@@ -169,10 +179,14 @@ if ($opts{'headline'}) {
 			}
 		}
 	}
-	
+
+	if ($opts{'map-filter'}) {
+		@columns = map {$mfsub->($_)} @columns;
+	}
+
 	# remove whitespace from column names and mark them
 	map {s/^\s+//; s/\s+$//; $hcolmap{$_} = 1;} @columns;
-	
+
     if ($opts{'map'}) {
         my @newcolumns;
         
@@ -928,6 +942,11 @@ Maps the names found in the first line of input to the actual column
 names in the database. The alias and the column name are separated
 with C<=> signs and the different entries are separated by C<;> signs,
 e.g. C<Art-No.=code;Short Description=shortdescr'>.
+
+=head2 B<--map-filter>=I<FILTER>
+
+Applies a filter to the column names read from the input file.
+Currently there is only the C<lc> filter available.
 
 =head2 B<--match-sql>=I<FIELD:{STATEMENT}>
 

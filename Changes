@@ -4,6 +4,9 @@ Revision history for Perl module DBIx::Easy.
 
 DBIx::Easy v0.16 released
 
+* Mon Feb  9 22:54:01 2004 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(dbs_update): new option --map-filter
+
 * Wed Jan 21 18:15:03 2004 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (dbs_update): don't insert a column twice if used both in --map and --columns
 
