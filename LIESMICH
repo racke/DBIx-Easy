@@ -2,7 +2,7 @@ DBIx::Easy - Einfache DBI-Schnittstelle
 ***************************************
 
    * Die Homepage von `DBIx::Easy' ist http://www.linuxia.de/DBIx/Easy/.
-   * Die aktuelle Version (zur Zeit 0.12) ist erhältlich als 
+   * Die aktuelle Version (zur Zeit 0.13) ist erhältlich als 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * Für weitere Informationen ist die Manpage heranzuziehen.
 
@@ -18,7 +18,7 @@ Installation
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.12
+cd DBIx-Easy-0.13
 perl Makefile.PL
 make
 make install
@@ -43,10 +43,39 @@ Debianpaket
 
 Diese Anwendung ist auch als Debianpaket verfügbar. Der Maintainer ist
 Dennis Schön <dennis@cobolt.net>. Die Downloadadresse ist 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.12-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.13-1_all.deb.
 
 Änderungen
 **********
+
+0.13
+****
+
+`Easy.pm'
+=========
+
+   * Das Passwort in `~/.my.cnf' wird nicht mehr für Datenbanken auf anderen
+     Rechnern verwendet
+   * Port der Datenbank kann nun auch konfiguriert werden
+   * Neue Methode `is_auth_error'
+
+`dbs_dumptabdata'
+=================
+
+   * `--cleanse' schlug in einigen Fällen fehl, wenn einer der Schlüssel '`0''
+     war
+
+`dbs_printtab'
+==============
+
+   * neue Option `--sort'
+
+`dbs_update'
+============
+
+   * `dbs_printtab' wird nicht mehr als Programm aufgerufen, sondern
+     imitiert
+   * `--headline' und `--format=CSV' waren nicht vollkommen kompatibel
 
 0.12
 ****
