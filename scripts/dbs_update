@@ -202,7 +202,7 @@ $dbif -> install_handler (\&fatal);
 $dbif -> connect;
 
 my $linebuf = '';
-my (@keys, @cleansekeys, %cleansemap, $numkeysleft, %recmap, @names, @rectypes, @recsizes);
+my (@keys, @cleansekeys, %cleansemap, $numkeysleft, %recmap, @names);
 
 if ($opts{'cleanse'}) {
     # determine column names
@@ -218,8 +218,7 @@ if ($opts{'cleanse'}) {
 
     $sth = $dbif -> process ('SELECT ' . join(', ', @cleansekeys)
 							 . " FROM $table");
-    @rectypes = $dbif -> types ($table);
-    @recsizes = $dbif -> sizes ($table);
+
     while ($row = $sth -> fetch()) {
         # build chain of all keys but the last
         $href = \%recmap;
@@ -355,7 +354,7 @@ while (<$fd_input>) {
         }
 #        push (@data, $$fieldnames[$i], $values[$i]);
     }
-
+print "VALUES: @values\n";
     # check if record exists
     my %keymap = key_names ($dbif, $table, $opts{'keys'}, 1);
     @keys = (keys(%keymap));
@@ -410,7 +409,7 @@ while (<$fd_input>) {
         
         # now unregister key combination
         $href = \%recmap;
-
+print "VALUES: @values\n";
         # Mysql strips trailing blanks from VARCHAR fields, so we do
         if ($dbif->{DRIVER} eq 'mysql') {
             for ($i = 0; $i < @cleansekeys; $i++) {
@@ -420,15 +419,16 @@ while (<$fd_input>) {
                 }
             }
         }
+		print "VALUES: @values\n";
 		# data from input file may exceed column capacity
 		for ($i = 0; $i < @cleansekeys; $i++) {
-			if ($rectypes[$i] == DBI::SQL_CHAR) {
+			if ($$typeref{$cleansekeys[$i]} == DBI::SQL_CHAR) {
 				$values[$cleansemap{$cleansekeys[$i]}]
                   = substr($values[$cleansemap{$cleansekeys[$i]}],
-                           0,$recsizes[$i]);
+                           0,$$sizeref{$cleansekeys[$i]});
 			}
 		}
-
+print "VALUES: @values\n";
         for ($i = 0; $i < $#cleansekeys; $i++) {
             unless (exists $href->{$values[$cleansemap{$cleansekeys[$i]}]}) {
                 die ("$0: internal error: key $cleansekeys[$i] not found: ",
