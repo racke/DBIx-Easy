@@ -73,6 +73,17 @@ and the database name. Additional parameters are the database user
 and the password to access the database. To specify the database host
 use the USER@HOST notation for the user parameter.
 
+=head1 DESTROYING A DBI INTERFACE OBJECT
+
+It is important that you commit all changes at the end of the interaction
+with the DBMS. You can either explicitly commit 
+
+  $dbi_interface -> commit ();
+
+or do it implicitly:
+
+  undef $dbi_interface;
+
 =head1 ERROR HANDLING
 
   sub fatal {
@@ -178,7 +189,7 @@ sub new
 
 sub DESTROY {
 	my $self = shift;
-    
+
 	if (defined ($self -> {CONN})) {
         unless ($self -> {CONN} -> {AutoCommit}) {
             $self -> {CONN} -> commit;
