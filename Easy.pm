@@ -747,7 +747,7 @@ sub passwd {
         next unless /\S/;
         # section ?
         if (/\[(.*?)\]/) {
-            if ($1 eq 'client') {
+            if (lc($1) eq 'client') {
                 $clientsec = 1;
             } else {
                 $clientsec = 0;
