@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Wed Aug  8 00:15:25 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(dbs_dumptabdata): dbs_printtab is emulated instead called as program
+
 * Tue Aug  7 23:50:54 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): new method is_auth_error
 
@@ -7,7 +10,7 @@ Revision history for Perl module DBIx::Easy.
 (scripts/dbs_update): --headline and --format=CSV weren't fully compatible
 
 * Mon Aug  6 12:16:17 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
-(scripts/dbs_dumptabdata, scripts/dbs_printtab): new option --sort
+(scripts/dbs_printtab): new option --sort
 
 * Tue Jul 24 16:25:10 2001 CEST Dennis Schön <dennis@cobolt.net>
 (Easy.pm): database port is configurable now
