@@ -175,8 +175,6 @@ sub _do_import {
     my $fieldnames = \@names;
 	my @values;
 
-	print "USECOL $self->{colflag}: " . join(',', keys %{$self->{usecol}}) . "\n";
-	
 	while ($self->{func}->($self, \@columns))  {
 		my (@data);
 		
