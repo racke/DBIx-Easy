@@ -156,8 +156,17 @@ sub new
                       . "Please send mail to $maintainer_adr for more information.\n");
     }
 
+    # we may try to get password from DBMS specific
+    # configuration file
+    
+    unless (defined $self->{PASS}
+            || (defined $self->{'USER'}
+                && $self->{'USER'} ne getpwuid($<))) {   
+        $self->passwd();
+    }
+
 	return ($self);
-  }
+}
 
 # ------------------------------------------------------
 # DESTRUCTOR
@@ -718,6 +727,45 @@ sub money2num
 	
 	$money;
   }
+
+# METHOD: passwd
+
+sub passwd {
+    my ($self) = shift;
+    my ($mycnf) = $ENV{'HOME'} . "/.my.cnf";
+    my $clientsec = 0;
+    my ($option, $value);
+    
+    # implemented only for mysql
+    return unless $self->{'DRIVER'} eq 'mysql';
+    
+    # just give up if file is not accessible
+    open (CNF, $mycnf) || return;
+    while (<CNF>) {
+        # ignore comments and blank lines
+        next if /^\#/ or /^;/;
+        next unless /\S/;
+        # section ?
+        if (/\[(.*?)\]/) {
+            if ($1 eq 'client') {
+                $clientsec = 1;
+            } else {
+                $clientsec = 0;
+            }
+        } elsif ($clientsec) {
+            # in the [client] section check for password option
+            ($option, $value) = split (/=/, $_, 2);
+            if ($option =~ /\s*password\s*/) {
+                $value =~ s/^\s+//;
+                $value =~ s/\s+$//;
+                $self->{'PASS'} = $value;
+                last;
+            }
+        }
+    }
+        
+    close (CNF);
+}
 
 # install error handler
 sub install_handler {$_[0] -> {'HANDLER'} = $_[1];}
