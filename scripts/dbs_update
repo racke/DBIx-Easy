@@ -204,20 +204,20 @@ of input (see the B<-h>/B<--headline> option).
 
 =head1 OPTIONS
 
-=head2 -h, --headline
+=head2 B<-h>, B<--headline>
 
 Reads the column names from the first line of the input instead
 of dedicting them from the database layout. Requires the
 B<-t/--table> option.
 
-=head2 -t TABLE, --table=TABLE
+=head2 B<-t> I<TABLE>, B<--table>=I<TABLE>
 
-Uses TABLE as table name for all records instead of the
+Uses I<TABLE> as table name for all records instead of the
 first field name.
 
-=head2 -r ROUTINE, --routine=ROUTINE
+=head2 B<-r> I<ROUTINE>, B<--routine>=I<ROUTINE>
 
-Applies ROUTINE to any data record. ROUTINE must be a subroutine.
+Applies I<ROUTINE> to any data record. I<ROUTINE> must be a subroutine.
 updatedb passes the table name and a hash reference to this subroutine.
 The keys of the hash are the column names and the values are the
 corresponding field values.
