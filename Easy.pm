@@ -1275,7 +1275,7 @@ sub quote {$_[0] -> connect () -> quote ($_[1]);}
 sub cache {
 	my ($table, $type, $handle) = @_;
 	my (@types);
-
+	
     if ($cache_structs) {
 		if ($handle) {
 			$structs{$table}->{$type} = $handle->{$type};
@@ -1285,6 +1285,8 @@ sub cache {
 			}
 		}
 	}
+
+	return;
 }
 
 # ----------------------------------------------
