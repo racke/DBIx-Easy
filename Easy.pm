@@ -1329,6 +1329,7 @@ sub install_handler {$_[0] -> {'HANDLER'} = $_[1];}
 # direct interface to DBI
 sub prepare {my $self = shift; $self -> prepare (@_);}
 sub commit {$_[0] -> connect () -> commit ();}
+sub rollback {$_[0] -> connect () -> rollback ();}
 sub quote {$_[0] -> connect () -> quote ($_[1]);}
 
 # auxiliary functions

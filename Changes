@@ -4,6 +4,9 @@ Revision history for Perl module DBIx::Easy.
 
 DBIx::Easy v0.16 released
 
+* Sat Oct  4 00:04:24 2003 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): rollback method added
+
 * Wed Oct  1 13:08:46 2003 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): delete with empty conditions parameter fails, new methods
 describe_table, create_table
