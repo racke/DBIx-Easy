@@ -4,7 +4,7 @@
 
 # Author: Stefan Hornburg <racke@linuxia.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.07
+# Version: 0.08
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -63,8 +63,11 @@ my $fd_input = \*STDIN;
 my ($sth, $keyfield, $update, $msg);
 my ($table, $key, $fieldnames, @values, $headline);
 my (@columns, $routine, %colmap);
+
 # whether to consider column
 my %usecol;
+# input with table as first field may specify start column
+my $startcol;
 
 if ($opts{'columns'}) {
     # setup positive list for columns
@@ -221,9 +224,25 @@ while (<$fd_input>) {
 		if ($format eq 'TAB') {
 			($table, @values) = split /\t/;
 		} elsif ($format eq 'CSV') {
-			next unless csv_parseline ($csv, \$linebuf, $_, \($table, @values));
-		} 
-
+			next unless csv_parseline ($csv, \$linebuf, $_, [$table, @values]);
+        }
+    
+        # extract optional start column parameter
+        if ($table =~ /(.+?)\.(.+)/) {
+            $table = $1; $startcol = $2;
+            
+            unless ($startcol =~ /^\d+$/) {
+                $msg = "$0: $.: start column not a number: \""
+                    . $startcol . "\"\n";
+                if ($opts{'skipbadlines'}) {
+                    warn ($msg);
+                    next;
+                } else {
+                    die ($msg);
+                }
+            }
+        }
+        
         # sanity check on the table name
         if ($table =~ /\s/) {
             warn ("$0: $.: skipping record (\"$table\" not accepted as table name)\n");
@@ -239,7 +258,7 @@ while (<$fd_input>) {
     $key = $values[0];
 
     # determine column names
-    @names = column_names ($dbif, $table);
+    @names = column_names ($dbif, $table, $startcol);
     $fieldnames = \@names;
 
     if ($opts{'routine'}) {
@@ -390,15 +409,19 @@ if ($opts{'file'}) {
 }
 
 # -------------------------------------------------
-# FUNCTION: column_names DBIF TABLE
+# FUNCTION: column_names DBIF TABLE [START]
 #
 # Returns array with column names from table TABLE
 # using database connection DBIF.
+# Optional parameter START specifies column where
+# the array should start with.
 # -------------------------------------------------
 
 sub column_names ($$) {
-    my ($dbif, $table) = @_;
+    my ($dbif, $table, $start) = @_;    
     my ($names, $sth);
+
+    $start = 0 unless $start;
     
     if (exists $fieldmap{$table}) {
         $names = $fieldmap{$table};
@@ -408,7 +431,7 @@ sub column_names ($$) {
         $sth -> finish ();
     }
 
-    @$names;
+    @$names[$start .. $#$names];
 }
 
 # -------------------------------------------
@@ -572,7 +595,10 @@ and that the field within the records are separated by tabulators.
 You can tell dbs_update about the input format with the B<--format>
 option.
 
-The first field of the data record is used as table name.
+The first field of the data record is used as table specification.
+These consists of the table name and optionally the index of starting
+column, separated by a dot.
+
 Alternatively dbs_update can read the column names from the first line
 of input (see the B<-h>/B<--headline> option). These can even be aliases
 for the real column names (see the B<-m>/B<--map> option).
