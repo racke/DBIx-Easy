@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Mon Sep 18 17:32:56 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_dumptabdata, scripts/dbs_dumptabstruct): pass options
+first to mysqldump for compatibility with older versions
+
 * Sun Sep 17 13:10:37 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): make --columns to work with inclusions again
 

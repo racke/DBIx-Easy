@@ -99,7 +99,7 @@ if ($opts{'use-printtab'}) {
                 $optstr .= " -p";
             }
 			# -c: Use complete insert statements.
-			open (DUMP, "mysqldump $database -t $optstr -c $table |")
+			open (DUMP, "mysqldump -t -c $optstr $database $table |")
 				|| die ("$0: Couldn't launch mysqldump: $!\n");
 			while (<DUMP>) {
 				if ($header) {
