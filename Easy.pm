@@ -1066,6 +1066,30 @@ sub money2num
 	$money;
   }
 
+# METHOD: filter HANDLE FUNC [TABLE]
+
+sub filter {
+	my ($self, $handle, $func, $table) = @_;
+	my ($proc);
+	
+	if ($func eq 'tab_with_table') {
+		$proc = sub {
+			my ($sth, $table) = @_;
+			my ($row);
+
+			while ($row = $sth->fetch()) {
+				print $table, join ("\t", '',
+									map {defined $_ ? (s/\n/\\n/sg, s/\t/\\t/g, $_) : ''} @$row), "\n";
+			}
+		}
+	} else {
+		die "$0: DBIx::Easy::filter called with unknown filter\n";
+	}
+
+	&$proc($handle, $table);
+	''
+}
+
 # -----------------------------------------------------
 # METHOD: is_auth_error MSG
 # -----------------------------------------------------
