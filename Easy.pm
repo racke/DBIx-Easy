@@ -5,7 +5,7 @@
 # Authors: Stefan Hornburg <racke@linuxia.de>
 #          Dennis Schön <dennis@cobolt.net>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.11
+# Version: 0.12
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -37,7 +37,7 @@ require Exporter;
 
 # Public variables
 use vars qw($cache_structs);
-$VERSION = '0.11';
+$VERSION = '0.12';
 $cache_structs = 1;
 
 use DBI;
@@ -568,6 +568,40 @@ sub makemap {
     }
 
     \%map;
+}
+
+# ------------------------------
+# METHOD: random_row TABLE [MAP]
+# ------------------------------
+
+=over 4
+
+=item random_row I<table> I<conditions> [I<map>]
+
+Returns random row of the specified I<table>. If I<map> is set,
+the result is a hash reference of the selected row, otherwise
+an array reference. If the table doesn't contains rows, undefined
+is returned.
+
+=back
+
+=cut
+#'
+
+sub random_row {
+	my ($self, $table, $conditions, $map) = @_;
+	my ($sth, $aref);
+
+	if ($conditions) {
+		$sth = $self -> process ("select * from $table where $conditions");
+	} else {
+		$sth = $self -> process ("select * from $table");
+	}
+	
+	$aref = $sth -> fetchall_arrayref ();
+	if (@$aref) {
+		$aref->[int(rand(@$aref))];
+	}
 }
 
 # -------------------------------  
