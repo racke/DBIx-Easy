@@ -2,7 +2,7 @@ DBIx::Easy - Einfache DBI-Schnittstelle
 ***************************************
 
    * Die Homepage von `DBIx::Easy' ist http://www.linuxia.de/DBIx/Easy/.
-   * Die aktuelle Version (zur Zeit 0.14) ist erhältlich als 
+   * Die aktuelle Version (zur Zeit 0.15) ist erhältlich als 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * Für weitere Informationen ist die Manpage heranzuziehen.
 
@@ -10,15 +10,15 @@ Anforderungen
 *************
 
    * DBI (URL: http://www.symbolstone.org/technology/perl/DBI/index.html)
-   * `DBD::Pg', `DBD::mysql' oder `DBD::mSQL' (andere Datenbanktreiber auf
-     Anfrage)
+   * `DBD::Pg', `DBD::mysql', `DBD::mSQL', `DBD::ODBC' or `DBD::sybase'
+     (andere Datenbanktreiber auf Anfrage)
 
 Installation
 ************
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.14
+cd DBIx-Easy-0.15
 perl Makefile.PL
 make
 make install
@@ -43,10 +43,18 @@ Debianpaket
 
 Diese Anwendung ist auch als Debianpaket verfügbar. Der Maintainer ist
 Dennis Schön <dennis@cobolt.net>. Die Downloadadresse ist 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.14-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.15-1_all.deb.
 
 Änderungen
 **********
+
+0.15
+****
+
+`Easy.pm'
+=========
+
+   * Unterstützung für ODBC und Sybase hinzugefügt
 
 0.14
 ****
@@ -203,3 +211,6 @@ Autoren
 Stefan Hornburg <racke@linuxia.de>
 
 Dennis Schön <dennis@cobolt.net>
+
+Unterstützung für Sybase und ODBC wurde von David B. Bitton 
+<david@codenoevil.com> zur Verfügung gestellt.
