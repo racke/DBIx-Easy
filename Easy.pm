@@ -781,7 +781,7 @@ sub passwd {
     } else {
         $mycnf = (getpwent()) [7];
     }
-    $mycnf .= '/my.cnf';
+    $mycnf .= '/.my.cnf';
     
     # just give up if file is not accessible
     open (CNF, $mycnf) || return;
