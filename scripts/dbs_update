@@ -4,7 +4,7 @@
 
 # Author: Stefan Hornburg <racke@linuxia.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.07
+# Version: 0.08
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -53,7 +53,7 @@ if ($opts{'format'}) {
 		die ("$0: unknown format \"" . $opts{'format'} . "\"\n");
 	}
 	require Text::CSV_XS;
-	$csv = new Text::CSV_XS ({'sep_char' => ';'});
+	$csv = new Text::CSV_XS ({'binary' => 1, 'sep_char' => ';'});
 }
 
 my %fieldmap;
