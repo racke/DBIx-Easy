@@ -4,9 +4,10 @@ Priority: optional
 Maintainer: Dennis Schoen <dschoen@mini.gt.owl.de>
 Standards-Version: 3.0.1
 
-Package: libdbix-easy-perl0
+Package: libdbix-easy-perl
 Architecture: any
-Depends: ${shlibs:Depends} libdbi-perl, perl5, libterm-readkey-perl
+Depends: ${shlibs:Depends} libdbi-perl, perl5
+Recommends: libterm-readkey-perl
 Description: Easy to Use DBI Interface
  DBIx::Easy is an easy to use DBI interface.
  Currently only the Pg, mSQL and mysql drivers are supported.
