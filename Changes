@@ -1,7 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
 * Thu Mar 23 20:15:13 2000 CET Stefan Hornburg <racke@linuxia.de>
-(Easy.pm): better method to determine directory
+(Easy.pm): better method to determine directory, force commit
+documented in POD
+(scripts/dbs_empty): ensure that all changes are commited
 
 * Thu Mar 23 16:05:33 2000 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): expand newlines
