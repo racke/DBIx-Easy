@@ -342,7 +342,7 @@ if ($opts{'cleanse'}) {
         for $thiskey (@tmpkeys) {
             $href = shift @$thiskey;
             for (keys %$href) {
-                push (@reckeys, [$href->{$_}, @$thiskey]);
+                push (@reckeys, [$href->{$_}, @$thiskey, $_]);
             }
         }
     }
