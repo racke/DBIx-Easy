@@ -1212,10 +1212,10 @@ sub passwd {
 	return if $self->{'HOST'};
 	
     # determine home directory
-    if (exists $ENV{'HOME'} && -d $ENV{'HOME'}) {
+    if (exists $ENV{'HOME'} && $ENV{'HOME'} =~ /\S/ && -d $ENV{'HOME'}) {
         $mycnf = $ENV{'HOME'};
     } else {
-        $mycnf = (getpwent()) [7];
+        $mycnf = (getpwuid($>)) [7];
     }
     $mycnf .= '/.my.cnf';
 

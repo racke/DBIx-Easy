@@ -1,8 +1,11 @@
 Revision history for Perl module DBIx::Easy.
 
-* Fri Feb 28 11:42:39 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+* Thu Mar 13 17:38:09 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 
 DBIx::Easy v0.16 released
+
+* Thu Mar 13 17:38:09 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): fixed fallback in passwd method
 
 * Sun Feb  2 11:28:27 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): makemap now can be directed to put the whole record into the
