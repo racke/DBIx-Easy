@@ -33,7 +33,7 @@ $SIG{__WARN__} = sub {print STDERR "$0: @_";};
 unless (GetOptions (\%opts, 'file|f=s', 'format=s', 'headline|h',
 					'keys|k=i',
 					'map|m=s', 'routine|r=s', 'skipbadlines',
-					'table|t=s')) {
+					'table|t=s', 'update-only|o')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -243,6 +243,9 @@ while (<$fd_input>) {
 #        print "UPDATING $.\n";
         $dbif -> update ($table, join (' AND ', @terms), @data);
     } else {
+        if ($opts{'update-only'}) {
+            die ("$0: key $key not found\n");
+        }
 #        print "INSERTING $.\n";
         $dbif -> insert ($table, @data);
     }
@@ -401,10 +404,17 @@ Reads the column names from the first line of the input instead
 of dedicting them from the database layout. Requires the
 B<-t/--table> option.
 
-=head2 B<-t> I<TABLE>, B<--table>=I<TABLE>
+=head2 B<-m> I<ALIASDEF>, B<--map>=I<ALIASDEF>
 
-Uses I<TABLE> as table name for all records instead of the
-first field name.
+Maps the names found in the first line of input to the actual column
+names in the database. The alias and the column name are separated
+with C<=> signs and the different entries are separated by C<;> signs,
+e.g. C<Art-No.=code;Short Description=shortdescr'.
+
+=head2 B<-o>, B<--update-only>
+
+Updates existing database entries only, stops if it detects
+new ones.
 
 =head2 B<-r> I<ROUTINE>, B<--routine>=I<ROUTINE>
 
@@ -413,12 +423,10 @@ dbs_update passes the table name and a hash reference to this subroutine.
 The keys of the hash are the column names and the values are the
 corresponding field values.
 
-=head2 B<-m> I<ALIASDEF>, B<--map>=I<ALIASDEF>
+=head2 B<-t> I<TABLE>, B<--table>=I<TABLE>
 
-Maps the names found in the first line of input to the actual column
-names in the database. The alias and the column name are separated
-with C<=> signs and the different entries are separated by C<;> signs,
-e.g. C<Art-No.=code;Short Description=shortdescr'.
+Uses I<TABLE> as table name for all records instead of the
+first field name.
 
 =head1 AUTHOR
 
