@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Tue Feb 29 19:33:13 2000 CET Stefan Hornburg <racke@linuxia.de>
+(Easy.pm): made more verbose if connection cannot be established
+method view fixed in respect to limit option
+             
 * Fri Jan 21 10:59:03 2000 CET Stefan Hornburg <racke@linuxia.de>
 (Easy.pm): optional parameter CONDITION added to method makemap
 
