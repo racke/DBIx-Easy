@@ -2,9 +2,9 @@
 
 # Copyright (C) 1999 Stefan Hornburg
 
-# Author: Stefan Hornburg <racke@linuxia.de>
-# Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.05
+# Author: Stefan Hornburg <racke@linuxia.net>
+# Maintainer: Stefan Hornburg <racke@linuxia.net>
+# Version: 0.06
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -21,7 +21,7 @@
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 use strict;
-use DBIx::CGI;
+use DBIx::Easy;
 use Getopt::Long;
 
 # process commandline parameters
@@ -75,7 +75,7 @@ if ($opts{'routine'}) {
     }
 }
 
-my $dbif = new DBIx::CGI (undef, @ARGV);
+my $dbif = new DBIx::Easy (@ARGV);
 $dbif -> install_handler (\&fatal);
 
 while (<STDIN>) {
@@ -228,6 +228,6 @@ Stefan Hornburg, racke@linuxia.net
 
 =head1 SEE ALSO
 
-perl(1), DBIx::CGI(3)
+perl(1), DBIx::Easy(3)
 
 =cut    
