@@ -103,6 +103,11 @@ if ($opts{'routine'}) {
     }
 }
 
+if ($opts{'table'}) {
+    # set fixed table name
+    $table = $opts{'table'};
+}
+
 my $dbif;
 my $pwdused = 0;
 
@@ -125,7 +130,7 @@ while (<$fd_input>) {
     # remove newlines
     chomp;
 
-    if ($opts{'headline'}) {
+    if ($opts{'headline'} || $opts{'table'}) {
         # table name already known
         @values = split /\t/;
     } else {
