@@ -27,11 +27,11 @@ use Term::ReadKey;
 
 # process commandline parameters
 my %opts;
+$opts{'keys'} = 1;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'file|f=s', 'headline|h', 'map|m=s',
-                    'routine|r=s',
-                    'table|t=s')) {
+unless (GetOptions (\%opts, 'file|f=s', 'headline|h', 'keys|k=i',
+					'map|m=s', 'routine|r=s', 'table|t=s')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -162,8 +162,15 @@ while (<$fd_input>) {
     }
     
     # check if record exists
-    $sth = $dbif -> process ("SELECT $$fieldnames[0] FROM $table WHERE $$fieldnames[0] = "
-                             . $dbif -> quote ($key));
+	my (@keys, @terms);
+	for (my $i = 0; $i < $opts{'keys'}; $i++) {
+		push (@keys, $$fieldnames[$i]);
+		push (@terms, $$fieldnames[$i] . ' = ' . $dbif->quote($values[$i]));
+	}
+	
+    $sth = $dbif -> process ('SELECT ' . join(', ', @keys)
+							 . " FROM $table WHERE "
+							 . join (' AND ', @terms));
     while ($sth -> fetch) {}
 
     if ($sth -> rows () > 1) {
@@ -184,8 +191,7 @@ while (<$fd_input>) {
 
     if ($update) {
 #        print "UPDATING $.\n";
-        $dbif -> update ($table, "$$fieldnames[0] = "
-                         . $dbif->quote($key), @data);
+        $dbif -> update ($table, join (' AND ', @terms), @data);
     } else {
 #        print "INSERTING $.\n";
         $dbif -> insert ($table, @data);
