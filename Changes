@@ -1,5 +1,40 @@
 Revision history for Perl module DBIx::Easy.
 
+* Tue Dec 26 15:07:47 2000 CET Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): insert an empty string, even if undef is given
+
+* Thu Nov  2 04:55:45 2000 CET Stefan Hornburg <racke@linuxia.de>
+(Easy.pm): escape tabulators in view method
+(scripts/dbs_update): expand tabulators, add columns explicitly
+selected to column list
+
+* Sun Oct  8 15:47:21 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): issue warning on missing type information
+
+* Thu Sep 28 14:07:50 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): return values of user-defined filters indicate 
+if record is valid
+
+* Sun Sep 24 20:21:23 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): apply user-defined filter routine only once
+
+* Mon Sep 18 17:32:56 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_dumptabdata, scripts/dbs_dumptabstruct): pass options
+first to mysqldump for compatibility with older versions
+
+* Sun Sep 17 13:10:37 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): make --columns to work with inclusions again
+
+* Fri Sep 15 18:32:35 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): new option --rows, option --keys accepts key names
+now, new functions key_names and prefix
+(Easy.pm): caches table structures now, new methods columns, types,
+sizes, typemap, sizemap, fold and info_proc
+
+* Tue Sep 12 10:38:22 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): now really choosed comma as default field separator 
+for CSV format
+
 * Fri Sep  8 21:58:04 2000 CEST Stefan Hornburg <racke@linuxia.de>
 
 DBIx::Easy v0.08 released

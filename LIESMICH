@@ -42,11 +42,42 @@ Debianpaket
 ***********
 
 Diese Anwendung ist auch als Debianpaket verfügbar. Der Maintainer ist
-Dennis Schön <dschoen@rio.gt.owl.de>. Die Downloadadresse ist 
+Dennis Schön <dennis@cobolt.net>. Die Downloadadresse ist 
 http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 
 Änderungen
 **********
+
+0.09 (noch nicht freigegeben)
+*****************************
+
+`Easy.pm'
+=========
+
+   * Tabulator wird geschützt in Methode `view'
+   * Tabellenstrukturen werden in einem Cache abgelegt
+   * neue Methoden `columns', `types', `sizes', `typemap', `sizemap'
+
+`dbs_dumptabdata', `dbs_dumptabstruct'
+======================================
+
+   * um die Kompatibilität mit älteren MySQL-Versionen zu erhalten, werden
+     die Optionen zuerst an `mysqldump' übergeben
+
+`dbs_update'
+============
+
+   * Rückgabewerte von benutzerdefinierten Filter zeigen an, ob ein
+     Datensatz gültig ist
+   * Fehler bei der explizite Spaltenangabe mit `--columns' behoben
+   * Tabulatoren werden wieder hergestellt
+   * der durch `--routine' angegebene benutzerdefinierter Filter wird nur
+     einmal angewendet
+   * Komma ist jetzt voreingestelltes Trennzeichen für das CSV-Format
+   * leerer String wird für Stringtypen anstatt eines NULL-Wertes verwendet
+   * neue Option `--rows'
+   * Option `--keys' läßt Schlüsselnamen zu
+   * Ausgabe einer Warnung bei fehlenden Typinformationen
 
 0.08
 ****
@@ -60,8 +91,8 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
      auftreten kann
    * Leerzeichen werden aus Spaltennamen entfernt, die der Kopfzeile der
      Eingabe entstammen
-   * Voreingestelltes Trennzeichen für das CSV-Format ist jetzt das Komma,
-     Trennzeichen kann zudem von der Kommandozeile festgelegt werden
+   * Trennzeichen für das CSV-Format kann von der Kommandozeile festgelegt
+     werden
    * `--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt
      werden
    * Leerzeichen werden aus der Parameterliste für `--columns' entfernt

@@ -41,11 +41,40 @@ Debian Package
 **************
 
 This software is also available as Debian package, maintained by Dennis Schön 
-<dschoen@rio.gt.owl.de>. The download address is 
+<dennis@cobolt.net>. The download address is 
 http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 
 Changes
 *******
+
+0.09 (not yet released)
+***********************
+
+`Easy.pm'
+=========
+
+   * escape tabulator in `view' method
+   * caches table structures
+   * new methods `columns', `types', `sizes', `typemap', `sizemap'
+
+`dbs_dumptabdata', `dbs_dumptabstruct'
+======================================
+
+   * pass options first to `mysqldump', needed for compatibility with older
+     MySQL versions
+
+`dbs_update'
+============
+
+   * return values of user-defined filters indicate if record is valid
+   * inclusion mode of `--columns' fixed
+   * expand tabulators
+   * apply user-defined filter specified by `--routine' only once
+   * choosed comma as default field separator for CSV format
+   * insert an empty string instead of NULL for string columns
+   * new option `--rows'
+   * option `--keys' accepts key names too
+   * issue warning on missing type information
 
 0.08
 ****
@@ -58,8 +87,7 @@ Changes
    * bug fixed that may be triggered by the combination of `--headline' and `
      --map'
    * strip whitespace from column names found in the headline of the input
-   * comma is now the default field separator for CSV format, field
-     separator can selected from the commandline now
+   * field separator for CSV format can selected from the commandline now
    * `--columns' can be used to exclude columns explicitly
    * strip blanks from parameter list for `--columns'
    * first field may contain table name and start column instead of table

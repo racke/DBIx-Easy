@@ -83,7 +83,7 @@ if ($driver eq 'mysql') {
         $optstr .= " -p";
     }
     
-    open (DUMP, "mysqldump $database $optstr -d $table |")
+    open (DUMP, "mysqldump -d $optstr $database $table |")
       || die ("$0: Couldn't launch mysqldump: $!\n");
     while (<DUMP>) {
       if ($header) {
