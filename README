@@ -65,6 +65,7 @@ Changes
 `dbs_update'
 ============
 
+   * return values of user-defined filters indicate if record is valid
    * inclusion mode of `--columns' fixed
    * apply user-defined filter specified by `--routine' only once
    * choosed comma as default field separator for CSV format

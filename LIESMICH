@@ -66,6 +66,8 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 `dbs_update'
 ============
 
+   * Rückgabewerte von benutzerdefinierten Filter zeigen an, ob ein
+     Datensatz gültig ist
    * Fehler bei der explizite Spaltenangabe mit `--columns' behoben
    * der durch `--routine' angegebene benutzerdefinierter Filter wird nur
      einmal angewendet

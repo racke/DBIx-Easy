@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Thu Sep 28 14:07:50 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): return values of user-defined filters indicate 
+if record is valid
+
 * Sun Sep 24 20:21:23 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): apply user-defined filter routine only once
 

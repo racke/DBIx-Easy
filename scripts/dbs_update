@@ -295,7 +295,7 @@ while (<$fd_input>) {
 
     if ($opts{'routine'}) {
         # filter input first
-        filter_input ($routine, $table, $fieldnames, \@values);
+        next unless filter_input ($routine, $table, $fieldnames, \@values);
     }
 
     # sanity checks on input data
@@ -630,7 +630,7 @@ sub csv_parseline {
 
 sub filter_input {
     my ($routine, $table, $fieldnames, $valref) = @_;
-    my %colmap;
+    my (%colmap, $ret);
 
     # produce mapping
     for (my $i = 0; $i <= $#$fieldnames; $i++) {
@@ -638,13 +638,14 @@ sub filter_input {
     }
 
     # apply filter routine
-    &$routine ($table, \%colmap);
-
+    $ret = &$routine ($table, \%colmap);
+    
     # write new values
     for (my $i = 0; $i <= $#$fieldnames; $i++) {
         $$valref[$i] = $colmap{$$fieldnames[$i]};
     }
-    
+
+    $ret;
 }
 
 # ------------------------------------
@@ -832,12 +833,14 @@ new ones.
 Applies I<ROUTINE> to any data record. I<ROUTINE> must be a subroutine.
 dbs_update passes the table name and a hash reference to this subroutine.
 The keys of the hash are the column names and the values are the
-corresponding field values.
+corresponding field values. If the return value of I<ROUTINE> is not
+a truth value, the data record will be skipped.
 
 C<sub {my ($table, $valref) = @_;
     unless (defined $$valref{country} && $$valref{country} !~ /\S/) {
         $$valref{country} = "Germany";
     }
+    1;
 }>
 
 =head2 B<--skipbadlines>
