@@ -561,6 +561,7 @@ if ($opts{'file'}) {
     $fd_input->close;
 }
 
+# ----------------------------------------
 # FUNCTION: get_columns_tab IREF FD COLREF
 #
 # Get columns from a tab separated file.
@@ -578,6 +579,32 @@ sub get_columns_tab {
 		$line =~ s/\r$//;
 
 		@$colref = split (/\t/, $line);
+		return @$colref;
+	}
+}
+
+# ----------------------------------------
+# FUNCTION: get_columns_xls IREF FD COLREF
+#
+# Get columns from a XLS spreadsheet.
+# ----------------------------------------
+
+sub get_columns_xls {
+	my ($iref, $fd, $colref) = @_;
+
+	unless ($iref->{workbook}) {
+		# parse the spreadsheet once
+		$iref->{workbook} = $iref->{object}->Parse($fd);
+		unless ($iref->{workbook}) {
+			die "$0: couldn't parse spreadsheet\n";
+		}
+		$iref->{worksheet} = $iref->{workbook}->{Worksheet}[0];
+		$iref->{row} = 0;
+	}
+
+	if ($iref->{row} <= $iref->{worksheet}->{MaxRow}) {
+		@$colref = map {$_->Value()}
+			@{$iref->{worksheet}->{Cells}[$iref->{row}++]};
 		return @$colref;
 	}
 }
