@@ -3,7 +3,7 @@
 # Copyright (C) 1999,2000 Stefan Hornburg, Dennis Schön
 
 # Authors: Stefan Hornburg <racke@linuxia.de>
-#          Dennis Schön <dschoen@rio.gt.owl.de>
+#          Dennis Schön <dennis@cobolt.net>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
 # Version: 0.09
 
@@ -1093,7 +1093,7 @@ __END__
 =head1 AUTHORS
 
 Stefan Hornburg, racke@linuxia.de
-Dennis Schön, dschoen@rio.gt.owl.de
+Dennis Schön, dennis@cobolt.net
 
 =head1 SEE ALSO
 
