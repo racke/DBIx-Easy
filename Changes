@@ -1,5 +1,12 @@
 Revision history for Perl module DBIx::Easy.
 
+* Tue Feb  6 16:46:51 2001 CET Stefan Hornburg <racke@linuxia.de>
+
+DBIx::Easy v0.10 released
+
+* Thu Jan 25 10:18:43 2001 CET Dennis Schön <dennis@cobolt.net>
+(scripts/dbs_dumptabdata): pass user parameter to dbs_printtab
+
 * Mon Jan 15 23:20:43 2001 CET Stefan Hornburg <racke@linuxia.de>
 
 DBIx::Easy v0.09 released
