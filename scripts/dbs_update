@@ -30,7 +30,8 @@ my %opts;
 $opts{'keys'} = 1;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'columns|c=s', 'file|f=s', 'format=s', 'headline|h',
+unless (GetOptions (\%opts, 'cleanse', 'columns|c=s',
+                    'file|f=s', 'format=s', 'headline|h',
 					'keys|k=i',
 					'map|m=s', 'routine|r=s', 'skipbadlines',
 					'table|t=s', 'update-only|o')) {
@@ -42,7 +43,7 @@ $SIG{__WARN__} = $whandler;
 my $format = 'TAB';
 my $csv;
 
-if ($opts{'headline'}) {
+if ($opts{'cleanse'} || $opts{'headline'}) {
     unless ($opts{'table'}) {
         die ("$0: missing table name\n");
     }
@@ -150,6 +151,48 @@ $dbif -> install_handler (\&fatal);
 $dbif -> connect;
 
 my $linebuf = '';
+my (@keys, $numkeysleft, %recmap, @names);
+
+if ($opts{'cleanse'}) {
+    # determine column names
+    @names = column_names ($dbif, $table);
+    $fieldnames = \@names;
+
+    # determine keys
+    $numkeysleft = $opts{'keys'};
+    for (my $i = 0; $i < $numkeysleft && $i < @$fieldnames; $i++) {
+        if (keys %usecol) {
+            $numkeysleft++;
+            next unless exists $usecol{$$fieldnames[$i]}
+                && $usecol{$$fieldnames[$i]};
+        }
+
+		push (@keys, $$fieldnames[$i]);
+	}
+
+    # get records
+    my ($row, $href, $i);
+
+    $sth = $dbif -> process ('SELECT ' . join(', ', @keys)
+							 . " FROM $table");
+
+    while ($row = $sth -> fetch()) {
+        # build chain of all keys but the last
+        $href = \%recmap;
+        for ($i = 0; $i < $#keys; $i++) {
+            unless (exists $href->{$$row[$i]}) {
+                $href->{$$row[$i]} = {};
+            }
+            $href = $href->{$$row[$i]};
+        }
+        # stop if key kombination occurs multiple
+        if (exists $href->{$$row[$i]}) {
+            die "$0: duplicate key: ", join (",", @$row), "\n";
+        }
+        # record last key
+        $href->{$$row[$i]}=1;
+    }
+}
 
 while (<$fd_input>) {
     my (@data);
@@ -188,16 +231,10 @@ while (<$fd_input>) {
     }
     
     $key = $values[0];
-#    print join ('.', @values), "\n";
 
-    # get key for table
-    if (exists $fieldmap{$table}) {
-        $fieldnames = $fieldmap{$table};
-    } else {
-        $sth = $dbif -> process ("SELECT * FROM $table WHERE 0 = 1");
-        $fieldnames = $fieldmap{$table} = $sth -> {NAME};
-        $sth -> finish ();
-    }
+    # determine column names
+    @names = column_names ($dbif, $table);
+    $fieldnames = \@names;
 
     if ($opts{'routine'}) {
         # filter input first
@@ -205,7 +242,8 @@ while (<$fd_input>) {
     }
     
     # check if record exists
-	my (@keys, @terms, $numkeysleft);
+	my @terms;
+    undef @keys;
     $numkeysleft = $opts{'keys'};
 	for (my $i = 0; $i < $numkeysleft && $i < @$fieldnames; $i++) {
         if (keys %usecol) {
@@ -254,6 +292,59 @@ while (<$fd_input>) {
 #        print "INSERTING $.\n";
         $dbif -> insert ($table, @data);
     }
+
+    if ($opts{'cleanse'}) {
+        my ($href, $i);
+        
+        # now unregister key combination
+        $href = \%recmap;
+        for ($i = 0; $i < $#keys; $i++) {
+            unless (exists $href->{$values[$i]}) {
+                die ("$0: internal error: key not found: ",
+                     join (",", @values), "\n");
+            }
+            $href = $href->{$values[$i]};
+        }
+        unless (exists $href->{$values[$i]}) {
+            die ("$0: internal error: key not found: ",
+                 join (",", @values), "\n");
+        }
+        delete $href->{$values[$i]};
+    }
+}
+
+if ($opts{'cleanse'}) {
+    my $href;
+    
+    # now start to eliminate old records
+    $href = \%recmap;
+
+    my @keylist = keys %recmap;
+    my (@tmpkeys, @reckeys, $thiskey, $keyval, @conds);
+
+    for (keys %recmap) {
+        push (@reckeys, [$recmap{$_}, $_]);
+    }
+    for (my $i = 1; $i < @keys; $i++) {
+        @tmpkeys = @reckeys;
+        undef @reckeys;
+        for $thiskey (@tmpkeys) {
+            $href = shift @$thiskey;
+            for (keys %$href) {
+                push (@reckeys, [$href->{$_}, @$thiskey]);
+            }
+        }
+    }
+    for (@reckeys) {
+        # finally delete the record
+        shift (@$_);
+
+        for (my $i = 0; $i < @keys; $i++) {
+            push (@conds, $keys[$i] . ' = ' . $dbif->quote ($_->[$i]));
+        }
+
+        $dbif -> process ("DELETE FROM $table WHERE " . join (' AND ', @conds));
+    }
 }
 
 if (length $linebuf) {
@@ -268,6 +359,28 @@ undef $dbif;
 
 if ($opts{'file'}) {
     close INPUT;
+}
+
+# -------------------------------------------------
+# FUNCTION: column_names DBIF TABLE
+#
+# Returns array with column names from table TABLE
+# using database connection DBIF.
+# -------------------------------------------------
+
+sub column_names ($$) {
+    my ($dbif, $table) = @_;
+    my ($names, $sth);
+    
+    if (exists $fieldmap{$table}) {
+        $names = $fieldmap{$table};
+    } else {
+        $sth = $dbif -> process ("SELECT * FROM $table WHERE 0 = 1");
+        $names = $fieldmap{$table} = $sth -> {NAME};
+        $sth -> finish ();
+    }
+
+    @$names;
 }
 
 # -------------------------------------------
@@ -445,6 +558,13 @@ and specifies the database user and/or the host where the
 database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
 =head1 OPTIONS
+
+=head2 B<--cleanse>
+
+I<Removes> all records which remain unaffected from the update
+process. The same result as deleting all records from the table
+first and then running dbs_update, but the table is not empty
+in the meantime.
 
 =head2 B<-c> I<COLUMN,COLUMN,...>, B<--columns>=I<COLUMN,COLUMN,...>
 
