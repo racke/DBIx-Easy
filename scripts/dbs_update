@@ -33,7 +33,7 @@ $SIG{__WARN__} = sub {print STDERR "$0: @_";};
 unless (GetOptions (\%opts, 'cleanse', 'columns|c=s',
                     'file|f=s', 'format=s', 'headline|h',
 					'rows=s', 'keys|k=s',
-					'map|m=s', 'routine|r=s', 'skipbadlines',
+					'map|m=s', 'match-sql=s', 'routine|r=s', 'skipbadlines',
 					'table|t=s', 'update-only|o')) {
     exit 1;
 }
@@ -81,6 +81,8 @@ my %userow;
 my $currow = 0;
 # input with table as first field may specify start column
 my $startcol;
+# variables for --match-sql option
+my (%matchmap, $matchcol);
 
 if ($opts{'columns'}) {
     $colflag = ! ($opts{'columns'} =~ s/\s*[\!^]//);
@@ -237,7 +239,20 @@ if ($opts{'cleanse'}) {
     }
 }
 
-while (<$fd_input>) {
+if ($opts{'match-sql'}) {
+	unless ($opts{'match-sql'} =~ /^(.*?):\{(.*?)\}$/) {
+		die "$0: invalid format for option --match-sql: $opts{'match-sql'}\n";
+	}
+	$matchcol = $1;
+	$sth = $dbif -> process ($2);
+	
+	my $row;
+	while ($row = $sth->fetch()) {
+		$matchmap{$$row[0]} = 1;
+	}
+}
+
+MAIN: while (<$fd_input>) {
     my (@data);
 
     # skip empty/blank/comment lines
@@ -305,6 +320,19 @@ while (<$fd_input>) {
         # filter input first
         next unless filter_input ($routine, $table, $fieldnames, \@values);
     }
+
+	# filter out non-matching rows
+	MATCHSQL: {
+			if ($opts{'match-sql'}) {
+				for (my $i = 0; $i < @$fieldnames; $i++) {
+					if ($$fieldnames[$i] eq $matchcol) {
+						last MATCHSQL if $matchmap{$values[$i]};
+						print "Not accepted record @values\n";
+						next MAIN;
+					}
+				}
+			}
+		}
 
     # sanity checks on input data
     my $typeref = $dbif -> typemap ($table);
@@ -878,7 +906,7 @@ first field name.
 
 =head1 AUTHOR
 
-Stefan Hornburg, racke@linuxia.de
+Stefan Hornburg (Racke), racke@linuxia.de
 
 =head1 SEE ALSO
 

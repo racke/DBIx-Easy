@@ -1,5 +1,15 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Jun 24 23:58:57 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+
+DBIx::Easy v0.11 released
+
+* Sun Jun 24 23:54:34 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): new method delete
+
+* Wed Mar 28 12:44:31 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(scripts/dbs_update): new option --match-sql
+
 * Thu Mar 15 23:54:23 EST 2001 Dennis Schön <dennis@cobolt.net>
 (scripts/{dbs_dumptabdata,dbs_dumptabstruct,dbs_printtab}):
  Database handler warning fixed
