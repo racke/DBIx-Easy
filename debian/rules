@@ -23,7 +23,7 @@ build-stamp:
 	
 	# Add here commands to compile the package.
 	$(PERL) Makefile.PL $(config)
-	$(MAKE) OPTIMIZE="-O2 -g -Wall"
+	$(MAKE)
 	
 	touch build-stamp
 
