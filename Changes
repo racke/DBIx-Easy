@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Tue Jul 17 13:30:23 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): new method random_row
+
 * Fri Jun 29 11:10:34 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 
 DBIx::Easy v0.11 released
