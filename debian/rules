@@ -14,7 +14,7 @@ endif
 
 TMP =`pwd`/debian/tmp
 archlib =`$(PERL) -MConfig -e 'print $$Config{installarchlib}'`
-config  =INSTALLDIRS=perl INSTALLMAN3DIR=$(TMP)/usr/share/man/man3 INSTALLPRIVLIB=$(TMP)/usr/lib/perl5 INSTALLARCHLIB=$(TMP)$(archlib)
+config  =INSTALLDIRS=perl INSTALLMAN1DIR=$(TMP)/usr/share/man/man1 INSTALLMAN3DIR=$(TMP)/usr/share/man/man3 INSTALLPRIVLIB=$(TMP)/usr/lib/perl5 INSTALLARCHLIB=$(TMP)$(archlib) INSTALLBIN=$(TMP)/usr/bin INSTALLSCRIPT=$(TMP)/usr/bin
 
 build: build-stamp
 build-stamp:
