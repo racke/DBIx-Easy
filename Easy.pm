@@ -1059,6 +1059,42 @@ sub sizemap {
 }
 
 # ---------------------------------------------------------------
+# METHOD: add_columns
+#
+# Creates columns from a representation supplied by describe_table.
+# ---------------------------------------------------------------
+
+sub add_columns {
+	my ($self, $table, $repref, @columns) = @_;
+	my (%colref, $col, $cref, $null, $line, @stmts, $cmd);
+	
+	for $col (@columns) {
+		$colref{$col} = 1;
+	}
+
+	for $cref (@{$repref->{columns}}) {
+		next unless exists $colref{$cref->{Field}};
+		$colref{$cref->{Field}} = $cref;
+	}
+
+	for $col (@columns) {
+		$cref = $colref{$col};
+		if ($cref->{Null} ne 'YES') {
+			$null = ' NOT NULL ';
+		} else {
+			$null = '';
+		}
+		$line = qq{alter table $table add $cref->{Field} $cref->{Type}$null $cref->{Extra} default '$cref->{Default}'};
+		push (@stmts, $line);
+	}
+
+	for $cmd (@stmts) {
+		$self->process($cmd);
+	}
+}
+
+
+# ---------------------------------------------------------------
 # METHOD: create_table
 #
 # Creates table from a representation supplied by describe_table.
