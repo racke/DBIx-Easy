@@ -42,6 +42,7 @@ $SIG{__WARN__} = $whandler;
 # sanity checks
 my $format = 'TAB';
 my $csv;
+my $sep_char = ',';
 
 if ($opts{'cleanse'} || $opts{'headline'}) {
     unless ($opts{'table'}) {
@@ -49,12 +50,20 @@ if ($opts{'cleanse'} || $opts{'headline'}) {
     }
 }
 if ($opts{'format'}) {
+    my $sep_char = ';';
+
 	$format = uc($opts{'format'});
-	unless ($format eq 'CSV') {
+	unless ($format =~ /^CSV/) {
 		die ("$0: unknown format \"" . $opts{'format'} . "\"\n");
 	}
+	$format = 'CSV';
+	if ($') {
+		$sep_char = $';
+		$sep_char =~ s/^\s+//;
+		$sep_char =~ s/\s+$//;
+	}
 	require Text::CSV_XS;
-	$csv = new Text::CSV_XS ({'binary' => 1, 'sep_char' => ';'});
+	$csv = new Text::CSV_XS ({'binary' => 1, 'sep_char' => $sep_char});
 }
 
 my %fieldmap;
@@ -104,7 +113,7 @@ if ($opts{'headline'}) {
 	if ($format eq 'TAB') {
 		@columns = split /\t/, $headline;
 	} elsif ($format eq 'CSV') {
-		@columns = split /;/, $headline;
+		@columns = split /$sep_char/, $headline;
 	}
 	
     if ($opts{'map'}) {
@@ -222,7 +231,7 @@ while (<$fd_input>) {
     # remove newlines and carriage returns
     chomp;
     s/\r$//;
-    
+
     if ($opts{'headline'} || $opts{'table'}) {
         # table name already known
 		if ($format eq 'TAB') {
@@ -654,10 +663,12 @@ parameters.
 
 Reads records from file I<FILE> instead of from standard input.
 
-=head2 B<--format>=I<FORMAT>
+=head2 B<--format>=I<FORMAT[SEPCHAR]>
 
 Assumes I<FORMAT> as format for the input. Only B<CSV> can be
-specified for now, default is B<TAB>.
+specified for now, default is B<TAB>. The default field
+separator for B<CSV> is a comma, you may change this by
+appending the separator to the format.
 
 =head2 B<-h>, B<--headline>
 

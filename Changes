@@ -1,12 +1,16 @@
 Revision history for Perl module DBIx::Easy.
 
-* Tue Sep  5 15:46:47 2000 CEST Stefan Hornburg <racke@linuxia.de>
+* Thu Sep  7 17:31:04 2000 CEST Stefan Hornburg <racke@linuxia.de>
 
 DBIx::Easy v0.08 released
 
+* Thu Sep  7 17:04:24 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): comma is now the default field separator
+for CSV format, field separator can selected from the commandline
+
 * Tue Sep  5 15:14:28 2000 CEST Stefan Hornburg <racke@linuxia.de>
-brown paper bug fixed that kept --cleanse from working by growing
-the SQL statement which each record to be cleansed
+(scripts/dbs_update): brown paper bug fixed that kept --cleanse 
+from working by growing the SQL statement which each record to be cleansed
 
 * Sun Sep  3 20:37:41 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): bug fixed that may be trigged by the combination 
