@@ -493,6 +493,40 @@ sub update
     }
 }
 
+# ---------------------------------------------------------------
+# METHOD: put TABLE CONDITIONS COLUMN VALUE [COLUMN VALUE] ...
+#
+# Either updates the rows matching CONDITIONS with the given
+# COLUMN/VALUE pairs or puts (inserts) them into TABLE.
+# Returns the number of modified rows (1 in case of an insert).
+# ---------------------------------------------------------------
+
+=over 4
+
+=item put I<table> I<conditions> I<column> I<value> [I<column> I<value>] ...
+
+=back
+
+=cut
+
+sub put
+  {
+	my $self = shift;
+	my $table  = shift;
+	my $conditions = shift;
+
+	# ensure that connection is established
+	$self -> connect ();
+
+	# check for existing rows
+	if ($self->rows($table, $conditions)) {
+		$self->update($table, $conditions, @_);
+	} else {
+		$self->insert($table, @_);
+		1;
+	}
+}
+
 # ---------------------------------
 # METHOD: delete TABLE [CONDITIONS]
 # ---------------------------------
