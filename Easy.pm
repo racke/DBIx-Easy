@@ -158,11 +158,12 @@ sub new
 
     # we may try to get password from DBMS specific
     # configuration file
-    
-    unless (defined $self->{PASS}
-            || (defined $self->{'USER'}
-                && $self->{'USER'} ne getpwuid($<))) {   
-        $self->passwd();
+
+    unless (defined $self->{PASS}) {
+        unless (defined $self->{'USER'}
+            && $self->{'USER'} ne getpwuid($<)) {   
+            $self->passwd();
+        }
     }
 
 	return ($self);
