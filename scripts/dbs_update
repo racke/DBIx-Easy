@@ -405,6 +405,8 @@ if ($opts{'cleanse'}) {
         }
     }
     for (@reckeys) {
+        undef @conds;
+            
         # finally delete the record
         next unless shift (@$_);
 
