@@ -128,6 +128,14 @@ dbs_empty - Empty SQL Databases
 dbs_empty is an utility that B<completely erases> any data from
 a given SQL database.
 
+=head1 COMMAND LINE PARAMETERS
+
+Required command line parameters are the DBI driver
+(C<Pg> for Postgres or C<mysql> for MySQL)
+and the database name. The third parameter is optionally
+and specifies the database user and/or the host where the
+database resides (C<racke>, C<racke@linuxia.net> or C<@linuxia.net>).
+
 =head1 AUTHOR
 
 Stefan Hornburg, racke@linuxia.net

@@ -202,6 +202,14 @@ The first field of the data record is used as table name.
 Alternatively dbs_update can read the column names from the first line
 of input (see the B<-h>/B<--headline> option).
 
+=head1 COMMAND LINE PARAMETERS
+
+Required command line parameters are the DBI driver
+(C<Pg> for Postgres or C<mysql> for MySQL)
+and the database name. The third parameter is optionally
+and specifies the database user and/or the host where the
+database resides (C<racke>, C<racke@linuxia.net> or C<@linuxia.net>).
+
 =head1 OPTIONS
 
 =head2 B<-h>, B<--headline>

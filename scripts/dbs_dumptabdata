@@ -170,6 +170,14 @@ For each table in the database dbs_dumptabdata calls the appropriate dumper
 utility with the output directed to a file named I<table>.sql in the
 current directory. dbs_dumptabdata asks for a password if necessary.
 
+=head1 COMMAND LINE PARAMETERS
+
+Required command line parameters are the DBI driver
+(C<Pg> for Postgres or C<mysql> for MySQL)
+and the database name. The third parameter is optionally
+and specifies the database user and/or the host where the
+database resides (C<racke>, C<racke@linuxia.net> or C<@linuxia.net>).
+
 =head1 BUGS
 
 msql is not supported.
