@@ -1,5 +1,12 @@
 Revision history for Perl module DBIx::Easy.
 
+* Thu Mar 23 16:05:33 2000 CET Stefan Hornburg <racke@linuxia.de>
+(Easy.pm): escape newlines in view method
+
+* Sun Mar 19 11:20:25 2000 CET Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_dumptab*): typo fixed
+(scripts/dbs_dumptabdata): new option --use-printtab
+
 * Sat Mar 18 23:15:22 2000 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_printtab): new script
 (Easy.pm): added option separator to view method
