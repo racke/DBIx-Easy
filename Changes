@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sat Nov 24 12:24:14 2001 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+
+DBIx::Easy v0.14 released
+
 * Sun Nov 18 14:09:59 2001 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): implemented the optional map parameter in the random_row()
 method which was already documented
