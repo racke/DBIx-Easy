@@ -359,17 +359,25 @@ sub insert ($$$;@)
 	  (&{$obtstatmap{$self -> {'DRIVER'}}} ($table, @columns));
 	$flags = $sthtest -> {'TYPE'};
     $sthtest -> finish ();
-    
+
 	for (my $i = 0; $i <= $#values; $i++) {
         if (ref ($values[$i]) eq 'SCALAR') {
 			$values[$i] = ${$values[$i]};
-        }
-        elsif (defined $values[$i]) {
-			unless ($$flags[$i] == DBI::SQL_INTEGER) {
-                $values[$i] = $self -> quote ($values[$i]);
-            }
-        }
-        else {
+        } elsif ($$flags[$i] == DBI::SQL_INTEGER
+				 || $$flags[$i] == DBI::SQL_SMALLINT
+				 || $$flags[$i] == DBI::SQL_DECIMAL
+				 || $$flags[$i] == DBI::SQL_FLOAT
+				 || $$flags[$i] == DBI::SQL_REAL
+				 || $$flags[$i] == DBI::SQL_DOUBLE
+				 || $$flags[$i] == DBI::SQL_NUMERIC) {
+			# we don't need to quote numeric values, but
+			# we have to check for empty input
+			unless (defined $values[$i] && $values[$i] =~ /\S/) {
+				$values[$i] = 'NULL';
+			}
+		} elsif (defined $values[$i]) {
+			$values[$i] = $self -> quote ($values[$i]);
+        } else {
             $values[$i] = 'NULL';
         }
     }
