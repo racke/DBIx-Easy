@@ -171,7 +171,8 @@ while (<$fd_input>) {
     }
 
     $update = $sth -> rows ();
-
+    $sth -> finish ();
+    
     # generate SQL statement
     for (my $i = 0; $i <= $#$fieldnames; $i++) {
         push (@data, $$fieldnames[$i], $values[$i]);
@@ -186,6 +187,8 @@ while (<$fd_input>) {
         $dbif -> insert ($table, @data);
     }
 }
+
+undef $dbif;
 
 if ($opts{'file'}) {
     close INPUT;
@@ -228,7 +231,16 @@ sub filter_input {
 sub fatal {
   my ($statement, $err, $msg) = @_;
   my $pwd;
-
+  my $prefix = '';
+  
+  # prefix for error string
+  if ($.) {
+      if ($opts{'file'}) {
+          $prefix = $opts{'file'} . ': ';
+      }
+      $prefix .= "$.: ";
+  }      
+  
   if (is_auth_error ($driver, $err)) {
     unless ($pwdused) {
       print "We need a password.\n";
@@ -242,11 +254,11 @@ sub fatal {
         $dbif -> connect ();
         return;
       } else {
-        die ("$statement.\n");
+        die ("$prefix$statement: $msg\n");
       }
     }
   }
-  die ("$statement.\n");
+  die ("$prefix$statement: $msg\n");
 }
 
 # -----------------------------------------------------------------
