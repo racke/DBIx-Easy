@@ -74,6 +74,7 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
    * der durch `--routine' angegebene benutzerdefinierter Filter wird nur
      einmal angewendet
    * Komma ist jetzt voreingestelltes Trennzeichen für das CSV-Format
+   * leerer String wird für Stringtypen anstatt eines NULL-Wertes verwendet
    * neue Option `--rows'
    * Option `--keys' läßt Schlüsselnamen zu
    * Ausgabe einer Warnung bei fehlenden Typinformationen

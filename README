@@ -71,6 +71,7 @@ Changes
    * expand tabulators
    * apply user-defined filter specified by `--routine' only once
    * choosed comma as default field separator for CSV format
+   * insert an empty string instead of NULL for string columns
    * new option `--rows'
    * option `--keys' accepts key names too
    * issue warning on missing type information
