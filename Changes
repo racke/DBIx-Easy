@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sat Jul  1 12:34:28 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): handles special characters and multilines
+with CSV format now
+
 * Sun Jun 25 17:14:35 2000 CEST Stefan Hornburg <racke@linuxia.de>
 
 DBIx::Easy v0.07 released
