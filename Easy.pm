@@ -150,7 +150,7 @@ my %obtstatmap = (mSQL => sub {my $table = shift;
                                  . " FROM $table WHERE 0 = 1";},
 				  ODBC => sub {my $table = shift;
 							   "SELECT " . join (', ', @_)
-                                 . " FROM $table WHERE 0 = 1";});
+                                 . " FROM $table WHERE 0 = 1";},
 				  XBase => sub {my $table = shift;
 							   "SELECT " . join (', ', @_)
                                  . " FROM $table WHERE 0 = 1";});
