@@ -4,7 +4,7 @@
 
 # Author: Stefan Hornburg <racke@linuxia.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.000_01
+# Version: 0.000_02
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -35,7 +35,7 @@ while (<STDIN>) {
     my (@data);
 
     # skip empty/blank/comment lines
-    next if /^#?\s*$/;
+    next if /^\#/; next if /^\s*$/;
     # remove newlines
     chomp;
     
