@@ -378,8 +378,10 @@ dbs_update is an utility to update SQL databases from text files.
 
 dbs_update assumes that each line of the input contains a data record
 and that the field within the records are separated by tabulators.
-The first field of the data record is used as table name.
+You can tell dbs_update about the input format with the B<--format>
+option.
 
+The first field of the data record is used as table name.
 Alternatively dbs_update can read the column names from the first line
 of input (see the B<-h>/B<--headline> option). These can even be aliases
 for the real column names (see the B<-m>/B<--map> option).
@@ -398,11 +400,21 @@ database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
 Reads records from file I<FILE> instead of from standard input.
 
+=head2 B<--format>=I<FORMAT>
+
+Assumes I<FORMAT> as format for the input. Only B<CSV> can be
+specified for now, default is B<TAB>.
+
 =head2 B<-h>, B<--headline>
 
 Reads the column names from the first line of the input instead
 of dedicting them from the database layout. Requires the
 B<-t/--table> option.
+
+=head2 B<-k> I<COUNT>, B<--keys>=I<COUNT>
+
+Specifies the number of keys for the table(s), default is 1.
+This is used for the detection of existing records.
 
 =head2 B<-m> I<ALIASDEF>, B<--map>=I<ALIASDEF>
 
@@ -422,6 +434,11 @@ Applies I<ROUTINE> to any data record. I<ROUTINE> must be a subroutine.
 dbs_update passes the table name and a hash reference to this subroutine.
 The keys of the hash are the column names and the values are the
 corresponding field values.
+
+=head2 B<--skipbadlines>
+
+Lines not matching the assumed format are ignored. Without this
+option, dbs_update simply stops.
 
 =head2 B<-t> I<TABLE>, B<--table>=I<TABLE>
 
