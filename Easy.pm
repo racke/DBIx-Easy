@@ -72,11 +72,13 @@ Currently only the Pg, mSQL and mysql drivers are supported.
   $dbi_interface = new DBIx::Easy qw(Pg template1 racke);
   $dbi_interface = new DBIx::Easy qw(Pg template1 racke aF3xD4_i);
   $dbi_interface = new DBIx::Easy qw(Pg template1 racke@linuxia.de aF3xD4_i);
+  $dbi_interface = new DBIx::Easy qw(Pg template1 racke@linuxia.de:3306 aF3xD4_i);
 
 The required parameters are the database driver
 and the database name. Additional parameters are the database user
 and the password to access the database. To specify the database host
-use the USER@HOST notation for the user parameter.
+use the USER@HOST notation for the user parameter. If you want to specify the
+port to connect to use USER@HOST:PORT.
 
 =head1 DESTROYING A DBI INTERFACE OBJECT
 
@@ -116,6 +118,7 @@ my $maintainer_adr = 'racke@linuxia.de';
 # Keywords for connect()
 my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname');
 my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host');
+my %kwportmap = (mysql => 'port', Pg => 'port');
 
 # Whether the DBMS supports transactions
 my %transactmap = (mSQL => 0, mysql => 0, Pg => 1);
@@ -156,8 +159,12 @@ sub new
 	$self ->{USER} = shift;
 	# check for a host part
 	if (defined $self->{USER} && $self->{USER} =~ /@/) {
-	  $self->{HOST} = $';
-	  $self->{USER} = $`;
+		$self->{HOST} = $';
+		$self->{USER} = $`;
+		if ($self->{HOST} =~ /:/) {
+			$self->{PORT} = $';
+			$self->{HOST} = $`;
+		}
 	}
     $self ->{PASS} = shift;
 	$self ->{CONN} = undef;
@@ -265,7 +272,11 @@ sub connect ()
 			$dsn .= ';' . $kwhostmap{$self->{DRIVER}}
 				. '=' . $self -> {HOST};
 		}
-
+		# ... optionally the host part
+		if ($self -> {PORT}) {
+			$dsn .= ';' . $kwportmap{$self->{DRIVER}}
+				. '=' . $self -> {PORT};
+		}
         # install warn() handler to catch DBI error messages
         $oldwarn = $SIG{__WARN__};
         $SIG{__WARN__} = sub {$msg = "@_";};
