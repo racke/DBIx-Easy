@@ -56,7 +56,7 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 #	dh_installdebconf	
-	dh_installdocs
+	dh_installdocs README
 	dh_installexamples
 	dh_installmenu
 #	dh_installemacsen
