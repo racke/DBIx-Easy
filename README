@@ -1,9 +1,9 @@
 DBIx::Easy - Easy to Use DBI Interface
 **************************************
 
-   * The homepage of `DBIx::Easy' is http://linuxia.net/DBIx/Easy/.
+   * The homepage of `DBIx::Easy' is http://www.linuxia.de/DBIx/Easy/.
    * The latest version (currently 0.06) is always available as 
-     http://linuxia.net/DBIx/Easy/DBIx-Easy.tar.gz.
+     http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * See the manual page for more informations.
 
 Requirements
@@ -23,16 +23,28 @@ make
 make install
 
 
+Scripts
+*******
+
+The `DBIx::Easy' package contains the following scripts: 
+
+
+`dbs_dumptabdata'   creates file set with SQL table data
+`dbs_dumptabstruct' creates file set with SQL table schemas
+`dbs_empty'         erases all data from a SQL database
+`dbs_update'        update SQL database from text file
+
+
 Debian Package
 **************
 
 This software is also available as Debian package, maintained by Dennis Schön 
 <dschoen@rio.gt.owl.de>. The download address is 
-http://linuxia.net/DBIx/Easy/libdbix-easy-perl-0.06-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.06-1_all.deb.
 
 Authors
 *******
 
-Stefan Hornburg <racke@linuxia.net>
+Stefan Hornburg <racke@linuxia.de>
 
 Dennis Schön <dschoen@rio.gt.owl.de>
