@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Jul 16 13:01:44 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): problems with --cleanse fixed
+
 * Tue Jul  4 16:18:32 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (Easy.pm:view, script/dbs_printtab, scripts/dbs_update): new option --columns
 (scripts/dbs_update): new option --cleanse

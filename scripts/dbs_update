@@ -151,7 +151,7 @@ $dbif -> install_handler (\&fatal);
 $dbif -> connect;
 
 my $linebuf = '';
-my (@keys, $numkeysleft, %recmap, @names, @rectypes);
+my (@keys, @cleansekeys, $numkeysleft, %recmap, @names, @rectypes);
 
 if ($opts{'cleanse'}) {
     # determine column names
@@ -167,20 +167,20 @@ if ($opts{'cleanse'}) {
                 && $usecol{$$fieldnames[$i]};
         }
 
-		push (@keys, $$fieldnames[$i]);
+		push (@cleansekeys, $$fieldnames[$i]);
 	}
 
     # get records
     my ($row, $href, $i);
 
-    $sth = $dbif -> process ('SELECT ' . join(', ', @keys)
+    $sth = $dbif -> process ('SELECT ' . join(', ', @cleansekeys)
 							 . " FROM $table");
     @rectypes = @{$sth->{TYPE}};
     
     while ($row = $sth -> fetch()) {
         # build chain of all keys but the last
         $href = \%recmap;
-        for ($i = 0; $i < $#keys; $i++) {
+        for ($i = 0; $i < $#cleansekeys; $i++) {
             unless (exists $href->{$$row[$i]}) {
                 $href->{$$row[$i]} = {};
             }
@@ -309,18 +309,23 @@ while (<$fd_input>) {
             }
         }
         
-        for ($i = 0; $i < $#keys; $i++) {
+        for ($i = 0; $i < $#cleansekeys; $i++) {
             unless (exists $href->{$values[$i]}) {
                 die ("$0: internal error - $i -: key not found: ",
                      join (",", @values), "\n");
             }
             $href = $href->{$values[$i]};
         }
+
         unless (exists $href->{$values[$i]}) {
             die ("$0: internal error - $i - : key not found: ",
                  join (",", @values), "\n");
         }
-        delete $href->{$values[$i]};
+		if ($href->{$values[$i]} == 0) {
+			warn ("$0: duplicate key(s) in input: ",
+				  join (",", @values[0 .. $#cleansekeys]), "\n");
+		}
+        $href->{$values[$i]} = 0;
     }
 }
 
@@ -336,7 +341,7 @@ if ($opts{'cleanse'}) {
     for (keys %recmap) {
         push (@reckeys, [$recmap{$_}, $_]);
     }
-    for (my $i = 1; $i < @keys; $i++) {
+    for (my $i = 1; $i < @cleansekeys; $i++) {
         @tmpkeys = @reckeys;
         undef @reckeys;
         for $thiskey (@tmpkeys) {
@@ -348,10 +353,10 @@ if ($opts{'cleanse'}) {
     }
     for (@reckeys) {
         # finally delete the record
-        shift (@$_);
+        next unless shift (@$_);
 
-        for (my $i = 0; $i < @keys; $i++) {
-            push (@conds, $keys[$i] . ' = ' . $dbif->quote ($_->[$i]));
+        for (my $i = 0; $i < @cleansekeys; $i++) {
+            push (@conds, $cleansekeys[$i] . ' = ' . $dbif->quote ($_->[$i]));
         }
 
         $dbif -> process ("DELETE FROM $table WHERE " . join (' AND ', @conds));
