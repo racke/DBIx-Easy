@@ -43,7 +43,7 @@ use DBIx::Easy;
 sub new {
 	my $proto = shift;
 	my $class = ref($proto) || $proto;
-	my $self = {};
+	my $self = {driver => shift, database => shift};
 
 	bless ($self, $class);
 }
@@ -57,6 +57,8 @@ sub update {
 sub _do_import {
 	my ($self, %params) = @_;
 	my ($format, $sep_char, %colmap, %hcolmap);
+
+	$self->{colflag} = 1;
 	
 	if ($params{file}) {
 		# read input from file
@@ -97,6 +99,8 @@ sub _do_import {
 				die "$0: couldn't load module Spreadsheet::ParseExcel\n";
 			}
 			$self->{parser} = new Spreadsheet::ParseExcel;
+		} elsif ($format eq 'TAB') {
+			$self->{func} = \&get_columns_tab;
 		} else {
 			die qq{$0: unknown format "$params{format}"}, "\n";
 		}
@@ -130,18 +134,231 @@ sub _do_import {
     }
 
     # add any other columns explicitly selected
-	my %usecol;
-    for (sort (keys %usecol)) {
+    for (sort (keys %{$self->{usecol}})) {
         next if $hcolmap{$_};
-        next unless exists $usecol{$_};
-        next unless $usecol{$_};
+        next unless exists $self->{usecol}->{$_};
+        next unless $self->{usecol}->{$_};
         push (@columns, $_);
     }
 
 	# database access
-	my $dbif = new DBIx::Easy ($self->{driver} || $params{driver},
+	my $dbif = $self->{dbif} = new DBIx::Easy ($self->{driver} || $params{driver},
 							   $self->{database} || $params{database});
+	# determine column names
+    my @names = $self->column_names ($params{table});
+    my $fieldnames = \@names;
+	my @values;
 
+	while ($self->{func}->($self, \@columns))  {
+		my (@data);
+		
+		@values = @columns;
+		
+		# sanity checks on input data
+		my $typeref = $dbif -> typemap ($params{table});
+		my $sizeref = $dbif -> sizemap ($params{table});
+
+		for (my $i = 0; $i <= $#$fieldnames; $i++) {
+			# check for column exclusion
+			if (keys %{$self->{usecol}}) {
+				# note: we do not check the actual value !!
+				if ($self->{colflag} && ! exists $self->usecol->{$$fieldnames[$i]}) {
+					next;
+				}
+				if (! $self->{colflag} && exists $self->usecol->{$$fieldnames[$i]}) {
+					next;
+				}
+			}
+			
+			# expand newlines and tabulators
+			if (defined $values[$i]) {
+				$values[$i] =~ s/\\n/\n/g;
+				$values[$i] =~ s/\\t/\t/g;
+			}
+        
+			# check if input exceeds column capacity
+			unless (exists $$typeref{$$fieldnames[$i]}) {
+				warn ("$0: No type information for column $$fieldnames[$i] found\n");
+				next;
+			}
+			unless (exists $$sizeref{$$fieldnames[$i]}) {
+				warn ("$0: No size information for column $$fieldnames[$i] found\n");
+				next;
+			}
+			if ($$typeref{$$fieldnames[$i]} == DBI::SQL_CHAR) {
+				if (defined $values[$i]) {
+					if (length($values[$i]) > $$sizeref{$$fieldnames[$i]}) {
+						warn ("$0: Data for field $$fieldnames[$i] truncated: $values[$i]\n");
+						$values[$i] = substr($values[$i], 0,
+											 $$sizeref{$$fieldnames[$i]});
+					}
+				} else {
+					# avoid insertion of NULL values
+					$values[$i] = '';
+				}	
+			} elsif ($$typeref{$$fieldnames[$i]} == DBI::SQL_VARCHAR) {
+				if (defined $values[$i]) {
+					if (length($values[$i]) > $$sizeref{$$fieldnames[$i]}) {
+						warn ("$0: Data for field $$fieldnames[$i] truncated: $values[$i]\n");
+						$values[$i] = substr($values[$i], 0,
+											 $$sizeref{$$fieldnames[$i]});
+					}
+				} else {
+					# avoid insertion of NULL values
+					$values[$i] = '';
+				}
+			}
+#        push (@data, $$fieldnames[$i], $values[$i]);
+		}
+		
+		# check if record exists
+		my %keymap = $self->key_names ($params{table}, $params{'keys'} || 1, 1);
+		my @keys = (keys(%keymap));
+		my @terms = map {$_ . ' = ' . $dbif->quote($values[$keymap{$_}])}
+			(@keys);
+		my $sth = $dbif -> process ('SELECT ' . join(', ', @keys)
+								 . " FROM $params{table} WHERE "
+								 . join (' AND ', @terms));
+		while ($sth -> fetch) {}
+		
+		if ($sth -> rows () > 1) {
+			$" = ', ';
+			die ("$0: duplicate key(s) @keys in table $params{table}\n");
+		}
+
+		my $update = $sth -> rows ();
+		$sth -> finish ();
+    
+		# generate SQL statement
+		for (my $i = 0; $i <= $#$fieldnames; $i++) {
+			# check for column exclusion
+			if (keys %{$self->{usecol}}) {
+				# note: we do not check the actual value !!
+				if ($self->{colflag} && ! exists $self->{usecol}->{$$fieldnames[$i]}) {
+					next;
+				}
+				if (! $self->{colflag} && exists $self->{usecol}->{$$fieldnames[$i]}) {
+					next;
+				}
+			}
+			# expand newlines
+			if (defined $values[$i]) {
+				$values[$i] =~ s/\\n/\n/g;
+			}
+			push (@data, $$fieldnames[$i], $values[$i]);
+		}
+
+		if ($update) {
+			$dbif -> update ($params{table}, join (' AND ', @terms), @data);
+		} else {
+			if ($params{'update_only'}) {
+				$" = ', ';
+				die ("$0: key(s) @keys not found\n");
+			}
+			$dbif -> insert ($params{table}, @data);
+		}
+	}
+}
+
+# -------------------------------------------------
+# FUNCTION: column_names DBIF TABLE [START]
+#
+# Returns array with column names from table TABLE
+# using database connection DBIF.
+# Optional parameter START specifies column where
+# the array should start with.
+# -------------------------------------------------
+
+sub column_names {
+    my ($self, $table, $start) = @_;    
+    my ($names, $sth);
+
+    $start = 0 unless $start;
+    
+    if (exists $self->{fieldmap}->{$table}) {
+        $names = $self->{fieldmap}->{$table};
+    } else {
+        $sth = $self->{dbif}-> process ("SELECT * FROM $table WHERE 0 = 1");
+        $names = $self->{fieldmap}->{$table} = $sth -> {NAME};
+        $sth -> finish ();
+    }
+
+    @$names[$start .. $#$names];
+}
+
+
+# --------------------------------------------------
+# FUNCTION: key_names DBIF TABLE KEYSPEC [HASH]
+#
+# Returns array with key names for table TABLE.
+# Database connection DBIF may be used to
+# retrieve necessary information.
+# KEYSPEC contains desired keys, either a numeric
+# value or a comma-separated list of keys.
+# If HASH is set, a mapping between key name
+# and position is returned.
+# --------------------------------------------------
+
+sub key_names () {
+    my ($self, $table, $keyspec, $hash) = @_;
+    
+    my ($numkeysleft, $i);
+    my @columns = $self->column_names ($table);
+    my (@keys, %kmap);
+    
+    $keyspec =~ s/^\s+//; $keyspec =~ s/\s+$//;
+
+    if ($keyspec =~ /^\d+$/) {
+        #
+        # passed keys are numeric, figure out the names
+        #
+
+        $numkeysleft = $keyspec;
+
+        for ($i = 0; $i < $numkeysleft && $i < @columns; $i++) {
+            if (keys %{$self->{usecol}}) {
+                # note: we do not check the actual value !!
+                if ($self->{colflag} && ! exists $self->{usecol}->{$columns[$i]}) {
+                    $numkeysleft++;
+                    next;
+                }
+                if (! $self->{colflag} && exists $self->{usecol}->{$columns[$i]}) {
+                    $numkeysleft++;
+                    next;
+                }
+            }
+            if ($hash) {
+                $kmap{$columns[$i]} = $i;
+            } else {
+                push (@keys, $columns[$i]);
+            }
+        }
+	} else {
+        #
+        # key names are passed explicitly
+        #
+
+        my %colmap;
+        
+        for ($i = 0; $i < @columns; $i++) {
+            $colmap{$columns[$i]} = $i;
+        }
+        
+        for (split (/\s*,\s*/, $keyspec)) {
+            # sanity check
+            unless (exists $colmap{$_}) {
+                die "$0: key \"$_\" appears not in column list\n";
+            }
+            
+            if ($hash) {
+                $kmap{$_} = $colmap{$_};
+            } else {
+                push (@keys, $_);
+            }
+        }
+    }
+
+    return $hash ? %kmap : @keys;
 }
 
 # FUNCTION: get_columns_csv IREF FD COLREF
@@ -177,8 +394,9 @@ sub get_columns_csv {
 # ----------------------------------------
 
 sub get_columns_tab {
-	my ($iref, $fd, $colref) = @_;
+	my ($self, $colref) = @_;
 	my $line;
+	my $fd = $self->{fd_input};
 	
 	while (defined ($line = <$fd>)) {
 		# skip empty/blank/comment lines
