@@ -2,7 +2,7 @@ DBIx::Easy - Easy to Use DBI Interface
 **************************************
 
    * The homepage of `DBIx::Easy' is http://www.linuxia.de/DBIx/Easy/.
-   * The latest version (currently 0.07) is always available as 
+   * The latest version (currently 0.08) is always available as 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * See the manual page for more informations.
 
@@ -17,7 +17,7 @@ Installation
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.07
+cd DBIx-Easy-0.08
 perl Makefile.PL
 make
 make install
@@ -42,17 +42,19 @@ Debian Package
 
 This software is also available as Debian package, maintained by Dennis Schön 
 <dschoen@rio.gt.owl.de>. The download address is 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 
 Changes
 *******
 
-0.08 (under development)
-************************
+0.08
+****
 
 `dbs_update'
 ============
 
+   * brown paper bug fixed that kept --cleanse from working by growing the
+     SQL statement which each record to be cleansed
    * bug fixed that may be triggered by the combination of `--headline' and `
      --map'
    * `--columns' can be used to exclude columns explicitly

@@ -1,9 +1,9 @@
-dbix-easy-perl (0.07-20000903) unstable; urgency=low
+dbix-easy-perl (0.08-1) unstable; urgency=high
 
   * New upstream version
   * HTMLized manual pages added
   
- -- Stefan Hornburg <racke@linuxia.de>  Sun,  3 Sep 2000 17:08:51 +0200
+ -- Stefan Hornburg <racke@linuxia.de>  Tue,  5 Sep 2000 15:20:44 +0200
 
 dbix-easy-perl (0.07-1) unstable; urgency=low
 

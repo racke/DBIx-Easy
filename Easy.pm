@@ -5,7 +5,7 @@
 # Authors: Stefan Hornburg <racke@linuxia.de>
 #          Dennis Schön <dschoen@rio.gt.owl.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.07
+# Version: 0.08
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -34,7 +34,7 @@ require Exporter;
 # Do not simply export all your public functions/methods/constants.
 @EXPORT = qw(
 );
-$VERSION = '0.07';
+$VERSION = '0.08';
 
 use DBI;
 

@@ -2,7 +2,7 @@ DBIx::Easy - Einfache DBI-Schnittstelle
 ***************************************
 
    * Die Homepage von `DBIx::Easy' ist http://www.linuxia.de/DBIx/Easy/.
-   * Die aktuelle Version (zur Zeit 0.07) ist erhältlich als 
+   * Die aktuelle Version (zur Zeit 0.08) ist erhältlich als 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * Für weitere Informationen ist die Manpage heranzuziehen.
 
@@ -18,7 +18,7 @@ Installation
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.07
+cd DBIx-Easy-0.08
 perl Makefile.PL
 make
 make install
@@ -32,7 +32,7 @@ Das `DBIx::Easy'-Paket enthält die folgenden Skripte:
 
 Name                Beschreibung                                   Bemerkungen 
 `dbs_dumptabdata'   erzeugt Dateisatz mit SQL-Tabellendaten                    
-`dbs_dumptabstruct' erzeugt Dateisatz mit SQL-Tabellen strukturen              
+`dbs_dumptabstruct' erzeugt Dateisatz mit SQL-Tabellenstrukturen               
 `dbs_empty'         löscht alle Daten aus einer SQL-Datenbank                  
 `dbs_printtab'      gibt Daten einer SQL-Tabelle aus               Neu in 0.07 
 `dbs_update'        aktualisiert SQL-Datenbank aus einer Textdatei             
@@ -43,17 +43,19 @@ Debianpaket
 
 Diese Anwendung ist auch als Debianpaket verfügbar. Der Maintainer ist
 Dennis Schön <dschoen@rio.gt.owl.de>. Die Downloadadresse ist 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 
 Änderungen
 **********
 
-0.08 (in der Entwicklung)
-*************************
+0.08
+****
 
 `dbs_update'
 ============
 
+   * Fehler behoben, der `--cleanse' durch Anwachsen der SQL-Anweisung mit
+     jedem zu löschenden Datensatz unbrauchbar gemacht hat
    * Fehler behoben, der bei der Kombination von `--headline' und `--map'
      auftreten kann
    * `--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt
