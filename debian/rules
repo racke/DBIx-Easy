@@ -14,7 +14,6 @@ endif
 
 TMP =`pwd`/debian/tmp
 archlib =`$(PERL) -MConfig -e 'print $$Config{installarchlib}'`
-config =INSTALLDIRS=perl INSTALLMAN1DIR=$(TMP)/usr/share/man/man1 INSTALLMAN3DIR=$(TMP)/usr/share/man/man3 INSTALLPRIVLIB=$(TMP)/usr/lib/perl5 INSTALLARCHLIB=$(TMP)$(archlib) INSTALLBIN=$(TMP)/usr/bin INSTALLSCRIPT=$(TMP)/usr/bin
 
 build: build-stamp
 build-stamp:
@@ -22,11 +21,6 @@ build-stamp:
 
 # Add here commands to compile the package.
 	$(PERL) Makefile.PL INSTALLDIRS=vendor
-# For potato builds
-	if ! grep ^install_vendor Makefile >/dev/null; then \
-		$(MAKE) clean; \
-		$(PERL) Makefile.PL $(config); \
-	fi
 	$(MAKE) OPTIMIZE="-O2 -g -Wall"
 
 	touch build-stamp
