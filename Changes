@@ -18,7 +18,6 @@ all changes are committed
 (scripts/dbs_dumptab*): typo fixed
 (scripts/dbs_dumptabdata): new option --use-printtab
 
->>>>>>> 1.15
 * Sat Mar 18 23:15:22 2000 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_printtab): new script
 (Easy.pm): added option separator to view method
