@@ -1,6 +1,7 @@
 dbix-easy-perl (0.07-1) unstable; urgency=low
 
   * New upstream Version and new maintainer
+  * Closes:Bug#70348
 
  -- Dennis Schoen <dennis@debian.org>  Fri, 23 Jun 2000 18:29:55 +0200
 
