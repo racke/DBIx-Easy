@@ -1068,30 +1068,35 @@ sub money2num
 
 # METHOD: filter HANDLE FUNC [TABLE] OPT
 
+my %filter_default_opts = (col_delim => "\t",
+                           col_delim_rep => '\t',
+                           row_delim => "\n",
+                           row_delim_rep => '\n',
+                           return => '');
+
 sub filter {
-	my ($self, $handle, $func, $table, $opt) = @_;
-	my ($proc, @ret);
+	my ($self, $sth, $opt) = @_;
+	my ($row, @ret);
 
-    $opt->{return} ||= '';
+    for (keys %filter_default_opts) {
+        $opt->{$_} = $filter_default_opts{$_}
+            unless defined $opt->{$_};
+    }
 
-	if ($func eq 'tab_with_table') {
-		$proc = sub {
-			my ($sth, $table) = @_;
-			my ($row);
-
-			while ($row = $sth->fetch()) {
-                if ($opt->{return} eq 'keys') {
-                    push(@ret, $row->[0]);
-                }
-				print $table, join ("\t", '',
-									map {defined $_ ? (s/\n/\\n/sg, s/\t/\\t/g, $_) : ''} @$row), "\n";
-			}
-		}
-	} else {
-		die "$0: DBIx::Easy::filter called with unknown filter\n";
+	while ($row = $sth->fetch()) {
+        if ($opt->{return} eq 'keys') {
+            push(@ret, $row->[0]);
+        }
+        my @f;
+        for my $f (@$row) {
+            $f = '' unless defined $f;
+            $f =~ s/$opt->{row_delim}/$opt->{row_delim_rep}/g;
+            $f =~ s/$opt->{col_delim}/$opt->{col_delim_rep}/g;
+            push(@f, $f);
+        }
+        print join($opt->{col_delim}, @f), $opt->{row_delim};
 	}
 
-	&$proc($handle, $table);
 	@ret;
 }
 
