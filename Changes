@@ -1,0 +1,6 @@
+Revision history for Perl module DBIx::Easy.
+
+* Fri Nov 26 01:01:22 1999 CET Stefan Hornburg <racke@linuxia.net>
+
+(scripts/dbs_dumptabstruct): POD documentation added
+(scripts/dbs_update): fixed old script name in POD section
