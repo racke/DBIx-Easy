@@ -2,7 +2,7 @@ DBIx::Easy - Easy to Use DBI Interface
 **************************************
 
    * The homepage of `DBIx::Easy' is http://www.linuxia.de/DBIx/Easy/.
-   * The latest version (currently 0.10) is always available as 
+   * The latest version (currently 0.11) is always available as 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * See the manual page for more informations.
 
@@ -17,7 +17,7 @@ Installation
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.10
+cd DBIx-Easy-0.11
 perl Makefile.PL
 make
 make install
@@ -30,11 +30,11 @@ The `DBIx::Easy' package contains the following scripts:
 
 
 Name                Description                             Remarks     
-`dbs_dumptabdata'   creates file set with SQL table data                
-`dbs_dumptabstruct' creates file set with SQL table schemas             
-`dbs_empty'         erases all data from a SQL database                 
-`dbs_printtab'      prints data from SQL table              New in 0.07 
-`dbs_update'        update SQL database from text file                  
+`dbs_dumptabdata'   creates file set with SQL table data                Manual page
+`dbs_dumptabstruct' creates file set with SQL table schemas             Manual page
+`dbs_empty'         erases all data from a SQL database                 Manual page
+`dbs_printtab'      prints data from SQL table              New in 0.07 Manual page
+`dbs_update'        update SQL database from text file                  Manual page
 
 
 Debian Package
@@ -42,10 +42,25 @@ Debian Package
 
 This software is also available as Debian package, maintained by Dennis Schön 
 <dennis@cobolt.net>. The download address is 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.10-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.11-1_all.deb.
 
 Changes
 *******
+
+0.11
+****
+
+   * several warnings fixed (most introduced in conjunction with Perl 5.6)
+
+`Easy.pm'
+=========
+
+   * new method `delete'
+
+`dbs_update'
+============
+
+   * new option `--match-sql'
 
 0.10
 ****

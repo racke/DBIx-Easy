@@ -2,7 +2,7 @@ DBIx::Easy - Einfache DBI-Schnittstelle
 ***************************************
 
    * Die Homepage von `DBIx::Easy' ist http://www.linuxia.de/DBIx/Easy/.
-   * Die aktuelle Version (zur Zeit 0.10) ist erhältlich als 
+   * Die aktuelle Version (zur Zeit 0.11) ist erhältlich als 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * Für weitere Informationen ist die Manpage heranzuziehen.
 
@@ -18,7 +18,7 @@ Installation
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.10
+cd DBIx-Easy-0.11
 perl Makefile.PL
 make
 make install
@@ -31,11 +31,11 @@ Das `DBIx::Easy'-Paket enthält die folgenden Skripte:
 
 
 Name                Beschreibung                                   Bemerkungen 
-`dbs_dumptabdata'   erzeugt Dateisatz mit SQL-Tabellendaten                    
-`dbs_dumptabstruct' erzeugt Dateisatz mit SQL-Tabellenstrukturen               
-`dbs_empty'         löscht alle Daten aus einer SQL-Datenbank                  
-`dbs_printtab'      gibt Daten einer SQL-Tabelle aus               Neu in 0.07 
-`dbs_update'        aktualisiert SQL-Datenbank aus einer Textdatei             
+`dbs_dumptabdata'   erzeugt Dateisatz mit SQL-Tabellendaten                    Manual page
+`dbs_dumptabstruct' erzeugt Dateisatz mit SQL-Tabellenstrukturen               Manual page
+`dbs_empty'         löscht alle Daten aus einer SQL-Datenbank                  Manual page
+`dbs_printtab'      gibt Daten einer SQL-Tabelle aus               Neu in 0.07 Manual page
+`dbs_update'        aktualisiert SQL-Datenbank aus einer Textdatei             Manual page
 
 
 Debianpaket
@@ -43,10 +43,26 @@ Debianpaket
 
 Diese Anwendung ist auch als Debianpaket verfügbar. Der Maintainer ist
 Dennis Schön <dennis@cobolt.net>. Die Downloadadresse ist 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.10-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.11-1_all.deb.
 
 Änderungen
 **********
+
+0.11
+****
+
+   * verschiedene Warnungen, die vor allem im Zusammenhang mit Perl 5.6
+     aufgetreten sind, wurden behoben
+
+`Easy.pm'
+=========
+
+   * neue Methode `delete'
+
+`dbs_update'
+============
+
+   * neue Option `--match-sql'
 
 0.10
 ****
