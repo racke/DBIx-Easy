@@ -65,7 +65,7 @@ DBIx::Easy - Easy to Use DBI interface
 =head1 DESCRIPTION
 
 DBIx::Easy is an easy to use DBI interface.
-Currently the Pg, mSQL, mysql, Sybase and ODBC drivers are supported.
+Currently the Pg, mSQL, mysql, Sybase, ODBC and XBase drivers are supported.
 
 =head1 CREATING A NEW DBI INTERFACE OBJECT
 
@@ -109,6 +109,10 @@ called.
 By default, this module caches table structures. This can be
 disabled by setting I<$DBIx::Easy::cache_structs> to 0.
 
+=head1 XBASE DRIVER
+
+The DBIx::Easy method rows fails to work with the DBD::XBase driver.
+
 =cut
 
 # Private Variables
@@ -118,14 +122,14 @@ my $maintainer_adr = 'racke@linuxia.de';
 
 # Keywords for connect()
 my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname',
-			Sybase => 'database', ODBC => '');
+			Sybase => 'database', ODBC => '', XBase => '');
 my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host',
-				 Sybase => 'server', ODBC => '');
+				 Sybase => 'server', ODBC => '', XBase => '');
 my %kwportmap = (mysql => 'port', Pg => 'port');
 
 # Whether the DBMS supports transactions
 my %transactmap = (mSQL => 0, mysql => 0, Pg => 1, Sybase => 'server',
-				  ODBC => 0);
+				  ODBC => 0, XBase => 0);
   
 # Statement generators for serial()
 my %serialstatmap = (mSQL => sub {"SELECT _seq FROM $_[0]";},
@@ -145,6 +149,9 @@ my %obtstatmap = (mSQL => sub {my $table = shift;
 							   "SELECT " . join (', ', @_)
                                  . " FROM $table WHERE 0 = 1";},
 				  ODBC => sub {my $table = shift;
+							   "SELECT " . join (', ', @_)
+                                 . " FROM $table WHERE 0 = 1";});
+				  XBase => sub {my $table = shift;
 							   "SELECT " . join (', ', @_)
                                  . " FROM $table WHERE 0 = 1";});
   
