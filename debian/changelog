@@ -1,3 +1,9 @@
+dbix-easy-perl (0.13-2) unstable; urgency=low
+
+  * removed manpage in /usr/man (Closes: #116051)
+
+ -- Dennis Schoen <dennis@debian.org>  Thu, 18 Oct 2001 11:45:37 +0200
+
 dbix-easy-perl (0.13-1) unstable; urgency=medium
 
   * New upstream version
