@@ -69,7 +69,7 @@ if ($driver eq 'mysql') {
     
     my $header;
     open (DUMP, "mysqldump $database -d $table |")
-      || die ("$0: Couldn't not launch mysqldump: $!\n");
+      || die ("$0: Couldn't launch mysqldump: $!\n");
     while (<DUMP>) {
       if ($header) {
         print;
@@ -86,7 +86,7 @@ if ($driver eq 'mysql') {
     my ($database, $table) = @_;
     
     open (DUMP, "pg_dump $database -x -s -t $table |")
-      || die ("$0: Couldn't not launch pg_dump: $!\n");
+      || die ("$0: Couldn't launch pg_dump: $!\n");
     while (<DUMP>) {
       print;
     }
