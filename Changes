@@ -14,6 +14,9 @@ DBIx::Easy v0.11 released
 (scripts/{dbs_dumptabdata,dbs_dumptabstruct,dbs_printtab}):
  Database handler warning fixed
 
+* Mon Feb 12 10:40:37 2001 CET Dennis Schön <dennis@cobolt.net>
+(scripts/dbs_update): Perl 5.6 warnings fixed
+
 * Sat Feb 10 01:10:29 2001 CET Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): Perl warning fixed
 
