@@ -354,7 +354,7 @@ sub process
   my ($self, $statement) = @_;
   my ($sth, $rv);
   
-  $self -> connect ();
+  return unless $self -> connect ();
 
   # prepare and execute it
   $sth = $self -> {CONN} -> prepare ($statement)
@@ -393,7 +393,7 @@ sub insert ($$$;@)
 	my ($statement, $sthtest, $flags);
 	my ($column, $value);
 
-	$self -> connect ();
+	return unless $self -> connect ();
 
 	while ($#_ >= 0)
 	  {
@@ -471,7 +471,7 @@ sub update
 	my ($column, $value);
 
 	# ensure that connection is established
-	$self -> connect ();
+	return unless $self -> connect ();
 	
 	while ($#_ >= 0) {
 		$column = shift; $value = shift;
@@ -525,7 +525,7 @@ sub put
 	my $conditions = shift;
 
 	# ensure that connection is established
-	$self -> connect ();
+	return unless $self -> connect ();
 
 	# check for existing rows
 	if ($self->rows($table, $conditions)) {
@@ -733,7 +733,7 @@ sub serial
 	my ($table, $sequence) = @_;
 	my ($statement, $sth, $rv, $resref);
 	
-	$self -> connect ();
+	return unless $self -> connect ();
     return ('0') if $self->{DRIVER} eq 'mysql';
 
 	# get the appropriate statement
