@@ -33,6 +33,7 @@ clean:
 	rm -f build-stamp
 
 	# Add here commands to clean up after the build process.
+	$(PERL) Makefile.PL $(config)
 	$(MAKE) clean
 	dh_clean
 
