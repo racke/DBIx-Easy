@@ -6,7 +6,7 @@ Standards-Version: 3.0.1
 
 Package: libdbix-easy-perl
 Architecture: any
-Depends: ${shlibs:Depends} libdbi-perl, perl5
+Depends: ${perl:Depends}, libdbi-perl
 Recommends: libterm-readkey-perl
 Description: Easy to Use DBI Interface
  DBIx::Easy is an easy to use DBI interface.
