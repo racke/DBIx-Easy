@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Oct  8 15:47:21 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): issue warning on missing type information
+
 * Thu Sep 28 14:07:50 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): return values of user-defined filters indicate 
 if record is valid

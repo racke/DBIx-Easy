@@ -30,11 +30,11 @@ The `DBIx::Easy' package contains the following scripts:
 
 
 Name                Description                             Remarks     
-`dbs_dumptabdata'   creates file set with SQL table data                
-`dbs_dumptabstruct' creates file set with SQL table schemas             
-`dbs_empty'         erases all data from a SQL database                 
-`dbs_printtab'      prints data from SQL table              New in 0.07 
-`dbs_update'        update SQL database from text file                  
+`dbs_dumptabdata'   creates file set with SQL table data                Manual page
+`dbs_dumptabstruct' creates file set with SQL table schemas             Manual page
+`dbs_empty'         erases all data from a SQL database                 Manual page
+`dbs_printtab'      prints data from SQL table              New in 0.07 Manual page
+`dbs_update'        update SQL database from text file                  Manual page
 
 
 Debian Package
@@ -71,6 +71,7 @@ Changes
    * choosed comma as default field separator for CSV format
    * new option `--rows'
    * option `--keys' accepts key names too
+   * issue warning on missing type information
 
 0.08
 ****
