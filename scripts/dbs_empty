@@ -79,6 +79,9 @@ for ($dbif->tables) {
     }    
 }
 
+# ensures commit 
+undef $dbif;
+
 # -----------------------------------
 # FUNCTION: fatal
 #
