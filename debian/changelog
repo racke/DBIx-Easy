@@ -8,6 +8,12 @@ dbix-easy-perl (0.16-0.10) unstable; urgency=low
 
  -- Stefan Hornburg (Racke) <racke@linuxia.de>  Fri, 11 Jun 2004 11:06:45 +0200
 
+dbix-easy-perl (0.15-2) unstable; urgency=low
+
+  * New maintainer
+
+ -- Stefan Hornburg (Racke) <racke@linuxia.de>  Sat,  2 Oct 2004 10:50:02 +0200
+
 dbix-easy-perl (0.15-1) unstable; urgency=low
 
   * New upstream version (Closes: #135638)
