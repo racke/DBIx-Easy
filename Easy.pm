@@ -645,7 +645,8 @@ sub view
     my ($self, $table, %options) = @_;
     my ($view, $sth);
     my ($orderstr, $condstr) = ('', '');
-
+	my (@fields);
+	
     unless (exists $options{'limit'}) {$options{'limit'} = 0}
     unless (exists $options{'separator'}) {$options{'separator'} = "\t"}
     
@@ -663,8 +664,16 @@ sub view
     my ($count, $ref);
     while($ref = $sth->fetch) {
       $count++;
-      $view .= join($options{'separator'},
-                    map {defined $_ ? $_ : ''} @$ref) . "\n";
+	  undef @fields;
+	  for (@$ref) {
+		  if (defined $_) {
+			  s/\n/\\n/sg;
+			  push (@fields, $_);
+		  } else {
+			  push (@fields, '');
+		  }
+	  }
+      $view .= join($options{'separator'}, @fields) . "\n";
       last if $count == $options{'limit'};
     }
 #    my $rows = $sth -> rows;
