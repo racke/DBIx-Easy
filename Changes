@@ -23,7 +23,7 @@ values of the resulting hash
 (scripts/dbs_update): allow input files in XLS format
 
 * Fri Apr 19 19:23:49 2002 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
-(Easy.pm): new filter method
+(Easy.pm): new display method
 (scripts/dbs_dumptabstruct): --filter option added
 
 * Sat Mar 16 13:00:32 2002 CET Stefan Hornburg (Racke) <racke@linuxia.de>
