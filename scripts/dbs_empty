@@ -31,7 +31,7 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'exclude-matching-tables=s')) {
+unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'tables|t')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -69,8 +69,14 @@ for ($dbif->tables) {
     if (exists $opts{'exclude-matching-tables'}) {
         next if $table =~ /$opts{'exclude-matching-tables'}/;
     }
-    
-    $dbif -> process ("DELETE FROM $_ WHERE 1 = 1");
+
+    if ($opts{'tables'}) {
+        # remove table from database
+        $dbif -> process ("DROP TABLE $_");
+    } else {
+        # empty table
+        $dbif -> process ("DELETE FROM $_ WHERE 1 = 1");
+    }    
 }
 
 # -----------------------------------
@@ -96,11 +102,11 @@ sub fatal {
         $dbif -> connect ();
         return;
       } else {
-        die ("$statement.\n");
+        die ("$statement: $msg.\n");
       }
     }
   }
-  die ("$statement.\n");
+  die ("$statement: $msg.\n");
 }
 
 # -----------------------------------------------------------------
@@ -167,6 +173,10 @@ database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 =head2 B<--exclude-matching-tables>=REGEXP
 
 Excludes any table matching the regular expression REGEXP from dumping.
+
+=head2 B<-t, --tables>
+
+Remove tables from database too.
 
 =head1 AUTHOR
 
