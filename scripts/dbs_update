@@ -83,7 +83,7 @@ my $currow = 0;
 my $startcol;
 
 if ($opts{'columns'}) {
-    $colflag = ! ($opts{'columns'} =~ s/\s*[^\!]//);
+    $colflag = ! ($opts{'columns'} =~ s/\s*[\!^]//);
 
     # setup positive/negative list for columns
     for (@columns = split(/\s*,\s*/, $opts{'columns'})) {
@@ -202,8 +202,8 @@ if ($opts{'cleanse'}) {
     # determine keys
     %cleansemap = key_names ($dbif, $table, $opts{'keys'}, 1);
     @cleansekeys = sort (keys %cleansemap);
-    
-    # get records
+	
+	# get records
     my ($row, $href, $i);
 
     $sth = $dbif -> process ('SELECT ' . join(', ', @cleansekeys)

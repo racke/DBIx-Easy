@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Sep 17 13:10:37 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): make --columns to work with inclusions again
+
 * Fri Sep 15 18:32:35 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): new option --rows, option --keys accepts key names
 now, new functions key_names and prefix
