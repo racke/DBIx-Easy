@@ -116,12 +116,13 @@ disabled by setting I<$DBIx::Easy::cache_structs> to 0.
 my $maintainer_adr = 'racke@linuxia.de';
 
 # Keywords for connect()
-my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname');
-my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host');
-my %kwportmap = (mysql => 'port', Pg => 'port');
+my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname',
+			Excel => 'file');
+my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host', Excel => undef);
+my %kwportmap = (mysql => 'port', Pg => 'port', Excel => undef);
 
 # Whether the DBMS supports transactions
-my %transactmap = (mSQL => 0, mysql => 0, Pg => 1);
+my %transactmap = (mSQL => 0, mysql => 0, Pg => 1, Excel => 0);
   
 # Statement generators for serial()
 my %serialstatmap = (mSQL => sub {"SELECT _seq FROM $_[0]";},
@@ -185,7 +186,7 @@ sub new
 	unless (exists $kwmap{$self -> {DRIVER}}) {
       $self -> fatal ("Sorry, $class doesn't support the \""
                       . $self -> {DRIVER} . "\" driver.\n" 
-                      . "Please send mail to $maintainer_adr for more information.\n");
+                      . "Please send mail to $maintainer_adr for more information.");
     }
 
     # we may try to get password from DBMS specific
@@ -243,9 +244,11 @@ sub fatal {
 		&{$self -> {'HANDLER'}} ($info, $err, $errstr);
     } elsif (defined $self -> {CONN}) {
 		die "$info (DBERR: $err, DBMSG: $errstr)\n";
-    } else {
+    } elsif ($err) {
 		die "$info ($err)\n";
-    }
+    } else {
+	    die "$info\n";
+	}
 }
 
 # ---------------------------------------------------------------
