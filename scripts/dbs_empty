@@ -1,10 +1,12 @@
 #! /usr/bin/perl -w
 
-# Copyright (C) 1999 Stefan Hornburg
+# dbs_empty - erases any data from a given SQL database
 
-# Author: Stefan Hornburg <racke@linuxia.net>
-# Maintainer: Stefan Hornburg <racke@linuxia.net>
-# Version: 0.06
+# Copyright (C) 1999,2000 Stefan Hornburg
+
+# Author: Stefan Hornburg <racke@linuxia.de>
+# Maintainer: Stefan Hornburg <racke@linuxia.de>
+# Version: 0.07
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -22,7 +24,26 @@
 
 use strict;
 use DBIx::Easy;
+use Getopt::Long;
 use Term::ReadKey;
+
+# process commandline parameters
+my %opts;
+my $whandler = $SIG{__WARN__};
+$SIG{__WARN__} = sub {print STDERR "$0: @_";};
+unless (GetOptions (\%opts, 'exclude-matching-tables=s')) {
+    exit 1;
+}
+$SIG{__WARN__} = $whandler;
+
+# sanity check on commandline parameters
+if (exists $opts{'exclude-matching-tables'}) {
+    eval {'' =~ /$opts{'exclude-matching-tables'}/;};
+    if ($@) {
+        $@ =~ s%at /.*$%%;
+        die "$0: $@";
+    }
+}
 
 my $dbif;
 my $pwdused = 0;
@@ -44,6 +65,11 @@ my ($table, $key, $fieldnames, @values, $headline);
 my (@columns, $routine);
 
 for ($dbif->tables) {
+    # skip tables preserved by user
+    if (exists $opts{'exclude-matching-tables'}) {
+        next if $table =~ /$opts{'exclude-matching-tables'}/;
+    }
+    
     $dbif -> process ("DELETE FROM $_ WHERE 1 = 1");
 }
 
@@ -134,11 +160,17 @@ Required command line parameters are the DBI driver
 (C<Pg> for Postgres or C<mysql> for MySQL)
 and the database name. The third parameter is optionally
 and specifies the database user and/or the host where the
-database resides (C<racke>, C<racke@linuxia.net> or C<@linuxia.net>).
+database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
+
+=head1 COMMAND LINE OPTIONS
+
+=head2 B<--exclude-matching-tables>=REGEXP
+
+Excludes any table matching the regular expression REGEXP from dumping.
 
 =head1 AUTHOR
 
-Stefan Hornburg, racke@linuxia.net
+Stefan Hornburg, racke@linuxia.de
 
 =head1 SEE ALSO
 

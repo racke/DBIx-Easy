@@ -5,11 +5,11 @@
 # This script queries a SQL database and creates one file for each
 # table in the database containing the schema of the table.
 
-# Copyright (C) 1999 Stefan Hornburg
+# Copyright (C) 1999,2000 Stefan Hornburg
 
-# Author: Stefan Hornburg <racke@linuxia.net>
-# Maintainer: Stefan Hornburg <racke@linuxia.net>
-# Version: 0.06
+# Author: Stefan Hornburg <racke@linuxia.de>
+# Maintainer: Stefan Hornburg <racke@linuxia.de>
+# Version: 0.07
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -27,7 +27,26 @@
 
 use strict;
 use DBIx::Easy;
+use Getopt::Long;
 use Term::ReadKey;
+
+# process commandline parameters
+my %opts;
+my $whandler = $SIG{__WARN__};
+$SIG{__WARN__} = sub {print STDERR "$0: @_";};
+unless (GetOptions (\%opts, 'exclude-matching-tables=s')) {
+    exit 1;
+}
+$SIG{__WARN__} = $whandler;
+
+# sanity check on commandline parameters
+if (exists $opts{'exclude-matching-tables'}) {
+    eval {'' =~ /$opts{'exclude-matching-tables'}/;};
+    if ($@) {
+        $@ =~ s%at /.*$%%;
+        die "$0: $@";
+    }
+}
 
 my $dbif;
 my $pwdused = 0;
@@ -76,15 +95,22 @@ if ($driver eq 'mysql') {
   }
 }    
 
+print keys(%opts), "\n";
 foreach my $table ($dbif->tables()) {
-  my $outfile = lc($table) . '.sql';
+    my $outfile = lc($table) . '.sql';
+    my $regexp;
 
-  # call driver dependent dump procedure and fill
-  # output file with the results
-  open (OUT, ">$outfile") || die ("$0: Couldn't open $outfile: $!\n");
-  select (OUT);
-  &$dumpproc ($database, $table);
-  close (OUT);
+    # skip tables unwanted by user
+    if (exists $opts{'exclude-matching-tables'}) {
+        next if $table =~ /$opts{'exclude-matching-tables'}/;
+    }
+    # call driver dependent dump procedure and fill
+    # output file with the results
+    open (OUT, ">$outfile") || die ("$0: Couldn't open $outfile: $!\n");
+    select (OUT);
+    &$dumpproc ($database, $table);
+    close (OUT);
+    select (STDOUT);
 }
 
 # -----------------------------------
@@ -174,7 +200,13 @@ Required command line parameters are the DBI driver
 (C<Pg> for Postgres or C<mysql> for MySQL)
 and the database name. The third parameter is optionally
 and specifies the database user and/or the host where the
-database resides (C<racke>, C<racke@linuxia.net> or C<@linuxia.net>).
+database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
+
+=head1 COMMAND LINE OPTIONS
+
+=head2 B<--exclude-matching-tables>=REGEXP
+
+Excludes any table matching the regular expression REGEXP from dumping.
 
 =head1 BUGS
 
@@ -182,7 +214,7 @@ msql is not supported.
 
 =head1 AUTHOR
 
-Stefan Hornburg, racke@linuxia.net
+Stefan Hornburg, racke@linuxia.de
 
 =head1 SEE ALSO
 

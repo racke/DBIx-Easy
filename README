@@ -48,6 +48,8 @@ Changes
 0.07 (not yet released)
 ***********************
 
+   * new option `--exclude-matching-tables' for `dbs_dumptabdata', `
+     dbs_dumptabstruct' and `dbs_empty'
    * don't call `rollback' within error handler if `AutoCommit' is enabled
 
 Authors
