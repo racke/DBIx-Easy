@@ -41,7 +41,10 @@ $SIG{__WARN__} = $whandler;
 
 # sanity checks
 my $format = 'TAB';
-my ($csv, $xls);
+my %inforef = ();
+my %funcref = (CSV => {get_columns => \&get_columns_csv},
+			   TAB => {get_columns => \&get_columns_tab},
+			   XLS => {get_columns => \&get_columns_xls});
 my $sep_char = ',';
 
 if ($opts{'cleanse'} || $opts{'headline'}) {
@@ -65,7 +68,7 @@ if ($opts{'format'}) {
 		if ($@) {
 			die "$0: couldn't load module Text::CSV_XS\n";
 		}
-		$csv = new Text::CSV_XS ({'binary' => 1, 'sep_char' => $sep_char});
+		$inforef{object} = new Text::CSV_XS ({'binary' => 1, 'sep_char' => $sep_char});
 	} elsif ($format eq 'XLS') {
 		eval {
 			require Spreadsheet::ParseExcel;
@@ -73,7 +76,7 @@ if ($opts{'format'}) {
 		if ($@) {
 			die "$0: couldn't load module Spreadsheet::ParseExcel\n";
 		}
-		$xls = new Spreadsheet::ParseExcel;
+		$inforef{object} = new Spreadsheet::ParseExcel;
 	} else {
 		die ("$0: unknown format \"" . $opts{'format'} . "\"\n");
 	}
@@ -145,18 +148,21 @@ if ($opts{'map'}) {
     }
 }
 
+my $csv;
+
 if ($opts{'headline'}) {
     my %hcolmap;
     
     # the first row consists of the column names
-    unless (defined ($headline = <$fd_input>)) {
-        die ("$0: empty input file\n");
-    }
+#    unless (defined ($headline = <$fd_input>)) {
+#        die ("$0: empty input file\n");
+#    }
 	my @columns;
-	if ($format eq 'TAB') {
-		@columns = split /\t/, $headline;
-	} elsif ($format eq 'CSV') {
-		$linebuf = '';
+	if ($funcref{$format}->{get_columns}(\%inforef, $fd_input,\@columns) <= 0)  {
+		die "$0: couldn't find headline\n";
+	}
+	
+	if ($format eq 'CSV') {
 		while (! csv_parseline ($csv, \$linebuf, $headline, \@columns)) {
 			unless (defined ($headline = <$fd_input>)) {
 				die ("$0: couldn't find headline\n");
@@ -282,22 +288,14 @@ if ($opts{'match-sql'}) {
 	}
 }
 
-MAIN: while (<$fd_input>) {
-    my (@data);
+my $gcsub = $funcref{$format}->{get_columns};
 
-    # skip empty/blank/comment lines
-    next if /^\#/; next if /^\s*$/;
-    # remove newlines and carriage returns
-    chomp;
-    s/\r$//;
+MAIN: while ($gcsub->(\%inforef, $fd_input, \@columns)) {
+    my (@data);
 
     if ($opts{'headline'} || $opts{'table'}) {
         # table name already known
-		if ($format eq 'TAB') {
-			@values = split /\t/;
-		} elsif ($format eq 'CSV') {
-			next unless csv_parseline ($csv, \$linebuf, $_, \@values);
-		}
+		@values = @columns;
     } else {
         # table name is the first column
 		if ($format eq 'TAB') {
@@ -561,6 +559,27 @@ undef $dbif;
 
 if ($opts{'file'}) {
     $fd_input->close;
+}
+
+# FUNCTION: get_columns_tab IREF FD COLREF
+#
+# Get columns from a tab separated file.
+# ----------------------------------------
+
+sub get_columns_tab {
+	my ($iref, $fd, $colref) = @_;
+	my $line;
+	
+	while (defined ($line = <$fd>)) {
+		# skip empty/blank/comment lines
+		next if $line =~ /^\#/; next if $line =~ /^\s*$/;
+		# remove newlines and carriage returns
+		chomp ($line);
+		$line =~ s/\r$//;
+
+		@$colref = split (/\t/, $line);
+		return @$colref;
+	}
 }
 
 # -------------------------------------------------
