@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sat Mar 18 23:15:22 2000 CET Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_printtab): new script
+(Easy.pm): added option separator to view method
+
 * Tue Feb 29 19:33:13 2000 CET Stefan Hornburg <racke@linuxia.de>
 (Easy.pm): made more verbose if connection cannot be established
 method view fixed in respect to limit option
