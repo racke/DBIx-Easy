@@ -1,8 +1,15 @@
 Revision history for Perl module DBIx::Easy.
 
+* Thu Sep 20 17:20:50 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+
+DBIx::Easy v0.13 released
+
+* Thu Sep 20 17:19:19 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(scripts/dbs_update): --cleanse could fail if one of the keys is '0'
+
 * Wed Aug  8 00:15:25 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): don't use password from ~/.my.cnf for databases on other hosts
-(dbs_dumptabdata): dbs_printtab is emulated instead called as program
+(scripts/dbs_dumptabdata): dbs_printtab is emulated instead called as program
 
 * Tue Aug  7 23:50:54 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): new method is_auth_error
