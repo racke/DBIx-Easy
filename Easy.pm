@@ -643,6 +643,8 @@ Produces plain text representation of the database table
 I<table>. This method accepts the following options as I<name>/I<value>
 pairs:
 
+B<columns>: Which columns to display.
+
 B<order>: Which column to sort the row after.
 
 B<limit>: Maximum number of rows to display.
@@ -665,10 +667,10 @@ sub view
     my ($view, $sth);
     my ($orderstr, $condstr) = ('', '');
 	my (@fields);
-	
+
     unless (exists $options{'limit'}) {$options{'limit'} = 0}
     unless (exists $options{'separator'}) {$options{'separator'} = "\t"}
-    
+
     # anonymous function for cells in top row
     # get contents of the table
     if ((exists ($options{'order'}) && $options{'order'})) {
@@ -676,8 +678,13 @@ sub view
     }
     if ((exists ($options{'where'}) && $options{'where'})) {
       $condstr = " WHERE $options{'where'}";
-    } 
-    $sth = $self -> process ("SELECT * FROM $table$condstr$orderstr");
+    }
+	if ((exists ($options{'columns'}) && $options{'columns'})) {
+	  $sth = $self -> process ('SELECT ' . $options{'columns'}
+							   . " FROM $table$condstr$orderstr");
+	} else {
+      $sth = $self -> process ("SELECT * FROM $table$condstr$orderstr");
+	}
     my $names = $sth -> {NAME};
     $view = join($options{'separator'}, map {$_} @$names) . "\n";
     my ($count, $ref);

@@ -1,7 +1,7 @@
 Revision history for Perl module DBIx::Easy.
 
-* Mon Jul  3 19:53:43 2000 CEST Stefan Hornburg <racke@linuxia.de>
-(scripts/dbs_update): new option --columns
+* Tue Jul  4 16:18:32 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(Easy.pm:view, script/dbs_printtab, scripts/dbs_update): new option --columns
 
 * Sat Jul  1 12:34:28 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): handles special characters and multilines
