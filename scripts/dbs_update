@@ -240,7 +240,11 @@ if ($opts{'cleanse'}) {
             die "$0: duplicate key: ", join (",", @$row), "\n";
         }
         # record last key
-        $href->{$$row[$i] || ''}=1;
+		if (defined $$row[$i]) {
+			$href->{$$row[$i]} = 1;
+		} else {
+			$href->{$$row[$i]} = '';
+		}
     }
 }
 
