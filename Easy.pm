@@ -706,6 +706,7 @@ sub view
 	  for (@$ref) {
 		  if (defined $_) {
 			  s/\n/\\n/sg;
+              s/\t/\\t/g;
 			  push (@fields, $_);
 		  } else {
 			  push (@fields, '');

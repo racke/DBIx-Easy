@@ -122,6 +122,8 @@ if ($opts{'map'}) {
 }
 
 if ($opts{'headline'}) {
+    my %hcolmap;
+    
     # the first row consists of the column names
     unless (defined ($headline = <$fd_input>)) {
         die ("$0: empty input file\n");
@@ -133,9 +135,9 @@ if ($opts{'headline'}) {
 		@columns = split /$sep_char/, $headline;
 	}
 	
-	# remove whitespace from column names
-	map {s/^\s+//; s/\s+$//;} @columns;
-		
+	# remove whitespace from column names and mark them
+	map {s/^\s+//; s/\s+$//; $hcolmap{$_} = 1;} @columns;
+	
     if ($opts{'map'}) {
         my @newcolumns;
         
@@ -148,6 +150,14 @@ if ($opts{'headline'}) {
             }
         }
         @columns = @newcolumns;
+    }
+
+    # add any other columns explicitly selected
+    for (sort (keys %usecol)) {
+        next if $hcolmap{$_};
+        next unless exists $usecol{$_};
+        next unless $usecol{$_};
+        push (@columns, $_);
     }
     
     # fixed table name 
@@ -313,9 +323,10 @@ while (<$fd_input>) {
                 next;
             }
         }
-		# expand newlines
+		# expand newlines and tabulators
 		if (defined $values[$i]) {
 			$values[$i] =~ s/\\n/\n/g;
+			$values[$i] =~ s/\\t/\t/g;
 		}
         
         # check if input exceeds column capacity

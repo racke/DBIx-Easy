@@ -30,18 +30,18 @@ The `DBIx::Easy' package contains the following scripts:
 
 
 Name                Description                             Remarks     
-`dbs_dumptabdata'   creates file set with SQL table data                Manual page
-`dbs_dumptabstruct' creates file set with SQL table schemas             Manual page
-`dbs_empty'         erases all data from a SQL database                 Manual page
-`dbs_printtab'      prints data from SQL table              New in 0.07 Manual page
-`dbs_update'        update SQL database from text file                  Manual page
+`dbs_dumptabdata'   creates file set with SQL table data                
+`dbs_dumptabstruct' creates file set with SQL table schemas             
+`dbs_empty'         erases all data from a SQL database                 
+`dbs_printtab'      prints data from SQL table              New in 0.07 
+`dbs_update'        update SQL database from text file                  
 
 
 Debian Package
 **************
 
 This software is also available as Debian package, maintained by Dennis Schön 
-<dschoen@rio.gt.owl.de>. The download address is 
+<dennis@cobolt.net>. The download address is 
 http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 
 Changes
@@ -53,6 +53,7 @@ Changes
 `Easy.pm'
 =========
 
+   * escape tabulator in `view' method
    * caches table structures
    * new methods `columns', `types', `sizes', `typemap', `sizemap'
 
@@ -67,6 +68,7 @@ Changes
 
    * return values of user-defined filters indicate if record is valid
    * inclusion mode of `--columns' fixed
+   * expand tabulators
    * apply user-defined filter specified by `--routine' only once
    * choosed comma as default field separator for CSV format
    * new option `--rows'

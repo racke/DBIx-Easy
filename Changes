@@ -1,5 +1,10 @@
 Revision history for Perl module DBIx::Easy.
 
+* Thu Nov  2 04:55:45 2000 CET Stefan Hornburg <racke@linuxia.de>
+(Easy.pm): escape tabulators in view method
+(scripts/dbs_update): expand tabulators, add columns explicitly
+selected to column list
+
 * Sun Oct  8 15:47:21 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): issue warning on missing type information
 
