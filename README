@@ -58,15 +58,18 @@ Changes
      dbs_dumptabstruct' and `dbs_empty'
    * new option `--tables' for `dbs_empty', `dbs_dumptabstruct' and `
      dbs_dumptabdata'
-   * new options `--format', `--keys', `--map', `--skipbadlines' and `
-     --update-only' for `dbs_update'
+   * new options `--cleanse', `--columns', `--format', `--keys', `--map', `
+     --skipbadlines' and `--update-only' for `dbs_update'
    * new option `--use-printtab' for `dbs_dumptabdata'
+   * new option `--pipe' for `dbs_dumptabstruct'
+   * `dbs_dumptabstruct' dumps sequences too
    * optional parameter CONDITION added to method `makemap'
+   * optional parameter COLUMNS added to method `view'
    * made `dbs_update' more verbose on errors, ensure commit, newlines will
      be regenerated, remembers table name if specified with `--table', carriage
      returns are removed from input
    * don't call `rollback' within error handler if `AutoCommit' is enabled
-   * new method `is_table'
+   * new methods `is_table', `sequences'
 
 Authors
 *******

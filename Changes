@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Mon Aug 28 23:42:36 2000 CEST Stefan Hornburg <racke@linuxia.de>
+DBIx::Easy v0.07 released
+
 * Wed Jul 19 00:07:26 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (Easy.pm): documentation for is_table and tables added, new method
 sequences
@@ -22,10 +25,6 @@ handle keys excessing the column size
 * Sat Jul  1 12:34:28 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): handles special characters and multilines
 with CSV format now
-
-* Sun Jun 25 17:14:35 2000 CEST Stefan Hornburg <racke@linuxia.de>
-
-DBIx::Easy v0.07 released
 
 * Fri Jun 23 11:36:27 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): several new options
