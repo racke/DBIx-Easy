@@ -1,7 +1,6 @@
 dbi-easy-perl (0.06-1) unstable; urgency=low
 
   * Initial Release.
-  *	Pre Release for DBI::Easy
 
  -- Dennis Schoen <dschoen@mini.gt.owl.de>  Mon, 22 Nov 1999 18:48:11 +0100
 
