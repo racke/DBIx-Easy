@@ -113,7 +113,7 @@ if ($driver eq 'mysql') {
 if ($opts{'tables'}) {
     @tables = split (/,/, $opts{'tables'});
 } else {
-    @tables = $dbif->tables ();
+    @tables = ($dbif->tables(), $dbif->sequences());
 }
 
 foreach my $table (@tables) {
