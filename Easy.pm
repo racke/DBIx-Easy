@@ -1,7 +1,7 @@
 # Easy.pm - Easy to Use DBI interface
 
 # Copyright (C) 1999,2000,2001,2002 Stefan Hornburg, Dennis Schön
-# Copyright (C) 2003 Stefan Hornburg (Racke) <racke@linuxia.de>
+# Copyright (C) 2003,2004 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <dennis@cobolt.net>
@@ -65,7 +65,7 @@ DBIx::Easy - Easy to Use DBI interface
 =head1 DESCRIPTION
 
 DBIx::Easy is an easy to use DBI interface.
-Currently the Pg, mSQL, mysql, sybase and ODBC drivers are supported.
+Currently the Pg, mSQL, mysql, Sybase and ODBC drivers are supported.
 
 =head1 CREATING A NEW DBI INTERFACE OBJECT
 
@@ -118,13 +118,13 @@ my $maintainer_adr = 'racke@linuxia.de';
 
 # Keywords for connect()
 my %kwmap = (mSQL => 'database', mysql => 'database', Pg => 'dbname',
-			sybase => 'database', ODBC => '');
+			Sybase => 'database', ODBC => '');
 my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host',
-				 sybase => 'server', ODBC => '');
+				 Sybase => 'server', ODBC => '');
 my %kwportmap = (mysql => 'port', Pg => 'port');
 
 # Whether the DBMS supports transactions
-my %transactmap = (mSQL => 0, mysql => 0, Pg => 1, sybase => 'server',
+my %transactmap = (mSQL => 0, mysql => 0, Pg => 1, Sybase => 'server',
 				  ODBC => 0);
   
 # Statement generators for serial()
@@ -141,7 +141,7 @@ my %obtstatmap = (mSQL => sub {my $table = shift;
 				  Pg => sub {my $table = shift;
 							 "SELECT " . join (', ', @_)
 							   . " FROM $table WHERE FALSE";},
-				  sybase => sub {my $table = shift;
+				  Sybase => sub {my $table = shift;
 							   "SELECT " . join (', ', @_)
                                  . " FROM $table WHERE 0 = 1";},
 				  ODBC => sub {my $table = shift;
@@ -152,7 +152,7 @@ my %obtstatmap = (mSQL => sub {my $table = shift;
 my %funcmap = (mSQL => {COUNT => 0},
 			   mysql => {COUNT => 1},
 			   Pg => {COUNT => 1},
-			   sybase => {COUNT => 1},
+			   Sybase => {COUNT => 1},
 			   ODBC => {COUNT => 0});
 
 # Cache
@@ -185,19 +185,22 @@ sub new
 
 	bless ($self, $class);
 	
-    # sanity checks    
+    # sanity check: driver
     unless (defined ($self -> {DRIVER}) && $self->{DRIVER} =~ /\S/) {
-      $self -> fatal ("No driver selected for $class.");
+		$self -> fatal ("No driver selected for $class.");
     }
-    unless (defined ($self -> {DATABASE}) && $self->{DATABASE} =~ /\S/) {
-      $self -> fatal ("No database selected for $class.");
+	unless (exists $kwmap{$self -> {DRIVER}}) {
+		$self -> fatal ("Sorry, $class doesn't support the \""
+						. $self -> {DRIVER} . "\" driver.\n" 
+						. "Please send mail to $maintainer_adr for more information.\n");
     }
 
-    # check if this driver is supported
-	unless (exists $kwmap{$self -> {DRIVER}}) {
-      $self -> fatal ("Sorry, $class doesn't support the \""
-                      . $self -> {DRIVER} . "\" driver.\n" 
-                      . "Please send mail to $maintainer_adr for more information.\n");
+	# sanity check: database name
+    unless (defined ($self -> {DATABASE}) && $self->{DATABASE} =~ /\S/) {
+		# ok for sybase with host
+		unless ($self->{DRIVER} eq 'Sybase' && $self->{HOST}) {
+			$self -> fatal ("No database selected for $class.");
+		}
     }
 
     # we may try to get password from DBMS specific
@@ -255,9 +258,11 @@ sub fatal {
 		&{$self -> {'HANDLER'}} ($info, $err, $errstr);
     } elsif (defined $self -> {CONN}) {
 		die "$info (DBERR: $err, DBMSG: $errstr)\n";
-    } else {
+    } elsif ($err) {
 		die "$info ($err)\n";
-    }
+    } else {
+		die "$info\n";
+	}
 }
 
 # ---------------------------------------------------------------
@@ -1468,6 +1473,6 @@ David B. Bitton <david@codenoevil.com>.
 
 =head1 SEE ALSO
 
-perl(1), DBI(3), DBD::Pg(3), DBD::mysql(3), DBD::msql(3), DBD::sybase(3), DBD::ODBC(3).
+perl(1), DBI(3), DBD::Pg(3), DBD::mysql(3), DBD::msql(3), DBD::Sybase(3), DBD::ODBC(3).
 
 =cut
