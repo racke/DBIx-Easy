@@ -206,11 +206,11 @@ my (@keys, @cleansekeys, %cleansemap, $numkeysleft, %recmap, @names);
 
 if ($opts{'cleanse'}) {
     # determine column names
-    @names = column_names ($dbif, $table);
+    @names = &column_names ($dbif, $table);
     $fieldnames = \@names;
 
     # determine keys
-    %cleansemap = key_names ($dbif, $table, $opts{'keys'}, 1);
+    %cleansemap = &key_names ($dbif, $table, $opts{'keys'}, 1);
     @cleansekeys = sort (keys %cleansemap);
 	
 	# get records
@@ -298,7 +298,7 @@ while (<$fd_input>) {
     }
     
     # determine column names
-    @names = column_names ($dbif, $table, $startcol);
+    @names = &column_names ($dbif, $table, $startcol);
     $fieldnames = \@names;
 
     if ($opts{'routine'}) {
@@ -363,7 +363,7 @@ while (<$fd_input>) {
     }
 
     # check if record exists
-    my %keymap = key_names ($dbif, $table, $opts{'keys'}, 1);
+    my %keymap = &key_names ($dbif, $table, $opts{'keys'}, 1);
     @keys = (keys(%keymap));
     my @terms = map {$_ . ' = ' . $dbif->quote($values[$keymap{$_}])}
         (@keys);
