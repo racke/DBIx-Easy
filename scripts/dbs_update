@@ -4,7 +4,7 @@
 
 # Author: Stefan Hornburg <racke@linuxia.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.08
+# Version: 0.09
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -32,7 +32,7 @@ my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
 unless (GetOptions (\%opts, 'cleanse', 'columns|c=s',
                     'file|f=s', 'format=s', 'headline|h',
-					'keys|k=i',
+					'rows=s', 'keys|k=s',
 					'map|m=s', 'routine|r=s', 'skipbadlines',
 					'table|t=s', 'update-only|o')) {
     exit 1;
@@ -50,8 +50,6 @@ if ($opts{'cleanse'} || $opts{'headline'}) {
     }
 }
 if ($opts{'format'}) {
-    my $sep_char = ';';
-
 	$format = uc($opts{'format'});
 	unless ($format =~ /^CSV/) {
 		die ("$0: unknown format \"" . $opts{'format'} . "\"\n");
@@ -76,6 +74,11 @@ my (@columns, $routine, %colmap);
 # whether to consider column
 my $colflag = 1;
 my %usecol;
+# whether to consider rows
+my $rowflag;
+my %userow;
+# current row
+my $currow = 0;
 # input with table as first field may specify start column
 my $startcol;
 
@@ -88,6 +91,20 @@ if ($opts{'columns'}) {
     }
 }
 
+if ($opts{'rows'}) {
+    my @rows;
+    
+    $rowflag = ! ($opts{'rows'} =~ s/\s*[^\!]//);
+
+    # setup positive/negative list for rows
+    for (@rows = split(/\s*,\s*/, $opts{'rows'})) {
+        unless (/^\d+$/) {
+            die "$0: row number \"$_\" is not numeric\n";
+        }
+        $userow{$_} = $rowflag;
+    }
+}
+    
 if ($opts{'file'}) {
     # read input from file instead from standard input
     open (INPUT, $opts{'file'})
@@ -175,7 +192,7 @@ $dbif -> install_handler (\&fatal);
 $dbif -> connect;
 
 my $linebuf = '';
-my (@keys, @cleansekeys, $numkeysleft, %recmap, @names, @rectypes, @recsizes);
+my (@keys, @cleansekeys, %cleansemap, $numkeysleft, %recmap, @names, @rectypes, @recsizes);
 
 if ($opts{'cleanse'}) {
     # determine column names
@@ -183,31 +200,16 @@ if ($opts{'cleanse'}) {
     $fieldnames = \@names;
 
     # determine keys
-    $numkeysleft = $opts{'keys'};
-    for (my $i = 0; $i < $numkeysleft && $i < @$fieldnames; $i++) {
-        if (keys %usecol) {
-            # note: we do not check the actual value !!
-            if ($colflag && ! exists $usecol{$$fieldnames[$i]}) {
-                $numkeysleft++;
-                next;
-            }
-            if (! $colflag && exists $usecol{$$fieldnames[$i]}) {
-                $numkeysleft++;
-                next;
-            }
-        }
-
-		push (@cleansekeys, $$fieldnames[$i]);
-	}
-
+    %cleansemap = key_names ($dbif, $table, $opts{'keys'}, 1);
+    @cleansekeys = sort (keys %cleansemap);
+    
     # get records
     my ($row, $href, $i);
 
     $sth = $dbif -> process ('SELECT ' . join(', ', @cleansekeys)
 							 . " FROM $table");
-    @rectypes = @{$sth->{TYPE}};
-    @recsizes = @{$sth->{PRECISION}};
-	
+    @rectypes = $dbif -> types ($table);
+    @recsizes = $dbif -> sizes ($table);
     while ($row = $sth -> fetch()) {
         # build chain of all keys but the last
         $href = \%recmap;
@@ -222,6 +224,7 @@ if ($opts{'cleanse'}) {
             die "$0: duplicate key: ", join (",", @$row), "\n";
         }
         # record last key
+      
         $href->{$$row[$i]}=1;
     }
 }
@@ -273,6 +276,19 @@ while (<$fd_input>) {
         }
     }
 
+    # check for row ex/inclusion
+    $currow++;
+    if (defined $rowflag) {
+        if ($rowflag && ! exists $userow{$currow}) {
+#            print "Skipping row $currow due to inclusion\n";
+            next;
+        }
+        if (! $rowflag && exists $userow{$currow}) {
+#            print "Skipping row $currow due to exclusion\n";
+            next;
+        }
+    }
+    
     if ($opts{'routine'}) {
         # filter input first
         filter_input ($routine, $table, $fieldnames, \@values);
@@ -286,28 +302,51 @@ while (<$fd_input>) {
         # filter input first
         filter_input ($routine, $table, $fieldnames, \@values);
     }
-    
-    # check if record exists
-	my @terms;
-    undef @keys;
-    $numkeysleft = $opts{'keys'};
-	for (my $i = 0; $i < $numkeysleft && $i < @$fieldnames; $i++) {
+
+    # sanity checks on input data
+    my $typeref = $dbif -> typemap ($table);
+    my $sizeref = $dbif -> sizemap ($table);
+
+    for (my $i = 0; $i <= $#$fieldnames; $i++) {
+        # check for column exclusion
         if (keys %usecol) {
             # note: we do not check the actual value !!
             if ($colflag && ! exists $usecol{$$fieldnames[$i]}) {
-                $numkeysleft++;
                 next;
             }
             if (! $colflag && exists $usecol{$$fieldnames[$i]}) {
-                $numkeysleft++;
                 next;
             }
         }
+		# expand newlines
+		if (defined $values[$i]) {
+			$values[$i] =~ s/\\n/\n/g;
+		}
+        
+        # check if input exceeds column capacity 
+        if ($$typeref{$$fieldnames[$i]} == DBI::SQL_CHAR) {
+            if (defined $values[$i]
+                && length($values[$i]) > $$sizeref{$$fieldnames[$i]}) {
+                warn ("$0: $.: Data for field $$fieldnames[$i] truncated: $values[$i]\n");
+                $values[$i] = substr($values[$i], 0,
+                                     $$sizeref{$$fieldnames[$i]});
+            }
+        } elsif ($$typeref{$$fieldnames[$i]} == DBI::SQL_VARCHAR) {
+            if (defined $values[$i]
+                && length($values[$i]) > $$sizeref{$$fieldnames[$i]}) {
+                warn ("$0: $.: Data for field $$fieldnames[$i] truncated: $values[$i]\n");
+                $values[$i] = substr($values[$i], 0,
+                                     $$sizeref{$$fieldnames[$i]});
+            }
+        }
+#        push (@data, $$fieldnames[$i], $values[$i]);
+    }
 
-		push (@keys, $$fieldnames[$i]);
-		push (@terms, $$fieldnames[$i] . ' = ' . $dbif->quote($values[$i]));
-	}
-    
+    # check if record exists
+    my %keymap = key_names ($dbif, $table, $opts{'keys'}, 1);
+    @keys = (keys(%keymap));
+    my @terms = map {$_ . ' = ' . $dbif->quote($values[$keymap{$_}])}
+        (@keys);
     $sth = $dbif -> process ('SELECT ' . join(', ', @keys)
 							 . " FROM $table WHERE "
 							 . join (' AND ', @terms));
@@ -361,36 +400,39 @@ while (<$fd_input>) {
         # Mysql strips trailing blanks from VARCHAR fields, so we do
         if ($dbif->{DRIVER} eq 'mysql') {
             for ($i = 0; $i < @cleansekeys; $i++) {
-                if ($rectypes[$i] == DBI::SQL_VARCHAR) {
-                    $values[$i] =~ s/\s+$//;
+                if ($$typeref{$cleansekeys[$i]}
+                    == DBI::SQL_VARCHAR) {
+                    $values[$cleansemap{$cleansekeys[$i]}] =~ s/\s+$//;
                 }
             }
         }
-
 		# data from input file may exceed column capacity
 		for ($i = 0; $i < @cleansekeys; $i++) {
 			if ($rectypes[$i] == DBI::SQL_CHAR) {
-				$values[$i] = substr($values[$i],0,$recsizes[$i]);
+				$values[$cleansemap{$cleansekeys[$i]}]
+                  = substr($values[$cleansemap{$cleansekeys[$i]}],
+                           0,$recsizes[$i]);
 			}
 		}
-		
+
         for ($i = 0; $i < $#cleansekeys; $i++) {
-            unless (exists $href->{$values[$i]}) {
-                die ("$0: internal error - $i -: key not found: ",
+            unless (exists $href->{$values[$cleansemap{$cleansekeys[$i]}]}) {
+                die ("$0: internal error: key $cleansekeys[$i] not found: ",
                      join (",", @values), "\n");
             }
-            $href = $href->{$values[$i]};
+            $href = $href->{$values[$cleansemap{$cleansekeys[$i]}]};
         }
 
-        unless (exists $href->{$values[$i]}) {
-            die ("$0: internal error - $i - : key not found: ",
+        unless (exists $href->{$values[$cleansemap{$cleansekeys[$i]}]}) {
+            die ("$0: internal error: key $cleansekeys[$i] not found: ",
                  join (",", @values), "\n");
         }
-		if ($href->{$values[$i]} == 0) {
-			warn ("$0: duplicate key(s) in input: ",
-				  join (",", @values[0 .. $#cleansekeys]), "\n");
+		if ($href->{$values[$cleansemap{$cleansekeys[$i]}]} == 0) {
+            my $j = 0;
+			warn (prefix () . "duplicate key(s) in input: ",
+				  join (", ", map {"$_ = \"" . $values[$cleansemap{$cleansekeys[$j++]}] . "\""} @cleansekeys), "\n");
 		}
-        $href->{$values[$i]} = 0;
+        $href->{$values[$cleansemap{$cleansekeys[$i]}]} = 0;
     }
 }
 
@@ -406,6 +448,7 @@ if ($opts{'cleanse'}) {
     for (keys %recmap) {
         push (@reckeys, [$recmap{$_}, $_]);
     }
+
     for (my $i = 1; $i < @cleansekeys; $i++) {
         @tmpkeys = @reckeys;
         undef @reckeys;
@@ -468,6 +511,80 @@ sub column_names ($$) {
     }
 
     @$names[$start .. $#$names];
+}
+
+# --------------------------------------------------
+# FUNCTION: key_names DBIF TABLE KEYSPEC [HASH]
+#
+# Returns array with key names for table TABLE.
+# Database connection DBIF may be used to
+# retrieve necessary information.
+# KEYSPEC contains desired keys, either a numeric
+# value or a comma-separated list of keys.
+# If HASH is set, a mapping between key name
+# and position is returned.
+# --------------------------------------------------
+
+sub key_names () {
+    my ($dbif, $table, $keyspec, $hash) = @_;
+    
+    my ($numkeysleft, $i);
+    my @columns = column_names ($dbif, $table);
+    my (@keys, %kmap);
+    
+    $keyspec =~ s/^\s+//; $keyspec =~ s/\s+$//;
+
+    if ($keyspec =~ /^\d+$/) {
+        #
+        # passed keys are numeric, figure out the names
+        #
+
+        $numkeysleft = $keyspec;
+
+        for ($i = 0; $i < $numkeysleft && $i < @columns; $i++) {
+            if (keys %usecol) {
+                # note: we do not check the actual value !!
+                if ($colflag && ! exists $usecol{$columns[$i]}) {
+                    $numkeysleft++;
+                    next;
+                }
+                if (! $colflag && exists $usecol{$columns[$i]}) {
+                    $numkeysleft++;
+                    next;
+                }
+            }
+            if ($hash) {
+                $kmap{$columns[$i]} = $i;
+            } else {
+                push (@keys, $columns[$i]);
+            }
+        }
+	} else {
+        #
+        # key names are passed explicitly
+        #
+
+        my %colmap;
+        
+        for ($i = 0; $i < @columns; $i++) {
+            $colmap{$columns[$i]} = $i;
+        }
+        
+        for (split (/\s*,\s*/, $keyspec)) {
+            # sanity check
+            unless (exists $colmap{$_}) {
+                die "$0: key \"$_\" appears not in column list\n";
+            }
+            
+            if ($hash) {
+                $kmap{$_} = $colmap{$_};
+            } else {
+                push (@keys, $_);
+            }
+        }
+    }
+
+    return $hash ? %kmap : @keys;
 }
 
 # -------------------------------------------
@@ -535,6 +652,24 @@ sub filter_input {
     
 }
 
+# ------------------------------------
+# FUNCTION: prefix
+#
+# Generates prefix for error messages.
+# ------------------------------------
+
+sub prefix {
+    my @frags = ($0);
+
+    if ($.) {
+        if ($opts{'file'}) {
+            push (@frags, $opts{'file'});
+        }
+        push (@frags, $.);
+    }
+    join (': ', @frags, '');
+}
+
 # -----------------------------------
 # FUNCTION: fatal
 #
@@ -544,15 +679,7 @@ sub filter_input {
 sub fatal {
   my ($statement, $err, $msg) = @_;
   my $pwd;
-  my $prefix = '';
-  
-  # prefix for error string
-  if ($.) {
-      if ($opts{'file'}) {
-          $prefix = $opts{'file'} . ': ';
-      }
-      $prefix .= "$.: ";
-  }      
+  my $prefix = prefix ();
   
   if (is_auth_error ($driver, $err)) {
     unless ($pwdused) {
@@ -662,6 +789,13 @@ Update only the table columns given by the I<COLUMN> parameters.
 To exclude columns from the update prepend C<!> or C<^> to the
 parameters.
 
+=head2 B<--rows>=I<ROW,ROW,...>
+
+Update only the input rows given by the I<ROW> parameters.
+The first row is 1 where headlines doesn't count.
+To exclude rows from the update prepend C<!> or C<^> to the
+parameters.
+
 =head2 B<-f> I<FILE>, B<--file>=I<FILE>
 
 Reads records from file I<FILE> instead of from standard input.
@@ -679,9 +813,11 @@ Reads the column names from the first line of the input instead
 of dedicting them from the database layout. Requires the
 B<-t/--table> option.
 
-=head2 B<-k> I<COUNT>, B<--keys>=I<COUNT>
+=head2 B<-k> I<COUNT>, B<-k> I<KEY,KEY,...>, B<--keys>=I<COUNT>, B<--keys>=I<KEY,KEY,...>
 
-Specifies the number of keys for the table(s), default is 1.
+Specifies the keys for the table(s) either as the number of columns
+used as keys or by specifying them explicitly as comma separated
+arguments to the option.
 This is used for the detection of existing records.
 
 =head2 B<-m> I<ALIASDEF>, B<--map>=I<ALIASDEF>

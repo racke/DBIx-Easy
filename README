@@ -47,6 +47,22 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 Changes
 *******
 
+0.09 (not yet released)
+***********************
+
+`Easy.pm'
+=========
+
+   * caches table structures
+   * new methods `columns', `types', `sizes', `typemap', `sizemap'
+
+`dbs_update'
+============
+
+   * choosed comma as default field separator for CSV format
+   * new option `--rows'
+   * option `--keys' accepts key names too
+
 0.08
 ****
 
@@ -58,8 +74,7 @@ Changes
    * bug fixed that may be triggered by the combination of `--headline' and `
      --map'
    * strip whitespace from column names found in the headline of the input
-   * comma is now the default field separator for CSV format, field
-     separator can selected from the commandline now
+   * field separator for CSV format can selected from the commandline now
    * `--columns' can be used to exclude columns explicitly
    * strip blanks from parameter list for `--columns'
    * first field may contain table name and start column instead of table

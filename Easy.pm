@@ -5,7 +5,7 @@
 # Authors: Stefan Hornburg <racke@linuxia.de>
 #          Dennis Schön <dschoen@rio.gt.owl.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.08
+# Version: 0.09
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -34,7 +34,11 @@ require Exporter;
 # Do not simply export all your public functions/methods/constants.
 @EXPORT = qw(
 );
-$VERSION = '0.08';
+
+# Public variables
+use vars qw($cache_structs);
+$VERSION = '0.09';
+$cache_structs = 1;
 
 use DBI;
 
@@ -96,10 +100,15 @@ If any of the DBI methods fails, either I<die> will be invoked
 or an error handler installed with I<install_handler> will be
 called.
 
+=head1 CACHING ISSUES
+
+By default, this module caches table structures. This can be
+disabled by setting I<$DBIx::Easy::cache_structs> to 0.
+
 =cut
 
-# Variables
-# =========
+# Private Variables
+# =================
 
 my $maintainer_adr = 'racke@linuxia.de';
 
@@ -130,6 +139,9 @@ my %funcmap = (mSQL => {COUNT => 0},
 			   mysql => {COUNT => 1},
 			   Pg => {COUNT => 1});
 
+# Cache
+my %structs;
+  
 # Preloaded methods go here.
 
 sub new
@@ -713,7 +725,7 @@ sub view
 
 =item is_table I<NAME>
 
-Returns truth value if there exists a table NAME in
+Returns truth value if there exists a table I<NAME> in
 this database.
 
 =back
@@ -773,6 +785,123 @@ sub sequences {
         }
     }
     return @sequences;
+}
+
+# ------------------------------------------
+# METHOD: columns TABLE
+#
+# Returns list of the column names of TABLE.
+# ------------------------------------------
+
+=over 4
+
+=item columns I<TABLE>
+
+Returns list of the column names of I<TABLE>.
+
+=back
+
+=cut
+
+sub columns {
+    my ($self, $table) = @_;
+    my ($sth);
+    
+    if ($cache_structs) {
+        if (exists $structs{$table} && exists $structs{$table}->{NAME}) {
+            return @{$structs{$table}->{NAME}};
+        }
+    }
+    
+    $sth = $self -> process ("SELECT * FROM $table WHERE 0 = 1");
+
+    if ($cache_structs) {
+        $structs{$table}->{NAME} = $sth->{NAME};
+    }
+    
+    @{$sth->{NAME}};
+}
+
+# -------------------
+# METHOD: types TABLE
+# -------------------
+
+=over 4
+
+=item types I<TABLE>
+
+Returns list of the column types of I<TABLE>.
+
+=back
+
+=cut
+
+sub types {
+    my ($self, $table) = @_;
+
+    $self->info_proc($table, 'TYPE');
+}
+
+# -------------------
+# METHOD: sizes TABLE
+# -------------------
+
+=over 4
+
+=item sizes I<TABLE>
+
+Returns list of the column sizes of I<TABLE>.
+
+=back
+
+=cut
+
+sub sizes {
+    my ($self, $table) = @_;
+
+    $self->info_proc ($table, 'PRECISION');
+}
+
+# ---------------------
+# METHOD: typemap TABLE
+# ---------------------
+
+=over 4
+
+=item typemap I<TABLE>
+
+Returns mapping between column names and column types
+for table I<TABLE>.
+
+=back
+
+=cut
+
+sub typemap {
+    my ($self, $table) = @_;
+
+    $self->info_proc ($table, 'TYPE', 1);
+}
+
+# ---------------------
+# METHOD: sizemap TABLE
+# ---------------------
+
+=over 4
+
+=item sizemap I<TABLE>
+
+Returns mapping between column names and column sizes
+for table I<TABLE>.
+
+=back
+
+=cut    
+
+sub sizemap {
+    my ($self, $table) = @_;
+
+    $self->info_proc ($table, 'PRECISION', 1);
 }
 
 # --------------------------------------------
@@ -901,6 +1030,61 @@ sub install_handler {$_[0] -> {'HANDLER'} = $_[1];}
 sub prepare {my $self = shift; $self -> prepare (@_);}
 sub commit {$_[0] -> connect () -> commit ();}
 sub quote {$_[0] -> connect () -> quote ($_[1]);}
+
+# auxiliary functions
+
+# ----------------------------------------------
+# FUNCTION: fold ARRAY1 ARRAY2
+#
+# Returns mapping between the elements of ARRAY1
+# and tehe elements fo ARRAY2.
+# ----------------------------------------------
+
+sub fold {
+    my ($array1, $array2) = @_;
+    my (%hash);
+
+    for (my $i = 0; $i < @$array1; $i++) {
+        $hash{$$array1[$i]} = $$array2[$i];
+    }
+    \%hash;
+}
+
+# -----------------------------------------------
+# METHOD: info_proc TABLE TOKEN [WANTHASH]
+#
+# Returns information about the columns of TABLE.
+# TOKEN should be either NAME or PRECISION.
+# -----------------------------------------------
+
+sub info_proc {
+    my ($self, $table, $token, $wanthash) = @_;
+    my $sth;
+    
+    if ($cache_structs) {
+        unless (exists $structs{$table}) {
+            $sth = $self -> process ("SELECT * FROM $table WHERE 0 = 1");
+            for ('NAME', 'PRECISION', 'TYPE') {
+                $structs{$table}->{$_} = $sth->{$_};
+            }
+        }
+
+        if ($wanthash) {
+            fold ($structs{$table}->{NAME},
+                  $structs{$table}->{$token});
+        } else {
+            @{$structs{$table}->{$token}};
+        }
+    } else {
+        $sth = $self -> process ("SELECT * FROM $table WHERE 0 = 1");
+
+        if ($wanthash) {
+            fold ($sth->{NAME}, $sth->{PRECISION});
+        } else {
+            @{$sth->{$token}};
+        }
+    }
+}
 
 1;
 __END__

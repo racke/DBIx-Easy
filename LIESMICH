@@ -48,6 +48,22 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 Änderungen
 **********
 
+0.09 (noch nicht freigegeben)
+*****************************
+
+`Easy.pm'
+=========
+
+   * Tabellenstrukturen werden in einem Cache abgelegt
+   * neue Methoden `columns', `types', `sizes', `typemap', `sizemap'
+
+`dbs_update'
+============
+
+   * Komma ist jetzt voreingestelltes Trennzeichen für das CSV-Format
+   * neue Option `--rows'
+   * Option `--keys' läßt Schlüsselnamen zu
+
 0.08
 ****
 
@@ -60,8 +76,8 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
      auftreten kann
    * Leerzeichen werden aus Spaltennamen entfernt, die der Kopfzeile der
      Eingabe entstammen
-   * Voreingestelltes Trennzeichen für das CSV-Format ist jetzt das Komma,
-     Trennzeichen kann zudem von der Kommandozeile festgelegt werden
+   * Trennzeichen für das CSV-Format kann von der Kommandozeile festgelegt
+     werden
    * `--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt
      werden
    * Leerzeichen werden aus der Parameterliste für `--columns' entfernt

@@ -1,5 +1,15 @@
 Revision history for Perl module DBIx::Easy.
 
+* Fri Sep 15 18:32:35 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): new option --rows, option --keys accepts key names
+now, new functions key_names and prefix
+(Easy.pm): caches table structures now, new methods columns, types,
+sizes, typemap, sizemap, fold and info_proc
+
+* Tue Sep 12 10:38:22 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): now really choosed comma as default field separator 
+for CSV format
+
 * Fri Sep  8 21:58:04 2000 CEST Stefan Hornburg <racke@linuxia.de>
 
 DBIx::Easy v0.08 released
