@@ -5,7 +5,7 @@
 # Authors: Stefan Hornburg <racke@linuxia.net>
 #          Dennis Schön <dschoen@rio.gt.owl.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.net>
-# Version: 0.05_01
+# Version: 0.06
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -35,7 +35,7 @@ require AutoLoader;
 # Do not simply export all your public functions/methods/constants.
 @EXPORT = qw(
 );
-$VERSION = '0.05_01';
+$VERSION = '0.06';
 
 use DBI;
 
@@ -745,6 +745,7 @@ sub tables
   }
 
 1;
+__END__
 
 =head1 AUTHORS
 
