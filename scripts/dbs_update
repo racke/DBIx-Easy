@@ -1,0 +1,83 @@
+#! /usr/bin/perl -w
+
+# Copyright (C) 1999 Stefan Hornburg
+
+# Author: Stefan Hornburg <racke@linuxia.de>
+# Maintainer: Stefan Hornburg <racke@linuxia.de>
+# Version: 0.000_01
+
+# This file is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+
+# This file is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this file; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+use strict;
+use DBIx::CGI;
+
+my $dbif = new DBIx::CGI (undef, @ARGV);
+$dbif -> install_handler (\&fatal);
+
+my %fieldmap;
+
+my ($sth, $keyfield, $update);
+my ($table, $key, $fieldnames, @values);
+
+while (<STDIN>) {
+    my (@data);
+
+    # skip empty/blank/comment lines
+    next if /^#?\s*$/;
+    # remove newlines
+    chomp;
+    
+    ($table, @values) = split /\t/;
+    $key = $values[0];
+    
+    # get key for table
+    if (exists $fieldmap{$table}) {
+        $fieldnames = $fieldmap{$table};
+    } else {
+        $sth = $dbif -> process ("SELECT * FROM $table WHERE 0 = 1");
+        $fieldnames = $fieldmap{$table} = $sth -> {NAME};
+        $sth -> finish ();
+    }
+
+    # check if record exists
+    $sth = $dbif -> process ("SELECT $$fieldnames[0] FROM $table WHERE $$fieldnames[0] = "
+                             . $dbif -> quote ($key));
+    while ($sth -> fetch) {}
+
+    if ($sth -> rows () > 1) {
+        die ("$0: duplicate key $key in table $table\n");
+    }
+
+    $update = $sth -> rows ();
+
+    # generate SQL statement
+    for (my $i = 0; $i <= $#$fieldnames; $i++) {
+        push (@data, $$fieldnames[$i], $values[$i]);
+    }
+    
+    if ($update) {
+        print "UPDATING $.\n";
+        $dbif -> update ($table, "$$fieldnames[0] = $key", @data);
+    } else {
+        print "INSERTING $.\n";
+        $dbif -> insert ($table, @data);
+    }
+}
+
+sub fatal {
+    my ($statement, $err, $msg) = @_;
+    die ("$0: Statement \"$statement\" failed (ERRNO: $err, ERRMSG: $msg)\n");
+}
+
