@@ -1,11 +1,12 @@
 # Easy.pm - Easy to Use DBI interface
 
 # Copyright (C) 1999,2000,2001,2002 Stefan Hornburg, Dennis Schön
+# Copyright (C) 2003 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <dennis@cobolt.net>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.15
+# Version: 0.16
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -37,7 +38,7 @@ require Exporter;
 
 # Public variables
 use vars qw($cache_structs);
-$VERSION = '0.15';
+$VERSION = '0.16';
 $cache_structs = 1;
 
 use DBI;
@@ -568,13 +569,18 @@ sub rows
 
 =item makemap I<table> I<keycol> I<valcol> [I<condition>]
 
-    $dbi_interface -> makemap ('components', 'id', 'price');
-    $dbi_interface -> makemap ('components', 'id', 'price', 'price > 10');
+    $dbi_interface -> makemap ('components', 'idf', 'price');
+    $dbi_interface -> makemap ('components', 'idf', 'price', 'price > 10');
+    $dbi_interface -> makemap ('components', 'idf', '*');
+    $dbi_interface -> makemap ('components', 'idf', '*', 'price > 10');
 
 Produces a mapping between the values within column
 I<keycol> and column I<valcol> from I<table>. If an
 I<condition> is given, only rows matching this
 I<condition> are used for the mapping.    
+
+In order to get the hash reference to the record as value of the
+mapping, use the asterisk as the I<valcol> parameter.
 
 =back
 
@@ -582,20 +588,28 @@ I<condition> are used for the mapping.
 
 sub makemap {
     my ($self, $table, $keycol, $valcol, $condition) = @_;
-    my ($sth, $row, %map);
+    my ($sth, $row, %map, $sel);
+	my $condstring = '';
 
-    if (defined $condition) {
-        # read matching rows from the specified table
-        $sth = $self -> process ("SELECT $keycol, $valcol FROM $table WHERE $condition");
-    } else {
-        # read all rows from the specified table
-        $sth = $self -> process ("SELECT $keycol, $valcol FROM $table");
-    }
-    
-    while ($row = $sth -> fetch) {
-        $map{$$row[0]} = $$row[1];
-    }
-
+	# check for condition
+	if ($condition) {
+		$condstring = " WHERE $condition";
+	}
+	
+	if ($valcol eq '*') {
+		# need hash reference as value
+		$sth = $self->process("SELECT * FROM $table$condstring");
+		while ($row = $sth -> fetchrow_hashref) {
+			$map{$row->{$keycol}} = $row;
+		}
+	} else {
+        # need particular field as value
+		$sth = $self -> process ("SELECT $keycol, $valcol FROM $table$condstring");
+		while ($row = $sth -> fetch) {
+			$map{$$row[0]} = $$row[1];
+		}
+	}
+	
     \%map;
 }
 
@@ -1301,7 +1315,7 @@ David B. Bitton <david@codenoevil.com>.
 
 =head1 VERSION
 
-0.15
+0.16
 
 =head1 SEE ALSO
 
