@@ -2,9 +2,9 @@
 
 # Copyright (C) 1999 Stefan Hornburg
 
-# Author: Stefan Hornburg <racke@linuxia.net>
-# Maintainer: Stefan Hornburg <racke@linuxia.net>
-# Version: 0.06
+# Author: Stefan Hornburg <racke@linuxia.de>
+# Maintainer: Stefan Hornburg <racke@linuxia.de>
+# Version: 0.07
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -29,7 +29,8 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'file|f=s', 'headline|h', 'routine|r=s',
+unless (GetOptions (\%opts, 'file|f=s', 'headline|h', 'map|m=s',
+                    'routine|r=s',
                     'table|t=s')) {
     exit 1;
 }
@@ -47,7 +48,7 @@ my $fd_input = \*STDIN;
 
 my ($sth, $keyfield, $update);
 my ($table, $key, $fieldnames, @values, $headline);
-my (@columns, $routine);
+my (@columns, $routine, %colmap);
 
 if ($opts{'file'}) {
     # read input from file instead from standard input
@@ -56,12 +57,33 @@ if ($opts{'file'}) {
     $fd_input = \*INPUT;
 }
 
+if ($opts{'map'}) {
+    # parse column name mapping
+    my ($head, $name);
+    foreach (split (/;/, $opts{'map'})) {
+        ($head, $name) = split /=/;
+        $colmap{$head} = $name;
+    }
+}
+
 if ($opts{'headline'}) {
     # the first row consists of the column names
     unless (defined ($headline = <$fd_input>)) {
         die ("$0: empty input file\n");
     }
     my @columns = split /\t/, $headline;
+
+    if ($opts{'map'}) {
+        my @newcolumns;
+        
+        # filter column names
+        foreach (@columns) {
+            if (exists $colmap{$_}) {
+                push (@newcolumns, $colmap{$_});
+            }
+        }
+        @columns = @newcolumns;
+    }
     
     # fixed table name 
     $table = $opts{'table'};
@@ -284,7 +306,8 @@ and that the field within the records are separated by tabulators.
 The first field of the data record is used as table name.
 
 Alternatively dbs_update can read the column names from the first line
-of input (see the B<-h>/B<--headline> option).
+of input (see the B<-h>/B<--headline> option). These can even be aliases
+for the real column names (see the B<-m>/B<--map> option).
 
 =head1 COMMAND LINE PARAMETERS
 
@@ -292,7 +315,7 @@ Required command line parameters are the DBI driver
 (C<Pg> for Postgres or C<mysql> for MySQL)
 and the database name. The third parameter is optionally
 and specifies the database user and/or the host where the
-database resides (C<racke>, C<racke@linuxia.net> or C<@linuxia.net>).
+database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
 =head1 OPTIONS
 
@@ -318,9 +341,16 @@ dbs_update passes the table name and a hash reference to this subroutine.
 The keys of the hash are the column names and the values are the
 corresponding field values.
 
+=head2 B<-m> I<ALIASDEF>, B<--map>=I<ALIASDEF>
+
+Maps the names found in the first line of input to the actual column
+names in the database. The alias and the column name are separated
+with C<=> signs and the different entries are separated by C<;> signs,
+e.g. C<Art-No.=code;Short Description=shortdescr'.
+
 =head1 AUTHOR
 
-Stefan Hornburg, racke@linuxia.net
+Stefan Hornburg, racke@linuxia.de
 
 =head1 SEE ALSO
 
