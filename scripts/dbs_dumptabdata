@@ -71,10 +71,11 @@ my $dumpproc;
 if ($opts{'use-printtab'}) {
 	# generic dump procedure
 	$dumpproc = sub {
-		my ($database, $table) = @_;
-
+		my ($database, $table, $user) = @_;
+        
+        unless (defined $user) {$user = ''};
 		open (DUMP,
-			  "$FindBin::RealBin/dbs_printtab $driver $database $table |")
+			  "$FindBin::RealBin/dbs_printtab $driver $database $table $user|")
 			|| die ("$0: Couldn't launch $FindBin::RealBin/dbs_printtab: $!\n");
 		print <DUMP>;
 		close (DUMP)
@@ -145,7 +146,7 @@ foreach my $table (@tables) {
     # output file with the results
     open (OUT, ">$outfile") || die ("$0: Couldn't open $outfile: $!\n");
     select (OUT);
-    &$dumpproc ($database, $table);
+    &$dumpproc ($database, $table, $user);
     close (OUT);
 }
 
