@@ -123,7 +123,9 @@ sub _do_import {
 		}
 	}
 
-	if ($params{'map'}) {
+	if (ref($params{'map'}) eq 'HASH') {
+		%colmap = %{$params{'map'}};
+	} elsif ($params{'map'}) {
 		# parse column name mapping
 		my ($head, $name);
 		foreach (split (/;/, $params{'map'})) {
