@@ -312,6 +312,8 @@ sub connect ()
 
 =head1 METHODS
 
+=head2 DATABASE ACCESS
+
 =over 4
 
 =item process I<statement>
@@ -790,7 +792,7 @@ sub view
     $view;
   }
 
-=head1 DATABASE INFORMATION
+=head2 DATABASE INFORMATION
 
 =over 4
 
@@ -981,7 +983,7 @@ sub sizemap {
 # Returns representation for the current time.
 # --------------------------------------------
 
-=head1 TIME VALUES
+=head2 TIME VALUES
 
 =over 4
 
@@ -1016,7 +1018,7 @@ sub now
 # a numeric one.
 # --------------------------------------------------
 
-=head1 MONETARY VALUES
+=head2 MONETARY VALUES
 
 =over 4
 
@@ -1162,7 +1164,7 @@ __END__
 
 =head1 AUTHORS
 
-Stefan Hornburg, racke@linuxia.de
+Stefan Hornburg (Racke), racke@linuxia.de
 Dennis Schön, dennis@cobolt.net
 
 =head1 SEE ALSO
