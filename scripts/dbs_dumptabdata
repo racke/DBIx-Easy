@@ -27,6 +27,7 @@
 
 use strict;
 use DBIx::Easy;
+use FindBin;
 use Getopt::Long;
 use Term::ReadKey;
 
@@ -34,7 +35,7 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'exclude-matching-tables=s')) {
+unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'use-printtab')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -61,41 +62,57 @@ $dbif -> install_handler (\&fatal);
 # for the case that a password is needed
 $dbif -> connect;
 
-# dump procedures for the different drivers
+# customize dump procedure
 my $dumpproc;
-if ($driver eq 'mysql') {
-  $dumpproc = sub {
-    my ($database, $table) = @_;
-    
-    my $header;
-    # -c: Use complete insert statements.
-    open (DUMP, "mysqldump $database -t -c $table |")
-      || die ("$0: Couldn't not launch mysqldump: $!\n");
-    while (<DUMP>) {
-      if ($header) {
-        print;
-        next;
-      }
-      # skip header
-      $header = 1 unless (/\S/);
-    }
-    close (DUMP)
-      || die ("$0: mysqldump execution errors\n");
-    }
-} elsif ($driver eq 'Pg') {
-  $dumpproc = sub {
-    my ($database, $table) = @_;
 
-    # -D => dump data as inserts with attribute names
-    open (DUMP, "pg_dump $database -a -D -t $table |")
-      || die ("$0: Couldn't not launch pg_dump: $!\n");
-    while (<DUMP>) {
-      print;
-    }
-    close (DUMP)
-      || die ("$0: pg_dump execution errors\n");
-  }
-}    
+if ($opts{'use-printtab'}) {
+	# generic dump procedure
+	$dumpproc = sub {
+		my ($database, $table) = @_;
+
+		open (DUMP,
+			  "$FindBin::RealBin/dbs_printtab $driver $database $table |")
+			|| die ("$0: Couldn't launch $FindBin::RealBin/dbs_printtab: $!\n");
+		print <DUMP>;
+		close (DUMP)
+			|| die ("$0: dbs_printtab execution errors\n");
+	}
+} else {
+	# dump procedure provided by DBMS
+	if ($driver eq 'mysql') {
+		$dumpproc = sub {
+			my ($database, $table) = @_;
+    
+			my $header;
+			# -c: Use complete insert statements.
+			open (DUMP, "mysqldump $database -t -c $table |")
+				|| die ("$0: Couldn't launch mysqldump: $!\n");
+			while (<DUMP>) {
+				if ($header) {
+					print;
+					next;
+				}
+				# skip header
+				$header = 1 unless (/\S/);
+			}
+			close (DUMP)
+				|| die ("$0: mysqldump execution errors\n");
+		}
+	} elsif ($driver eq 'Pg') {
+		$dumpproc = sub {
+			my ($database, $table) = @_;
+
+			# -D => dump data as inserts with attribute names
+			open (DUMP, "pg_dump $database -a -D -t $table |")
+				|| die ("$0: Couldn't launch pg_dump: $!\n");
+			while (<DUMP>) {
+				print;
+			}
+			close (DUMP)
+				|| die ("$0: pg_dump execution errors\n");
+		}
+	}    
+}
 
 foreach my $table ($dbif->tables()) {
     my $outfile = lc($table) . '.sql';
@@ -206,6 +223,10 @@ database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 =head2 B<--exclude-matching-tables>=REGEXP
 
 Excludes any table matching the regular expression REGEXP from dumping.
+
+=head2 B<--use-printtab>
+
+Uses C<dbs_printtab> instead of the dumper utility provided by the DBMS.
 
 =head1 BUGS
 
