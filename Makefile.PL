@@ -12,6 +12,6 @@ my @scripts = ("./scripts/dbs_empty",
 WriteMakefile(
     'NAME'	=> 'DBIx::Easy',
     'VERSION_FROM' => 'Easy.pm', # finds $VERSION
-    'INSTALLMAN3DIR' => '/usr/man/man3',
+    'INSTALLMAN3DIR' => '/usr/share/man/man3',
     'EXE_FILES' => \@scripts
 );
