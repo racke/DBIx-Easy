@@ -409,7 +409,6 @@ while (<$fd_input>) {
         
         # now unregister key combination
         $href = \%recmap;
-print "VALUES: @values\n";
         # Mysql strips trailing blanks from VARCHAR fields, so we do
         if ($dbif->{DRIVER} eq 'mysql') {
             for ($i = 0; $i < @cleansekeys; $i++) {
