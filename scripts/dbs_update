@@ -23,13 +23,15 @@
 use strict;
 use DBIx::Easy;
 use Getopt::Long;
+use Term::ReadKey;
 
 # process commandline parameters
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'headline|h', 'routine|r=s', 'table|t=s')) {
-  exit 1;
+unless (GetOptions (\%opts, 'file|f=s', 'headline|h', 'routine|r=s',
+                    'table|t=s')) {
+    exit 1;
 }
 $SIG{__WARN__} = $whandler;
 
@@ -40,19 +42,23 @@ if ($opts{'headline'}) {
     }
 }
 
-if ($#ARGV < 1) {
-    die ("$0: need database driver and database name\n");
-}
-
 my %fieldmap;
+my $fd_input = \*STDIN;
 
 my ($sth, $keyfield, $update);
 my ($table, $key, $fieldnames, @values, $headline);
 my (@columns, $routine);
 
+if ($opts{'file'}) {
+    # read input from file instead from standard input
+    open (INPUT, $opts{'file'})
+        || die "$0: couldn't open $opts{'file'}: $!\n";
+    $fd_input = \*INPUT;
+}
+
 if ($opts{'headline'}) {
     # the first row consists of the column names
-    unless (defined ($headline = <STDIN>)) {
+    unless (defined ($headline = <$fd_input>)) {
         die ("$0: empty input file\n");
     }
     my @columns = split /\t/, $headline;
@@ -75,10 +81,21 @@ if ($opts{'routine'}) {
     }
 }
 
-my $dbif = new DBIx::Easy (@ARGV);
+my $dbif;
+my $pwdused = 0;
+
+my ($driver, $database, $user) = @ARGV;
+
+$dbif = new DBIx::Easy ($driver, $database, $user);
+
+# handler for DBI error messages and missing password
 $dbif -> install_handler (\&fatal);
 
-while (<STDIN>) {
+# we need to explicitly establish the connection
+# for the case that a password is needed
+$dbif -> connect;
+
+while (<$fd_input>) {
     my (@data);
 
     # skip empty/blank/comment lines
@@ -148,6 +165,10 @@ while (<STDIN>) {
     }
 }
 
+if ($opts{'file'}) {
+    close INPUT;
+}
+
 # ---------------------------------------------------------
 # FUNCTION: filter_input ROUTINE TABLE FIELDNAMES VALREF
 #
@@ -176,11 +197,74 @@ sub filter_input {
     
 }
 
-sub fatal {
-    my ($statement, $err, $msg) = @_;
+# -----------------------------------
+# FUNCTION: fatal
+#
+# Error handler called by DBIx::Easy.
+# -----------------------------------
 
-    $sth -> finish if $sth;
-    die ("$0: Statement \"$statement\" failed (ERRNO: $err, ERRMSG: $msg)\n");
+sub fatal {
+  my ($statement, $err, $msg) = @_;
+  my $pwd;
+
+  if (is_auth_error ($driver, $err)) {
+    unless ($pwdused) {
+      print "We need a password.\n";
+      $pwd = querypwd();
+      $pwdused = 1;
+    
+      # retry the connection
+      if (length ($pwd)) {
+        $dbif = new DBIx::Easy ($driver, $database, $user, $pwd);
+        $dbif -> install_handler (\&fatal);
+        $dbif -> connect ();
+        return;
+      } else {
+        die ("$statement.\n");
+      }
+    }
+  }
+  die ("$statement.\n");
+}
+
+# -----------------------------------------------------------------
+# FUNCTION: is_auth_error DRIVER ERR
+#
+# Determines from the error message ERR and the database DRIVER
+# if the connection couldn't established due to an authentification
+# error or an other cause. Returns a truth value in the first case.
+# -----------------------------------------------------------------
+
+sub is_auth_error ($$) {
+  my ($driver, $err) = @_;
+  
+  if ($driver eq 'mysql') {
+    if (index ($err, "DBI->connect failed: Access denied for user:") == 0) {
+      return 1;
+    }
+  } elsif ($driver eq 'Pg') {
+    if ($err =~ /^DBI->connect failed.+no password supplied/) {
+      return 1;
+    }
+  }
+}
+
+# ----------------------------
+# FUNCTION: querypwd
+#
+# Queries user for a password.
+# ----------------------------
+
+sub querypwd () {
+  my $pwd;
+
+  print "Password: ";
+  ReadMode ('noecho');  # turn echo off
+  $pwd = ReadLine (0);
+  ReadMode ('restore'); # restore terminal
+  print "\n";
+  chomp ($pwd);
+  $pwd;
 }
 
 # script documentation (POD style)
@@ -211,6 +295,10 @@ and specifies the database user and/or the host where the
 database resides (C<racke>, C<racke@linuxia.net> or C<@linuxia.net>).
 
 =head1 OPTIONS
+
+=head2 B<-f> I<FILE>, B<--file>=I<FILE>
+
+Reads records from file I<FILE> instead of from standard input.
 
 =head2 B<-h>, B<--headline>
 
