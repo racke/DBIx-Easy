@@ -4,6 +4,7 @@ Makefile.PL
 debian/changelog
 debian/rules
 debian/control
+debian/copyright
 scripts/dbs_dumptabdata
 scripts/dbs_dumptabstruct
 scripts/dbs_empty
