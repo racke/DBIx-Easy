@@ -1,7 +1,7 @@
 Source: dbix-easy-perl
 Section: interpreters
 Priority: optional
-Maintainer: Dennis Schoen and Alexander Koch <perl@argh.org>
+Maintainer: Dennis Schoen <dennis@debian.org>
 Standards-Version: 3.0.1
 
 Package: libdbix-easy-perl
