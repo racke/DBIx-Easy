@@ -2,7 +2,7 @@ DBIx::Easy - Easy to Use DBI Interface
 **************************************
 
    * The homepage of `DBIx::Easy' is http://www.linuxia.de/DBIx/Easy/.
-   * The latest version (currently 0.06) is always available as 
+   * The latest version (currently 0.07) is always available as 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * See the manual page for more informations.
 
@@ -17,7 +17,7 @@ Installation
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.06
+cd DBIx-Easy-0.07
 perl Makefile.PL
 make
 make install
@@ -29,10 +29,12 @@ Scripts
 The `DBIx::Easy' package contains the following scripts: 
 
 
-`dbs_dumptabdata'   creates file set with SQL table data
-`dbs_dumptabstruct' creates file set with SQL table schemas
-`dbs_empty'         erases all data from a SQL database
-`dbs_update'        update SQL database from text file
+Name                Description                             Remarks
+`dbs_dumptabdata'   creates file set with SQL table data    
+`dbs_dumptabstruct' creates file set with SQL table schemas 
+`dbs_empty'         erases all data from a SQL database     
+`dbs_printtab'      prints data from SQL table              New in 0.07
+`dbs_update'        update SQL database from text file      
 
 
 Debian Package
@@ -40,20 +42,29 @@ Debian Package
 
 This software is also available as Debian package, maintained by Dennis Schön 
 <dschoen@rio.gt.owl.de>. The download address is 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.06-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.07-1_all.deb.
 
 Changes
 *******
 
-0.07 (not yet released)
-***********************
+0.07
+****
 
+   * new script `dbs_printtab'
    * made more verbose if connection cannot be established
-   * method `view' fixed in respect to `limit' option
+   * method `view' fixed in respect to `limit' option, option `separator'
+     added, separator defaults to the tabulator now, escape newlines
    * new option `--exclude-matching-tables' for `dbs_dumptabdata', `
      dbs_dumptabstruct' and `dbs_empty'
-   * new option `--map' for `dbs_update'
+   * new option `--tables' for `dbs_empty', `dbs_dumptabstruct' and `
+     dbs_dumptabdata'
+   * new options `--format', `--keys', `--map', `--skipbadlines' and `
+     --update-only' for `dbs_update'
+   * new option `--use-printtab' for `dbs_dumptabdata'
    * optional parameter CONDITION added to method `makemap'
+   * made `dbs_update' more verbose on errors, ensure commit, newlines will
+     be regenerated, remembers table name if specified with `--table', carriage
+     returns are removed from input
    * don't call `rollback' within error handler if `AutoCommit' is enabled
    * new method `is_table'
 
