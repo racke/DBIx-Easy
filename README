@@ -65,6 +65,8 @@ Changes
 `dbs_update'
 ============
 
+   * inclusion mode of `--columns' fixed
+   * apply user-defined filter specified by `--routine' only once
    * choosed comma as default field separator for CSV format
    * new option `--rows'
    * option `--keys' accepts key names too

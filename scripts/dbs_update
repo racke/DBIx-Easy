@@ -289,11 +289,6 @@ while (<$fd_input>) {
         }
     }
     
-    if ($opts{'routine'}) {
-        # filter input first
-        filter_input ($routine, $table, $fieldnames, \@values);
-    }
-    
     # determine column names
     @names = column_names ($dbif, $table, $startcol);
     $fieldnames = \@names;

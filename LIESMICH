@@ -66,6 +66,9 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
 `dbs_update'
 ============
 
+   * Fehler bei der explizite Spaltenangabe mit `--columns' behoben
+   * der durch `--routine' angegebene benutzerdefinierter Filter wird nur
+     einmal angewendet
    * Komma ist jetzt voreingestelltes Trennzeichen für das CSV-Format
    * neue Option `--rows'
    * Option `--keys' läßt Schlüsselnamen zu

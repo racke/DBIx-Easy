@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Sep 24 20:21:23 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): apply user-defined filter routine only once
+
 * Mon Sep 18 17:32:56 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_dumptabdata, scripts/dbs_dumptabstruct): pass options
 first to mysqldump for compatibility with older versions
