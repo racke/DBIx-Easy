@@ -1,6 +1,6 @@
 #! /usr/bin/perl -w
 
-# dumptabstruct.pl - creates file set with SQL table schemas
+# dbs_dumptabstruct - creates file set with SQL table schemas
 
 # This script queries a SQL database and creates one file for each
 # table in the database containing the schema of the table.
@@ -9,7 +9,7 @@
 
 # Author: Stefan Hornburg <racke@linuxia.net>
 # Maintainer: Stefan Hornburg <racke@linuxia.net>
-# Version: 0.05_01
+# Version: 0.06
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -87,11 +87,11 @@ foreach my $table ($dbif->tables()) {
   close (OUT);
 }
 
-# ----------------------------------
+# -----------------------------------
 # FUNCTION: fatal
 #
-# Error handler called by DBIx::CGI.
-# ----------------------------------
+# Error handler called by DBIx::Easy.
+# -----------------------------------
 
 sub fatal {
   my ($statement, $err, $msg) = @_;
