@@ -9,7 +9,7 @@
 
 # Author: Stefan Hornburg <racke@linuxia.de>
 # Maintainer: Stefan Hornburg <racke@linuxia.de>
-# Version: 0.07
+# Version: 0.08
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -34,7 +34,8 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'tables|t=s')) {
+unless (GetOptions (\%opts, 'exclude-matching-tables=s',
+                    'pipe|p', 'tables|t=s')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -125,10 +126,14 @@ foreach my $table (@tables) {
     }
     # call driver dependent dump procedure and fill
     # output file with the results
-    open (OUT, ">$outfile") || die ("$0: Couldn't open $outfile: $!\n");
-    select (OUT);
+    unless ($opts{'pipe'}) {
+        open (OUT, ">$outfile") || die ("$0: Couldn't open $outfile: $!\n");
+        select (OUT);
+    }
     &$dumpproc ($database, $table);
-    close (OUT);
+    unless ($opts{'pipe'}) {
+        close (OUT);
+    }
     select (STDOUT);
 }
 
@@ -221,6 +226,10 @@ and specifies the database user and/or the host where the
 database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
 =head1 COMMAND LINE OPTIONS
+
+=head2 B<-p>, B<--pipe>
+
+Prints the table dumps to standard output.
 
 =head2 B<-t> TABLE[,TABLE,...], B<--tables>=TABLE[,TABLE,...]
 
