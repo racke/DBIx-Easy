@@ -1,0 +1,113 @@
+#! /usr/bin/perl -w
+
+# Copyright (C) 1999 Stefan Hornburg
+
+# Author: Stefan Hornburg <racke@linuxia.net>
+# Maintainer: Stefan Hornburg <racke@linuxia.net>
+# Version: 0.06
+
+# This file is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+
+# This file is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this file; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+use strict;
+use DBIx::CGI;
+use Term::ReadKey;
+
+my $dbif;
+my $pwdused = 0;
+
+my ($driver, $database, $user) = @ARGV;
+$dbif = new DBIx::CGI (undef, $driver, $database, $user);
+
+# handler for DBI error messages and missing password
+$dbif -> install_handler (\&fatal);
+
+# we need to explicitly establish the connection
+# for the case that a password is needed
+$dbif -> connect;
+
+foreach my $table ($dbif->tables()) {
+  print $table, "\n";
+}
+
+# ----------------------------------
+# FUNCTION: fatal
+#
+# Error handler called by DBIx::CGI.
+# ----------------------------------
+
+sub fatal {
+  my ($statement, $err, $msg) = @_;
+  my $pwd;
+
+  if (is_auth_error ($driver, $err)) {
+    unless ($pwdused) {
+      print "We need a password.\n";
+      $pwd = querypwd();
+      $pwdused = 1;
+    
+      # retry the connection
+      if (length ($pwd)) {
+        $dbif = new DBIx::CGI (undef, $driver, $database, $user, $pwd);
+        $dbif -> install_handler (\&fatal);
+        $dbif -> connect ();
+        return;
+      } else {
+        die ("$statement.\n");
+      }
+    }
+  }
+  die ("$statement.\n");
+}
+
+# -----------------------------------------------------------------
+# FUNCTION: is_auth_error DRIVER ERR
+#
+# Determines from the error message ERR and the database DRIVER
+# if the connection couldn't established due to an authentification
+# error or an other cause. Returns a truth value in the first case.
+# -----------------------------------------------------------------
+
+sub is_auth_error ($$) {
+  my ($driver, $err) = @_;
+  
+  if ($driver eq 'mysql') {
+    if (index ($err, "DBI->connect failed: Access denied for user:") == 0) {
+      return 1;
+    }
+  } elsif ($driver eq 'Pg') {
+    if ($err =~ /^DBI->connect failed.+no password supplied/) {
+      return 1;
+    }
+  }
+}
+
+# ----------------------------
+# FUNCTION: querypwd
+#
+# Queries user for a password.
+# ----------------------------
+
+sub querypwd () {
+  my $pwd;
+
+  print "Password: ";
+  ReadMode ('noecho');  # turn echo off
+  $pwd = ReadLine (0);
+  ReadMode ('restore'); # restore terminal
+  print "\n";
+  chomp ($pwd);
+  $pwd;
+}
+
