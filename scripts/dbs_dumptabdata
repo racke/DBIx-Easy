@@ -52,12 +52,6 @@ if (exists $opts{'exclude-matching-tables'}) {
         die "$0: $@";
     }
 }
-if (exists $opts{'sort'}) {
-	unless ($opts{'use-printtab'}) {
-		die "$0: option --sort is valid only if --use-printtab is specified\n";
-	}
-	$printtabopts = "--sort='$opts{'sort'}'"
-}
 
 my $dbif;
 my $pwdused = 0;
@@ -83,12 +77,7 @@ if ($opts{'use-printtab'}) {
 		my ($database, $table, $user) = @_;
         
         unless (defined $user) {$user = ''};
-		open (DUMP,
-			  "$FindBin::RealBin/dbs_printtab $printtabopts $driver $database $table $user|")
-			|| die ("$0: Couldn't launch $FindBin::RealBin/dbs_printtab: $!\n");
-		print <DUMP>;
-		close (DUMP)
-			|| die ("$0: dbs_printtab execution errors\n");
+		print $dbif->view ($table);
 	}
 } else {
 	# dump procedure provided by DBMS
@@ -238,14 +227,10 @@ Comma-separated list of tables to dump.
 
 Excludes any table matching the regular expression REGEXP from dumping.
 
-=head2 B<--sort>=KEY[,KEY]
-
-The output is sorted by the KEY arguments. This option is valid only
-in conjunction with B<--use-printtab>.
-
 =head2 B<--use-printtab>
 
-Uses C<dbs_printtab> instead of the dumper utility provided by the DBMS.
+Uses generic dump (similar to C<dbs_printtab>) instead of the dumper
+utility provided by the DBMS.
 
 =head1 BUGS
 
@@ -253,7 +238,7 @@ msql is not supported.
 
 =head1 AUTHOR
 
-Stefan Hornburg, racke@linuxia.de
+Stefan Hornburg (Racke), racke@linuxia.de
 
 =head1 SEE ALSO
 
