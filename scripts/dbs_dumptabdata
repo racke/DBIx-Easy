@@ -150,6 +150,9 @@ foreach my $table (@tables) {
     close (OUT);
 }
 
+# Destroy Database Object as written in manpage
+undef $dbif;
+
 # -----------------------------------
 # FUNCTION: fatal
 #

@@ -65,6 +65,9 @@ $dbif -> connect;
 # query records in table
 print $dbif -> view ($table, columns => $opts{'columns'});
 
+# Destroy database object as written in manpage
+undef $dbif;
+
 # -----------------------------------
 # FUNCTION: fatal
 #
