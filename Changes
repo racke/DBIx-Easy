@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Tue Jul 24 16:25:10 2001 CEST Dennis Schön <dennis@cobolt.net>
+(Easy.pm): database port is configurable now
+
 * Tue Jul 17 14:14:43 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 
 DBIx::Easy v0.12 released
