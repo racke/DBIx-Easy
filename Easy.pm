@@ -193,33 +193,28 @@ sub DESTROY {
 # Error handler for this module.
 # ------------------------------
 
-sub fatal
-  {
+sub fatal {
 	my ($self, $info, $err) = @_;
 	my $errstr = '';
 
-	if (defined $self -> {CONN})
-	  {
+	if (defined $self -> {CONN}) {
 		$err = $DBI::err;
 		$errstr = $DBI::errstr;
-		
-		# something has gone wrong, rollback anything
-		$self -> {CONN} -> rollback ();
-	  }
+
+		unless ($self -> {CONN} -> {AutoCommit}) {
+            # something has gone wrong, rollback anything
+            $self -> {CONN} -> rollback ();
+        }
+    }
     
-	if (defined $self -> {'HANDLER'})
-	  {
+	if (defined $self -> {'HANDLER'}) {
 		&{$self -> {'HANDLER'}} ($info, $err, $errstr);
-	  }
-	elsif (defined $self -> {CONN})
-	  {
+    } elsif (defined $self -> {CONN}) {
 		die "$info (DBERR: $err, DBMSG: $errstr)\n";
-	  }
-	else
-	  {
+    } else {
 		die "$info\n";
-	  }
-  }
+    }
+}
 
 # ---------------------------------------------------------------
 # METHOD: connect

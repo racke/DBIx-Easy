@@ -42,6 +42,14 @@ This software is also available as Debian package, maintained by Dennis Schön
 <dschoen@rio.gt.owl.de>. The download address is 
 http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.06-1_all.deb.
 
+Changes
+*******
+
+0.07 (not yet released)
+***********************
+
+   * don't call `rollback' within error handler if `AutoCommit' is enabled
+
 Authors
 *******
 
