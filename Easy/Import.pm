@@ -60,19 +60,6 @@ sub _do_import {
 
 	$self->{colflag} = 1;
 	
-	if ($params{file}) {
-		# read input from file
-		require IO::File;
-		$self->{fd_input} = new IO::File;
-		$self->{fd_input}->open($params{file})
-			|| die "$0: couldn't open $params{file}: $!\n";
-	} else {
-		# read input from standard input
-		require IO::Handle;
-		$self->{fd_input} = new IO::Handle;
-		$self->{fd_input}->fdopen(fileno(STDIN),'r');
-	}
-
 	if ($params{'format'}) {
 		$format = uc($params{'format'});
 
@@ -107,40 +94,79 @@ sub _do_import {
 	}
 
 	my @columns;
-	if ($self->{func}->($self, \@columns) <= 0)  {
-		die "$0: couldn't find headline\n";
+
+	if ($params{'columns'}) {
+		$self->{colflag} = ! ($params{'columns'} =~ s/\s*[\!^]//);
+		
+		# setup positive/negative list for columns
+		for (split(/\s*,\s*/, $params{'columns'})) {
+			$self->{usecol}->{$_} = $self->{colflag};
+		}
 	}
 
-	if ($params{'map_filter'} eq 'lc') {
-		@columns = map {lc($_)} @columns;
+	if ($params{file}) {
+		# read input from file
+		require IO::File;
+		$self->{fd_input} = new IO::File;
+		$self->{fd_input}->open($params{file})
+			|| die "$0: couldn't open $params{file}: $!\n";
+	} else {
+		# read input from standard input
+		require IO::Handle;
+		$self->{fd_input} = new IO::Handle;
+		$self->{fd_input}->fdopen(fileno(STDIN),'r');
 	}
-		
-	# remove whitespace from column names and mark them
-	map {s/^\s+//; s/\s+$//; $hcolmap{$_} = 1;} @columns;
 
 	if ($params{'map'}) {
-        my @newcolumns;
+		# parse column name mapping
+		my ($head, $name);
+		foreach (split (/;/, $params{'map'})) {
+			($head, $name) = split /=/;
+			$colmap{$head} = $name;
+		}
+	}
+
+	if (1) {
+		my %hcolmap;
+		my @columns;
+
+		if ($self->{func}->($self, \@columns) <= 0)  {
+			die "$0: couldn't find headline\n";
+		}
+
+		if ($params{'map_filter'} eq 'lc') {
+			@columns = map {lc($_)} @columns;
+		}
+
+		# remove whitespace from column names and mark them
+		map {s/^\s+//; s/\s+$//; $hcolmap{$_} = 1;} @columns;
+
+		if ($params{'map'}) {
+			my @newcolumns;
         
-        # filter column names
-        foreach (@columns) {
-            if (exists $colmap{$_}) {
-                push (@newcolumns, $colmap{$_});
-				$hcolmap{$colmap{$_}} = 1;
-            } else {
-                push (@newcolumns, $_);
-            }
-        }
-        @columns = @newcolumns;
-    }
+			# filter column names
+			foreach (@columns) {
+				if (exists $colmap{$_}) {
+					push (@newcolumns, $colmap{$_});
+					$hcolmap{$colmap{$_}} = 1;
+				} else {
+					push (@newcolumns, $_);
+				}
+			}
+			@columns = @newcolumns;
+		}
 
-    # add any other columns explicitly selected
-    for (sort (keys %{$self->{usecol}})) {
-        next if $hcolmap{$_};
-        next unless exists $self->{usecol}->{$_};
-        next unless $self->{usecol}->{$_};
-        push (@columns, $_);
-    }
+		# add any other columns explicitly selected
+		for (sort (keys %{$self->{usecol}})) {
+			next if $hcolmap{$_};
+			next unless exists $self->{usecol}->{$_};
+			next unless $self->{usecol}->{$_};
+			push (@columns, $_);
+		}
 
+		$self->{fieldmap}->{$params{table}} = \@columns;
+	}
+	
 	# database access
 	my $dbif = $self->{dbif} = new DBIx::Easy ($self->{driver} || $params{driver},
 							   $self->{database} || $params{database});
@@ -149,6 +175,8 @@ sub _do_import {
     my $fieldnames = \@names;
 	my @values;
 
+	print "USECOL $self->{colflag}: " . join(',', keys %{$self->{usecol}}) . "\n";
+	
 	while ($self->{func}->($self, \@columns))  {
 		my (@data);
 		
@@ -162,10 +190,10 @@ sub _do_import {
 			# check for column exclusion
 			if (keys %{$self->{usecol}}) {
 				# note: we do not check the actual value !!
-				if ($self->{colflag} && ! exists $self->usecol->{$$fieldnames[$i]}) {
+				if ($self->{colflag} && ! exists $self->{usecol}->{$$fieldnames[$i]}) {
 					next;
 				}
-				if (! $self->{colflag} && exists $self->usecol->{$$fieldnames[$i]}) {
+				if (! $self->{colflag} && exists $self->{usecol}->{$$fieldnames[$i]}) {
 					next;
 				}
 			}
