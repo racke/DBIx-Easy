@@ -341,14 +341,14 @@ while (<$fd_input>) {
         if ($$typeref{$$fieldnames[$i]} == DBI::SQL_CHAR) {
             if (defined $values[$i]
                 && length($values[$i]) > $$sizeref{$$fieldnames[$i]}) {
-                warn ("$0: $.: Data for field $$fieldnames[$i] truncated: $values[$i]\n");
+                warn (prefix() . "Data for field $$fieldnames[$i] truncated: $values[$i]\n");
                 $values[$i] = substr($values[$i], 0,
                                      $$sizeref{$$fieldnames[$i]});
             }
         } elsif ($$typeref{$$fieldnames[$i]} == DBI::SQL_VARCHAR) {
             if (defined $values[$i]
                 && length($values[$i]) > $$sizeref{$$fieldnames[$i]}) {
-                warn ("$0: $.: Data for field $$fieldnames[$i] truncated: $values[$i]\n");
+                warn (prefix() . "Data for field $$fieldnames[$i] truncated: $values[$i]\n");
                 $values[$i] = substr($values[$i], 0,
                                      $$sizeref{$$fieldnames[$i]});
             }
