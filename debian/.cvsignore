@@ -1,1 +1,5 @@
+files
+postinst.debhelper
+prerm.debhelper
+substvars
 tmp
