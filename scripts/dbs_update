@@ -65,14 +65,17 @@ my ($table, $key, $fieldnames, @values, $headline);
 my (@columns, $routine, %colmap);
 
 # whether to consider column
+my $colflag = 1;
 my %usecol;
 # input with table as first field may specify start column
 my $startcol;
 
 if ($opts{'columns'}) {
-    # setup positive list for columns
+    $colflag = ! ($opts{'columns'} =~ s/\s*[^\!]//);
+
+    # setup positive/negative list for columns
     for (@columns = split(/,/, $opts{'columns'})) {
-        $usecol{$_} = 1;
+        $usecol{$_} = $colflag;
     }
 }
 
@@ -169,9 +172,15 @@ if ($opts{'cleanse'}) {
     $numkeysleft = $opts{'keys'};
     for (my $i = 0; $i < $numkeysleft && $i < @$fieldnames; $i++) {
         if (keys %usecol) {
-            $numkeysleft++;
-            next unless exists $usecol{$$fieldnames[$i]}
-                && $usecol{$$fieldnames[$i]};
+            # note: we do not check the actual value !!
+            if ($colflag && ! exists $usecol{$$fieldnames[$i]}) {
+                $numkeysleft++;
+                next;
+            }
+            if (! $colflag && exists $usecol{$$fieldnames[$i]}) {
+                $numkeysleft++;
+                next;
+            }
         }
 
 		push (@cleansekeys, $$fieldnames[$i]);
@@ -272,9 +281,15 @@ while (<$fd_input>) {
     $numkeysleft = $opts{'keys'};
 	for (my $i = 0; $i < $numkeysleft && $i < @$fieldnames; $i++) {
         if (keys %usecol) {
-            $numkeysleft++;
-            next unless exists $usecol{$$fieldnames[$i]}
-                && $usecol{$$fieldnames[$i]};
+            # note: we do not check the actual value !!
+            if ($colflag && ! exists $usecol{$$fieldnames[$i]}) {
+                $numkeysleft++;
+                next;
+            }
+            if (! $colflag && exists $usecol{$$fieldnames[$i]}) {
+                $numkeysleft++;
+                next;
+            }
         }
 
 		push (@keys, $$fieldnames[$i]);
@@ -297,8 +312,15 @@ while (<$fd_input>) {
     for (my $i = 0; $i <= $#$fieldnames; $i++) {
         # check for column exclusion
         if (keys %usecol) {
-            next unless exists $usecol{$$fieldnames[$i]}
-                && $usecol{$$fieldnames[$i]};
+            # note: we do not check the actual value !!
+            if ($colflag && ! exists $usecol{$$fieldnames[$i]}) {
+                $numkeysleft++;
+                next;
+            }
+            if (! $colflag && exists $usecol{$$fieldnames[$i]}) {
+                $numkeysleft++;
+                next;
+            }
         }
 		# expand newlines
 		if (defined $values[$i]) {
@@ -623,6 +645,8 @@ in the meantime.
 =head2 B<-c> I<COLUMN,COLUMN,...>, B<--columns>=I<COLUMN,COLUMN,...>
 
 Update only the table columns given by the I<COLUMN> parameters.
+To exclude columns from the update prepend C<!> or C<^> to the
+parameters.
 
 =head2 B<-f> I<FILE>, B<--file>=I<FILE>
 
