@@ -1,5 +1,12 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sat Mar 16 13:00:32 2002 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+
+DBIx::Easy v0.15 released
+
+* Sun Feb 24 22:00:32 2002 -0500 David B. Bitton <david@codenoevil.com>
+(Easy.pm): support for Sybase and ODBC
+
 * Sat Dec  9 02:13:00 2001 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 
 DBIx::Easy v0.14 released
