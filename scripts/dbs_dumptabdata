@@ -1,0 +1,185 @@
+#! /usr/bin/perl -w
+
+# dbs_dumptabdata - creates file set with SQL table data
+
+# This script queries a SQL database and creates one file for each
+# table in the database containing the data of the table.
+
+# Copyright (C) 1999 Stefan Hornburg
+
+# Author: Stefan Hornburg <racke@linuxia.net>
+# Maintainer: Stefan Hornburg <racke@linuxia.net>
+# Version: 0.06
+
+# This file is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 2, or (at your option) any
+# later version.
+
+# This file is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this file; see the file COPYING.  If not, write to the Free
+# Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+use strict;
+use DBIx::Easy;
+use Term::ReadKey;
+
+my $dbif;
+my $pwdused = 0;
+
+my ($driver, $database, $user) = @ARGV;
+$dbif = new DBIx::Easy ($driver, $database, $user);
+
+# handler for DBI error messages and missing password
+$dbif -> install_handler (\&fatal);
+
+# we need to explicitly establish the connection
+# for the case that a password is needed
+$dbif -> connect;
+
+# dump procedures for the different drivers
+my $dumpproc;
+if ($driver eq 'mysql') {
+  $dumpproc = sub {
+    my ($database, $table) = @_;
+    
+    my $header;
+    # -c: Use complete insert statements.
+    open (DUMP, "mysqldump $database -t -c $table |")
+      || die ("$0: Couldn't not launch mysqldump: $!\n");
+    while (<DUMP>) {
+      if ($header) {
+        print;
+        next;
+      }
+      # skip header
+      $header = 1 unless (/\S/);
+    }
+    close (DUMP)
+      || die ("$0: mysqldump execution errors\n");
+    }
+} elsif ($driver eq 'Pg') {
+  $dumpproc = sub {
+    my ($database, $table) = @_;
+
+    # -D => dump data as inserts with attribute names
+    open (DUMP, "pg_dump $database -a -D -t $table |")
+      || die ("$0: Couldn't not launch pg_dump: $!\n");
+    while (<DUMP>) {
+      print;
+    }
+    close (DUMP)
+      || die ("$0: pg_dump execution errors\n");
+  }
+}    
+
+foreach my $table ($dbif->tables()) {
+  my $outfile = lc($table) . '.sql';
+
+  # call driver dependent dump procedure and fill
+  # output file with the results
+  open (OUT, ">$outfile") || die ("$0: Couldn't open $outfile: $!\n");
+  select (OUT);
+  &$dumpproc ($database, $table);
+  close (OUT);
+}
+
+# -----------------------------------
+# FUNCTION: fatal
+#
+# Error handler called by DBIx::Easy.
+# -----------------------------------
+
+sub fatal {
+  my ($statement, $err, $msg) = @_;
+  my $pwd;
+
+  if (is_auth_error ($driver, $err)) {
+    unless ($pwdused) {
+      print "We need a password.\n";
+      $pwd = querypwd();
+      $pwdused = 1;
+    
+      # retry the connection
+      if (length ($pwd)) {
+        $dbif = new DBIx::Easy ($driver, $database, $user, $pwd);
+        $dbif -> install_handler (\&fatal);
+        $dbif -> connect ();
+        return;
+      } else {
+        die ("$statement.\n");
+      }
+    }
+  }
+  die ("$statement.\n");
+}
+
+# -----------------------------------------------------------------
+# FUNCTION: is_auth_error DRIVER ERR
+#
+# Determines from the error message ERR and the database DRIVER
+# if the connection couldn't established due to an authentification
+# error or an other cause. Returns a truth value in the first case.
+# -----------------------------------------------------------------
+
+sub is_auth_error ($$) {
+  my ($driver, $err) = @_;
+  
+  if ($driver eq 'mysql') {
+    if (index ($err, "DBI->connect failed: Access denied for user:") == 0) {
+      return 1;
+    }
+  } elsif ($driver eq 'Pg') {
+    if ($err =~ /^DBI->connect failed.+no password supplied/) {
+      return 1;
+    }
+  }
+}
+
+# ----------------------------
+# FUNCTION: querypwd
+#
+# Queries user for a password.
+# ----------------------------
+
+sub querypwd () {
+  my $pwd;
+
+  print "Password: ";
+  ReadMode ('noecho');  # turn echo off
+  $pwd = ReadLine (0);
+  ReadMode ('restore'); # restore terminal
+  print "\n";
+  chomp ($pwd);
+  $pwd;
+}
+
+=head1 NAME
+
+dbs_dumptabdata - Creates file set with SQL table data
+
+=head1 DESCRIPTION
+
+dbs_dumptabdata is an utility to create a file set with SQL table data.
+For each table in the database dbs_dumptabdata calls the appropriate dumper
+utility with the output directed to a file named I<table>.sql in the
+current directory. dbs_dumptabdata asks for a password if necessary.
+
+=head1 BUGS
+
+msql is not supported.
+
+=head1 AUTHOR
+
+Stefan Hornburg, racke@linuxia.net
+
+=head1 SEE ALSO
+
+perl(1), DBIx::Easy(3)
+
+=cut    

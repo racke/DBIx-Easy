@@ -4,5 +4,6 @@ Makefile.PL
 debian/changelog
 debian/rules
 debian/control
+scripts/dbs_dumptabdata
 scripts/dbs_dumptabstruct
 scripts/dbs_update
