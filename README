@@ -30,11 +30,11 @@ The `DBIx::Easy' package contains the following scripts:
 
 
 Name                Description                             Remarks     
-`dbs_dumptabdata'   creates file set with SQL table data                
-`dbs_dumptabstruct' creates file set with SQL table schemas             
-`dbs_empty'         erases all data from a SQL database                 
-`dbs_printtab'      prints data from SQL table              New in 0.07 
-`dbs_update'        update SQL database from text file                  
+`dbs_dumptabdata'   creates file set with SQL table data                Manual page
+`dbs_dumptabstruct' creates file set with SQL table schemas             Manual page
+`dbs_empty'         erases all data from a SQL database                 Manual page
+`dbs_printtab'      prints data from SQL table              New in 0.07 Manual page
+`dbs_update'        update SQL database from text file                  Manual page
 
 
 Debian Package
@@ -57,6 +57,7 @@ Changes
      SQL statement which each record to be cleansed
    * bug fixed that may be triggered by the combination of `--headline' and `
      --map'
+   * strip whitespace from column names found in the headline of the input
    * comma is now the default field separator for CSV format, field
      separator can selected from the commandline now
    * `--columns' can be used to exclude columns explicitly

@@ -1,8 +1,12 @@
 Revision history for Perl module DBIx::Easy.
 
-* Thu Sep  7 17:31:04 2000 CEST Stefan Hornburg <racke@linuxia.de>
+* Fri Sep  8 21:58:04 2000 CEST Stefan Hornburg <racke@linuxia.de>
 
 DBIx::Easy v0.08 released
+
+* Fri Sep  8 21:56:59 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): strip whitespace from column names found
+in the headline
 
 * Thu Sep  7 17:04:24 2000 CEST Stefan Hornburg <racke@linuxia.de>
 (scripts/dbs_update): comma is now the default field separator

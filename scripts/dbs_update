@@ -116,6 +116,9 @@ if ($opts{'headline'}) {
 		@columns = split /$sep_char/, $headline;
 	}
 	
+	# remove whitespace from column names
+	map {s/^\s+//; s/\s+$//;} @columns;
+		
     if ($opts{'map'}) {
         my @newcolumns;
         
