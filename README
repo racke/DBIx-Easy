@@ -2,7 +2,7 @@ DBIx::Easy - Easy to Use DBI Interface
 **************************************
 
    * The homepage of `DBIx::Easy' is http://www.linuxia.de/DBIx/Easy/.
-   * The latest version (currently 0.09) is always available as 
+   * The latest version (currently 0.10) is always available as 
      http://www.linuxia.de/DBIx/Easy/DBIx-Easy.tar.gz.
    * See the manual page for more informations.
 
@@ -17,7 +17,7 @@ Installation
 
 
 tar -xzf DBIx-Easy.tar.gz
-cd DBIx-Easy-0.09
+cd DBIx-Easy-0.10
 perl Makefile.PL
 make
 make install
@@ -42,10 +42,18 @@ Debian Package
 
 This software is also available as Debian package, maintained by Dennis Schön 
 <dennis@cobolt.net>. The download address is 
-http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.09-1_all.deb.
+http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.10-1_all.deb.
 
 Changes
 *******
+
+0.10
+****
+
+`dbs_dumptabdata'
+=================
+
+   * pass the `user' parameter to `dbs_printtab'
 
 0.09
 ****

@@ -1,3 +1,9 @@
+dbix-easy-perl (0.10-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Dennis Schoen <dennis@debian.org>  Tue,  6 Feb 2001 14:07:09 +0100
+
 dbix-easy-perl (0.09-1) unstable; urgency=medium
 
   * New upstream version
