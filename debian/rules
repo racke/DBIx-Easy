@@ -20,10 +20,14 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-
 # Add here commands to compile the package.
-	$(PERL) Makefile.PL $(config)
-	$(MAKE)
+	$(PERL) Makefile.PL INSTALLDIRS=vendor
+# For potato builds
+	if ! grep ^install_vendor Makefile >/dev/null; then \
+		$(MAKE) clean; \
+		$(PERL) Makefile.PL $(config); \
+	fi
+	$(MAKE) OPTIMIZE="-O2 -g -Wall"
 
 	touch build-stamp
 
@@ -49,7 +53,11 @@ install: build
 	dh_installdirs
 
 # Add here commands to install the package into debian/tmp.
-	$(MAKE) pure_install DESTDIR=$(TMP)
+	if grep ^install_vendor Makefile; then \
+		$(MAKE) install PREFIX=$(PWD)/debian/tmp/usr; \
+	else \
+		$(MAKE) pure_install DESTDIR=$(PWD)/debian/tmp; \
+	fi
 	for pf in Easy.pm scripts/*; do \
 		if [ -f $$pf ]; then \
 			pod2html --outfile=$$pf.man.html $$pf; \
