@@ -1,8 +1,12 @@
 Revision history for Perl module DBIx::Easy.
 
-* Thu Mar 13 17:38:09 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+* Tue May 13 14:40:21 2003 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 
 DBIx::Easy v0.16 released
+
+* Tue May 13 14:40:21 2003 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): scalar references allow embedding strings without further quoting
+in the update method as well
 
 * Thu Mar 13 17:38:09 2003 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): fixed fallback in passwd method

@@ -448,8 +448,9 @@ sub insert ($$$;@)
 =item update I<table> I<conditions> I<column> I<value> [I<column> I<value>] ...
 
   $dbi_interface -> update ('components', "table='ram'", price => 100);
+  $dbi_interface -> update ('components', "table='ram'", price => \"price + 20");
 
-Updates any row of I<table> which fulfill the I<conditions> by inserting the given I<column>/I<value> pairs. Returns the number of rows modified.
+Updates any row of I<table> which fulfill the I<conditions> by inserting the given I<column>/I<value> pairs. Scalar references can be used to embed strings without further quoting into the resulting SQL statement. Returns the number of rows modified.
 
 =back
 
@@ -467,17 +468,20 @@ sub update
 	# ensure that connection is established
 	$self -> connect ();
 	
-	while ($#_ >= 0)
-	  {
+	while ($#_ >= 0) {
 		$column = shift; $value = shift;
         # avoid Perl warning
         if (defined $value) {
-            $value = $self -> {CONN} -> quote ($value);
+		    if (ref($value) eq 'SCALAR') {
+				$value = $$value;
+			} else {
+				$value = $self -> {CONN} -> quote ($value);
+			}
         } else {
             $value = 'NULL';
         }
 		push (@columns, $column . ' = ' . $value);
-	  }
+	}
 
 	# now the statement
 	$statement = "UPDATE $table SET "
