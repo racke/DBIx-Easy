@@ -95,7 +95,6 @@ if ($driver eq 'mysql') {
   }
 }    
 
-print keys(%opts), "\n";
 foreach my $table ($dbif->tables()) {
     my $outfile = lc($table) . '.sql';
     my $regexp;
