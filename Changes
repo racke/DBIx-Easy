@@ -1,5 +1,17 @@
 Revision history for Perl module DBIx::Easy.
 
+* Fri Jun 23 11:36:27 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): several new options
+
+* Mon May  8 02:29:47 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): remove carriage returns from input file
+
+* Sun May  7 16:47:59 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_update): renember table name if given explicitly
+
+* Sat Apr  1 15:39:16 2000 CEST Stefan Hornburg <racke@linuxia.de>
+(scripts/dbs_dumptabstruct, scripts/dbs_dumptabdata): new option --tables
+
 * Thu Mar 23 20:15:13 2000 CET Stefan Hornburg <racke@linuxia.de>
 (Easy.pm): better method to determine directory, force commit
 documented in POD
