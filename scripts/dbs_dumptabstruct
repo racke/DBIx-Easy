@@ -157,3 +157,27 @@ sub querypwd () {
   $pwd;
 }
 
+=head1 NAME
+
+dbs_dumptabstruct - Creates file set with SQL table schemas
+
+=head1 DESCRIPTION
+
+dbs_dumptabstruct is an utility to create a file set with SQL table schemas.
+For each table in the database dbs_dumptabstruct calls the appropriate dumper
+utility with the output directed to a file named I<table>.sql in the
+current directory. dbs_dumptabstruct asks for a password if necessary.
+
+=head1 BUGS
+
+msql is not supported.
+
+=head1 AUTHOR
+
+Stefan Hornburg, racke@linuxia.net
+
+=head1 SEE ALSO
+
+perl(1), DBIx::Easy(3)
+
+=cut    
