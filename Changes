@@ -1,5 +1,9 @@
 Revision history for Perl module DBIx::Easy.
 
+* Mon Dec 13 04:05:18 1999 CET Stefan Hornburg <racke@linuxia.net>
+
+DBIx::Easy v0.06 released
+
 * Sat Dec  4 23:19:20 1999 CET Stefan Hornburg <racke@linuxia.net>
 
 (scripts/dbs_update): asks for a password if authentification fails,
