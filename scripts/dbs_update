@@ -68,7 +68,7 @@ my %fieldmap;
 my $fd_input = \*STDIN;
 
 my ($sth, $keyfield, $update, $msg);
-my ($table, $fieldnames, @values, $headline);
+my ($table, $fieldnames, @values, $headline, $linebuf);
 my (@columns, $routine, %colmap);
 
 # whether to consider column
@@ -134,7 +134,12 @@ if ($opts{'headline'}) {
 	if ($format eq 'TAB') {
 		@columns = split /\t/, $headline;
 	} elsif ($format eq 'CSV') {
-		@columns = split /$sep_char/, $headline;
+		$linebuf = '';
+		while (! csv_parseline ($csv, \$linebuf, $headline, \@columns)) {
+			unless (defined ($headline = <$fd_input>)) {
+				die ("$0: couldn't find headline\n");
+			}
+		}
 	}
 	
 	# remove whitespace from column names and mark them
@@ -203,7 +208,6 @@ $dbif -> install_handler (\&fatal);
 # for the case that a password is needed
 $dbif -> connect;
 
-my $linebuf = '';
 my (@keys, @cleansekeys, %cleansemap, $numkeysleft, %recmap, @names);
 
 if ($opts{'cleanse'}) {

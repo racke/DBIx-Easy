@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Tue Aug  7 22:20:36 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
+(scripts/dbs_update): --headline and --format=CSV weren't fully compatible
+
 * Mon Aug  6 12:16:17 2001 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (scripts/dbs_dumptabdata, scripts/dbs_printtab): new option --sort
 
