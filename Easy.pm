@@ -792,6 +792,12 @@ sub tables
 	}
   }
 
+sub is_table {
+    my ($self, $name) = shift;
+    
+    grep {$_ eq $name} ($self->tables);
+}
+
 1;
 __END__
 

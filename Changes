@@ -2,6 +2,7 @@ Revision history for Perl module DBIx::Easy.
 
 * Sun Jan  2 17:48:46 2000 CET Stefan Hornburg <racke@linuxia.de>
 
+(Easy.pm): new method is_table
 (scripts/dbs_update): new option --map
 
 * Thu Dec 16 23:15:37 1999 CET Stefan Hornburg <racke@linuxia.de>
