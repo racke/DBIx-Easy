@@ -663,7 +663,8 @@ sub view
     my ($count, $ref);
     while($ref = $sth->fetch) {
       $count++;
-      $view .= join($options{'separator'}, map {$_} @$ref) . "\n";
+      $view .= join($options{'separator'},
+                    map {defined $_ ? $_ : ''} @$ref) . "\n";
       last if $count == $options{'limit'};
     }
 #    my $rows = $sth -> rows;
