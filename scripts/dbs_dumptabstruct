@@ -5,11 +5,11 @@
 # This script queries a SQL database and creates one file for each
 # table in the database containing the schema of the table.
 
-# Copyright (C) 1999,2000,2001 Stefan Hornburg
+# Copyright (C) 1999,2000,2001,2002 Stefan Hornburg
 
 # Author: Stefan Hornburg (Racke) <racke@linuxia.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.13
+# Version: 0.16
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -34,7 +34,7 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'exclude-matching-tables=s',
+unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'filter',
                     'pipe|p', 'tables|t=s')) {
     exit 1;
 }
@@ -67,48 +67,56 @@ $dbif -> connect;
 # dump procedures for the different drivers
 my $dumpproc;
 if ($driver eq 'mysql') {
-  $dumpproc = sub {
-    my ($database, $table) = @_;
+	if ($opts{filter}) {
+		$dumpproc = \&kvfilter;
+	} else {
+		$dumpproc = sub {
+			my ($database, $table) = @_;
     
-    my $header;
-    my $optstr = '';
+			my $header;
+			my $optstr = '';
     
-    if ($dbif -> {USER}) {
-        $optstr = " -u " . $dbif -> {USER};
-    }
-    if ($dbif -> {HOST}) {
-        $optstr .= " -h " . $dbif -> {HOST};
-    }
-    if (defined $pwd) {
-        $optstr .= " -p";
-    }
+			if ($dbif -> {USER}) {
+				$optstr = " -u " . $dbif -> {USER};
+			}
+			if ($dbif -> {HOST}) {
+				$optstr .= " -h " . $dbif -> {HOST};
+			}
+			if (defined $pwd) {
+				$optstr .= " -p";
+			}
     
-    open (DUMP, "mysqldump -d $optstr $database $table |")
-      || die ("$0: Couldn't launch mysqldump: $!\n");
-    while (<DUMP>) {
-      if ($header) {
-        print;
-        next;
-      }
-      # skip header
-      $header = 1 unless (/\S/);
-    }
-    close (DUMP)
-      || die ("$0: mysqldump execution errors\n");
+			open (DUMP, "mysqldump -d $optstr $database $table |")
+				|| die ("$0: Couldn't launch mysqldump: $!\n");
+			while (<DUMP>) {
+				if ($header) {
+					print;
+					next;
+				}
+				# skip header
+				$header = 1 unless (/\S/);
+			}
+			close (DUMP)
+				|| die ("$0: mysqldump execution errors\n");
+		}
     }
 } elsif ($driver eq 'Pg') {
-  $dumpproc = sub {
-    my ($database, $table) = @_;
-    
-    open (DUMP, "pg_dump $database -x -s -t $table |")
-      || die ("$0: Couldn't launch pg_dump: $!\n");
-    while (<DUMP>) {
-      print;
-    }
-    close (DUMP)
-      || die ("$0: pg_dump execution errors\n");
-  }
-}    
+	if ($opts{filter}) {
+		die "$0: --filter option not supported for PostgreSQL databases\n";
+	} else {
+		$dumpproc = sub {
+			my ($database, $table) = @_;
+			
+			open (DUMP, "pg_dump $database -x -s -t $table |")
+				|| die ("$0: Couldn't launch pg_dump: $!\n");
+			while (<DUMP>) {
+				print;
+			}
+			close (DUMP)
+				|| die ("$0: pg_dump execution errors\n");
+		}
+	}    
+}
 
 if ($opts{'tables'}) {
     @tables = split (/,/, $opts{'tables'});
@@ -186,6 +194,18 @@ sub querypwd () {
   $pwd;
 }
 
+# FUNCTION: kvfilter
+sub kvfilter {
+    my ($database, $table) = @_;
+    my $dbif = new DBIx::Easy ('mysql', $database);
+    my $sth = $dbif->process("describe $table");
+    my $row;
+    print join ("\t", @{$sth->{NAME}}), "\n";
+    while ($row = $sth->fetch()) {
+       print join("\t", map {$_ || ''} @$row), "\n";
+    }
+}
+
 =head1 NAME
 
 dbs_dumptabstruct - Creates file set with SQL table schemas
@@ -226,6 +246,10 @@ msql is not supported.
 =head1 AUTHOR
 
 Stefan Hornburg (Racke), racke@linuxia.de
+
+=head1 VERSION
+
+0.16
 
 =head1 SEE ALSO
 
