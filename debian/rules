@@ -20,11 +20,11 @@ build: build-stamp
 build-stamp:
 	dh_testdir
 
-	
-	# Add here commands to compile the package.
+
+# Add here commands to compile the package.
 	$(PERL) Makefile.PL $(config)
 	$(MAKE)
-	
+
 	touch build-stamp
 
 clean:
@@ -32,7 +32,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp
 
-	# Add here commands to clean up after the build process.
+# Add here commands to clean up after the build process.
 	-$(MAKE) distclean
 	dh_clean
 
@@ -42,9 +42,13 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/tmp.
+# Add here commands to install the package into debian/tmp.
 	$(MAKE) pure_install DESTDIR=`pwd`/debian/tmp
-
+	for pf in Easy.pm scripts/*; do \
+		if [ -f $$pf ]; then \
+			pod2html --outfile=$$pf.man.html $$pf; \
+		fi; \
+	done
 	touch install-stamp
 
 # Build architecture-independent files here.
@@ -57,7 +61,7 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 #	dh_installdebconf	
-	dh_installdocs README LIESMICH
+	dh_installdocs README LIESMICH *.man.html scripts/*.man.html
 #	dh_installexamples
 #	dh_installmenu
 #	dh_installemacsen
