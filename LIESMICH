@@ -58,6 +58,8 @@ http://www.linuxia.de/DBIx/Easy/libdbix-easy-perl_0.08-1_all.deb.
      jedem zu löschenden Datensatz unbrauchbar gemacht hat
    * Fehler behoben, der bei der Kombination von `--headline' und `--map'
      auftreten kann
+   * Voreingestelltes Trennzeichen für das CSV-Format ist jetzt das Komma,
+     Trennzeichen kann zudem von der Kommandozeile festgelegt werden
    * `--columns' kann zum expliziten Ausschluß von Tabellenspalten benutzt
      werden
    * Leerzeichen werden aus der Parameterliste für `--columns' entfernt

@@ -57,6 +57,8 @@ Changes
      SQL statement which each record to be cleansed
    * bug fixed that may be triggered by the combination of `--headline' and `
      --map'
+   * comma is now the default field separator for CSV format, field
+     separator can selected from the commandline now
    * `--columns' can be used to exclude columns explicitly
    * strip blanks from parameter list for `--columns'
    * first field may contain table name and start column instead of table
