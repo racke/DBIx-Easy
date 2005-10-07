@@ -1,12 +1,13 @@
 dbix-easy-perl (0.16-0.12) unstable; urgency=low
 
-  * New upstream version
+  * New upstream version which fixes filename with quotes produced by
+    dbs_dumptabstruct (Closes: #276578)
   * Added Suggests for the supported DBD packages in Debian
   * Added new drivers from 0.15 release to package description
   * Bumped up Standards-Version
   * Changed section from interpreters to perl
   
- -- Stefan Hornburg (Racke) <racke@linuxia.de>  Sat,  8 Oct 2005 00:39:39 +0200
+ -- Stefan Hornburg (Racke) <racke@linuxia.de>  Sat,  8 Oct 2005 01:13:57 +0200
 
 dbix-easy-perl (0.15-2) unstable; urgency=low
 
