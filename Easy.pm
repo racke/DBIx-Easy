@@ -1,7 +1,7 @@
 # Easy.pm - Easy to Use DBI interface
 
 # Copyright (C) 1999,2000,2001,2002 Stefan Hornburg, Dennis Schön
-# Copyright (C) 2003,2004 Stefan Hornburg (Racke) <racke@linuxia.de>
+# Copyright (C) 2003,2004,2005 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <ds@1d10t.de>
