@@ -1,4 +1,4 @@
-dbix-easy-perl (0.16-0.12) unstable; urgency=low
+dbix-easy-perl (0.16-1) unstable; urgency=low
 
   * New upstream version which fixes filename with quotes produced by
     dbs_dumptabstruct (Closes: #276578)
