@@ -4,6 +4,12 @@ Revision history for Perl module DBIx::Easy.
 
 DBIx::Easy v0.16 released
 
+* Thu Jan 13 17:57:29 2005 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): connect first before issue prepare statement
+
+* Sun Jan  9 13:34:45 2005 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): remove quotes from table names in tables method
+
 * Mon Jul  5 15:30:56 2004 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): don't call passwd method on Win32 machines
 
