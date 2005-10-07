@@ -9,13 +9,14 @@ DBIx::Easy v0.16 released
 
 * Sun Jan  9 13:34:45 2005 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): remove quotes from table names in tables method
+(dbs_dumptabstruct): put table names into quotes in system commands
 
 * Mon Jul  5 15:30:56 2004 CEST Stefan Hornburg (Racke) <racke@linuxia.de>
 (Easy.pm): don't call passwd method on Win32 machines
 
 * Tue Feb 10 14:10:04 2004 CET Stefan Hornburg (Racke) <racke@linuxia.de>
-(Easy.pm): return on connections errors from various methods to allow failover with
-custom error handler
+(Easy.pm): return on connections errors from various methods to allow failover with custom error handler
+(Import.pm): new module
 
 * Mon Feb  9 22:54:01 2004 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (dbs_update): new option --map-filter
