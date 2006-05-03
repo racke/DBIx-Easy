@@ -1,12 +1,12 @@
 # Easy.pm - Easy to Use DBI interface
 
 # Copyright (C) 1999,2000,2001,2002 Stefan Hornburg, Dennis Schön
-# Copyright (C) 2003,2004,2005 Stefan Hornburg (Racke) <racke@linuxia.de>
+# Copyright (C) 2003,2004,2005,2006 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <ds@1d10t.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.16
+# Version: 0.17
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -1372,7 +1372,7 @@ sub passwd {
 sub install_handler {$_[0] -> {'HANDLER'} = $_[1];}
 
 # direct interface to DBI
-sub prepare {$_[0] -> connect () -> prepare (@_);}
+sub prepare {my $self = shift; $self -> connect () -> prepare (@_);}
 sub commit {$_[0] -> connect () -> commit ();}
 sub rollback {$_[0] -> connect () -> rollback ();}
 sub quote {$_[0] -> connect () -> quote ($_[1]);}
@@ -1473,7 +1473,7 @@ David B. Bitton <david@codenoevil.com>.
 
 =head1 VERSION
 
-0.16
+0.17
 
 =head1 SEE ALSO
 

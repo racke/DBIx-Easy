@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Wed May  3 12:01:07 2006 CEST
+(Easy.pm): remove object from argument list before calling DBI prepare method
+
 * Sat Oct  8 01:24:40 2005 CEST
 
 DBIx::Easy v0.16 released
