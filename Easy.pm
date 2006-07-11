@@ -1466,7 +1466,7 @@ __END__
 =head1 AUTHORS
 
 Stefan Hornburg (Racke), racke@linuxia.de
-Dennis Schön, ds@1d10t.de
+Dennis Sch\[:o]n, ds@1d10t.de
 
 Support for Sybase and ODBC provided by
 David B. Bitton <david@codenoevil.com>.
