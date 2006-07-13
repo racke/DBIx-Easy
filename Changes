@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Thu Jul 13 13:31:15 2006 CEST
+(Easy.pm): escape umlauts in POD documentation
+
 * Wed May  3 12:01:07 2006 CEST
 (Easy.pm): remove object from argument list before calling DBI prepare method
 
