@@ -5,11 +5,11 @@
 # This script queries a SQL database and creates one file for each
 # table in the database containing the schema of the table.
 
-# Copyright (C) 1999,2000,2001,2002 Stefan Hornburg
+# Copyright (C) 1999,2000,2001,2002,2007 Stefan Hornburg
 
 # Author: Stefan Hornburg (Racke) <racke@linuxia.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.16
+# Version: 0.17
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -34,8 +34,8 @@ use Term::ReadKey;
 my %opts;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
-unless (GetOptions (\%opts, 'exclude-matching-tables=s', 'filter',
-                    'pipe|p', 'tables|t=s')) {
+unless (GetOptions (\%opts, 'dump-options|d|o=s', 'exclude-matching-tables=s',
+					'filter', 'pipe|p', 'tables|t=s')) {
     exit 1;
 }
 $SIG{__WARN__} = $whandler;
@@ -85,7 +85,9 @@ if ($driver eq 'mysql') {
 			if (defined $pwd) {
 				$optstr .= " -p";
 			}
-    
+			if ($opts{'dump-options'}) {
+				$optstr .= " $opts{'dump-options'}";
+			}
 			open (DUMP, qq{mysqldump -d $optstr "$database" "$table" |})
 				|| die ("$0: Couldn't launch mysqldump: $!\n");
 			while (<DUMP>) {
@@ -106,8 +108,13 @@ if ($driver eq 'mysql') {
 	} else {
 		$dumpproc = sub {
 			my ($database, $table) = @_;
+
+			my $optstr = '';
 			
-			open (DUMP, qq{pg_dump "$database" -x -s -t "$table" |})
+			if ($opts{'dump-options'}) {
+				$optstr = " $opts{'dump-options'}";
+			}
+			open (DUMP, qq{pg_dump "$database" -x -s $optstr -t "$table" |})
 				|| die ("$0: Couldn't launch pg_dump: $!\n");
 			while (<DUMP>) {
 				print;
@@ -227,6 +234,10 @@ database resides (C<racke>, C<racke@linuxia.de> or C<@linuxia.de>).
 
 =head1 COMMAND LINE OPTIONS
 
+=head2 B<-d>=OPTIONS, B<-o>=OPTIONS, B<--dump-options>=OPTIONS
+
+Pass options to the dumper utility, e.g. C<--compatible=mysql40>.
+
 =head2 B<-p>, B<--pipe>
 
 Prints the table dumps to standard output.
@@ -241,7 +252,7 @@ Excludes any table matching the regular expression REGEXP from dumping.
 
 =head1 BUGS
 
-msql is not supported.
+Only mysql and Pg drivers are supported.
 
 =head1 AUTHOR
 
@@ -249,10 +260,10 @@ Stefan Hornburg (Racke), racke@linuxia.de
 
 =head1 VERSION
 
-0.16
+0.17
 
 =head1 SEE ALSO
 
 perl(1), DBIx::Easy(3)
 
-=cut    
+=cut

@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Thu May  3 09:53:42 2007 CEST
+(dbs_dumptabstruct): new option --dump-options
+
 * Thu Jul 13 13:31:15 2006 CEST
 (Easy.pm): escape umlauts in POD documentation
 
