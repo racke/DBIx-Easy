@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Fri May 18 00:17:37 2007 CEST
+(Easy.pm): fixed now method for Postgresql
+
 * Thu May  3 09:53:42 2007 CEST
 (dbs_dumptabstruct): new option --dump-options
 

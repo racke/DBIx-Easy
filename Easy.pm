@@ -1196,8 +1196,11 @@ sub now
 	my $self = shift;
 
     # Postgres and mysql have an special value for the current time
-    return 'now' if $self -> {'DRIVER'} eq 'Pg';
-	return 'now()' if $self -> {'DRIVER'} eq 'mysql';
+	if ($self->{DRIVER} eq 'Pg'
+		|| $self->{DRIVER} eq 'mysql') {
+		return 'now()';
+	}
+	
     # determine current time by yourself
 	scalar (gmtime ());
   }
