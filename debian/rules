@@ -48,9 +48,9 @@ install: build
 
 # Add here commands to install the package into debian/tmp.
 	if grep ^install_vendor Makefile; then \
-		$(MAKE) install PREFIX=$(PWD)/debian/tmp/usr; \
+		$(MAKE) install PREFIX=$(CURDIR)/debian/tmp/usr; \
 	else \
-		$(MAKE) pure_install DESTDIR=$(PWD)/debian/tmp; \
+		$(MAKE) pure_install DESTDIR=$(CURDIR)/debian/tmp; \
 	fi
 	for pf in Easy.pm scripts/*; do \
 		if [ -f $$pf ]; then \
