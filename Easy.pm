@@ -1306,6 +1306,9 @@ sub is_auth_error {
 	my ($self, $msg) = @_;
 
 	if ($self->{DRIVER} eq 'mysql') {
+		if ($msg =~ /^DBI\sconnect(\('database=.*?(;host=.*?)?',.*?\))? failed: Access denied for user\s/) {
+			return 1;
+		}
 		if ($msg =~ /^DBI->connect(\(database=.*?(;host=.*?)?\))? failed: Access denied for user:/) {
 			return 1;
 		}
