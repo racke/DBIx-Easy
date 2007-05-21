@@ -3,7 +3,7 @@ Section: perl
 Priority: optional
 Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
 Standards-Version: 3.7.2
-Build-Depends-Indep: debhelper
+Build-Depends: debhelper
 
 Package: libdbix-easy-perl
 Architecture: all
