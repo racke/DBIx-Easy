@@ -1,3 +1,13 @@
+dbix-easy-perl (0.17-1) unstable; urgency=low
+
+  * New upstream version
+  * Use $(CURDIR) instead of $(PWD) in debian/rules
+  * Increase debhelper compatibility level to 5
+  * Increase standards version to 3.7.2
+  * Use Build-Depends instead of Build-Depends-Indep for debhelper
+  
+ -- Stefan Hornburg (Racke) <racke@linuxia.de>  Mon, 21 May 2007 11:38:02 +0200
+
 dbix-easy-perl (0.16-1) unstable; urgency=low
 
   * New upstream version which fixes filename with quotes produced by
