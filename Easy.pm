@@ -38,7 +38,7 @@ require Exporter;
 
 # Public variables
 use vars qw($cache_structs);
-$VERSION = '0.16';
+$VERSION = '0.17';
 $cache_structs = 1;
 
 use DBI;
