@@ -1,5 +1,13 @@
 Revision history for Perl module DBIx::Easy.
 
+* Mon May 21 11:38:02 2007 CEST
+
+DBIx::Easy v0.17 released
+
+* Fri May 18 17:27:15 2007 CEST
+(Easy.pm): MySQL 5 has a different message for bad credentials
+commit only if AutoCommit is turned off to avoid spurious warnings
+
 * Fri May 18 00:17:37 2007 CEST
 (Easy.pm): fixed now method for Postgresql
 
