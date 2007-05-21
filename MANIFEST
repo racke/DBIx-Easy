@@ -5,6 +5,7 @@ Easy.pm
 Easy/Import.pm
 Makefile.PL
 debian/changelog
+debian/compat
 debian/rules
 debian/control
 debian/copyright
