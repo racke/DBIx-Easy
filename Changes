@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Fri Apr 18 15:21:08 2008 CEST Jure Kodzoman <jure@tenalt.com>
+(Easy.pm): new method do_without_transaction
+
 * Mon May 21 11:38:02 2007 CEST
 
 DBIx::Easy v0.17 released
