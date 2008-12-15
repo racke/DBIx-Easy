@@ -1,5 +1,8 @@
 Revision history for Perl module DBIx::Easy.
 
+* Mon Dec 15 09:14:31 2008 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(Easy.pm): additional pattern for login failure to PostgreSQL databases
+
 * Fri Apr 18 15:21:08 2008 CEST Jure Kodzoman <jure@tenalt.com>
 (Easy.pm): new method do_without_transaction
 

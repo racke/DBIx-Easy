@@ -1,7 +1,7 @@
 # Easy.pm - Easy to Use DBI interface
 
 # Copyright (C) 1999,2000,2001,2002 Stefan Hornburg, Dennis Schön
-# Copyright (C) 2003,2004,2005,2006,2007 Stefan Hornburg (Racke) <racke@linuxia.de>
+# Copyright (C) 2003,2004,2005,2006,2007,2008 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <ds@1d10t.de>
@@ -1354,6 +1354,10 @@ sub is_auth_error {
 			return 1;
 		}
 	} elsif ($self->{DRIVER} eq 'Pg') {
+		if ($msg =~ /^DBI\sconnect(\('dbname=.*?(;host=.*?)?',.*?\))? failed:.+no password supplied/) {
+			return 1;
+		}
+    
 		if ($msg =~ /^DBI->connect failed.+no password supplied/) {
 			return 1;
 		}
