@@ -1,4 +1,4 @@
-#! /usr/bin/perl -w
+#! /usr/bin/env perl
 
 # Copyright (C) 1999,2000,2001,2002,2004 Stefan Hornburg
 
@@ -21,6 +21,8 @@
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 use strict;
+use warnings;
+
 use DBIx::Easy;
 use Getopt::Long;
 use Term::ReadKey;

@@ -1,4 +1,4 @@
-#! /usr/bin/perl -w
+#! /usr/bin/env perl
 
 # dbs_dumptabstruct - creates file set with SQL table schemas
 
@@ -26,6 +26,8 @@
 # Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
 use strict;
+use warnings;
+
 use DBIx::Easy;
 use Getopt::Long;
 use Term::ReadKey;
