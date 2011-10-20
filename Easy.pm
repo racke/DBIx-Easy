@@ -305,8 +305,16 @@ sub connect ()
 		}
 		# ... optionally the host part
 		if ($self -> {PORT}) {
+		    if ($self->{PORT} =~ m%/%
+			&& $self->{DRIVER} eq 'mysql') {
+			# got socket passed as port
+			$dsn .= ';' . 'mysql_socket'
+				. '=' . $self -> {PORT};
+		    }
+		    else {
 			$dsn .= ';' . $kwportmap{$self->{DRIVER}}
 				. '=' . $self -> {PORT};
+		    }
 		}
         # install warn() handler to catch DBI error messages
         $oldwarn = $SIG{__WARN__};
