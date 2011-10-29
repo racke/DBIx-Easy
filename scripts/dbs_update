@@ -1,6 +1,6 @@
 #! /usr/bin/env perl
 
-# Copyright (C) 1999,2000,2001,2002,2004 Stefan Hornburg
+# Copyright (C) 1999,2000,2001,2002,2004,2011 Stefan Hornburg
 
 # Author: Stefan Hornburg (Racke) <racke@linuxia.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
@@ -33,7 +33,7 @@ $opts{'keys'} = 1;
 my $whandler = $SIG{__WARN__};
 $SIG{__WARN__} = sub {print STDERR "$0: @_";};
 unless (GetOptions (\%opts, 'cleanse', 'columns|c=s',
-                    'file|f=s', 'format=s', 'headline|h',
+                    'file|f=s', 'format=s', 'headline|h', 'insert-only|i',
 					'rows=s', 'keys|k=s',
 					'map|m=s', 'map-filter=s', 'match-sql=s', 'routine|r=s',
 					'skipbadlines',
@@ -473,6 +473,10 @@ MAIN: while ($gcsub->(\%inforef, $fd_input, \@columns)) {
     }
 
     if ($update) {
+	if ($opts{'insert-only'}) {
+#	    print "SKIP UPDATING $.\n";
+	    next;
+	}
 #        print "UPDATING $.\n";
         $dbif -> update ($table, join (' AND ', @terms), @data);
     } else {
@@ -527,7 +531,7 @@ MAIN: while ($gcsub->(\%inforef, $fd_input, \@columns)) {
     }
 }
 
-if ($opts{'cleanse'}) {
+if ($opts{'cleanse'} && ! $opts{'insert-only'}) {
     my $href;
     
     # now start to eliminate old records
@@ -930,6 +934,10 @@ appending the separator to the format.
 Reads the column names from the first line of the input instead
 of dedicting them from the database layout. Requires the
 B<-t/--table> option.
+
+=head2 B<-i>, B<--insert-only>
+
+Insert new database entries only, skip others.
 
 =head2 B<-k> I<COUNT>, B<-k> I<KEY,KEY,...>, B<--keys>=I<COUNT>, B<--keys>=I<KEY,KEY,...>
 
