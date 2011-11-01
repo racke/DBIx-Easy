@@ -624,7 +624,7 @@ sub get_columns_xls {
 	}
 
 	if ($iref->{row} <= $iref->{worksheet}->{MaxRow}) {
-		@$colref = map {defined $_ ? $_->Value() : undef}
+		@$colref = map {defined $_ ? $_->{Val} : undef}
 			@{$iref->{worksheet}->{Cells}[$iref->{row}++]};
 		return @$colref;
 	}
