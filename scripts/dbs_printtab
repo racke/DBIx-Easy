@@ -5,11 +5,11 @@
 # This script queries a SQL database and creates one file for each
 # table in the database containing the data of the table.
 
-# Copyright (C) 2000,2001 Stefan Hornburg
+# Copyright (C) 2000-2012 Stefan Hornburg
 
 # Author: Stefan Hornburg (Racke) <racke@linuxia.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.13
+# Version: 0.19
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the

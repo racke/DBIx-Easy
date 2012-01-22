@@ -1,10 +1,10 @@
 #! /usr/bin/env perl
 
-# Copyright (C) 1999,2000,2001,2002,2004,2011 Stefan Hornburg
+# Copyright (C) 1999-2012 Stefan Hornburg
 
 # Author: Stefan Hornburg (Racke) <racke@linuxia.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.16
+# Version: 0.19
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the

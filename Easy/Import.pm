@@ -1,10 +1,10 @@
 # Import.pm - Easy to Use DBI import interface
 
-# Copyright (C) 2004 Stefan Hornburg (Racke) <racke@linuxia.de>
+# Copyright (C) 2004-2012 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.16
+# Version: 0.19
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -35,7 +35,7 @@ require Exporter;
 );
 
 # Public variables
-$VERSION = '0.16';
+$VERSION = '0.19';
 
 use DBI;
 use DBIx::Easy;
