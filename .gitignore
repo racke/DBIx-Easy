@@ -1,6 +1,8 @@
 *.man.html
 *.tar
 *.tar.gz
+*.old
+MYMETA.*
 Makefile
 blib
 build-stamp
