@@ -1,5 +1,29 @@
 Revision history for Perl module DBIx::Easy.
 
+* Sun Jan 22 14:02:29 2012 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+
+DBI::Easy v0.19 released
+
+* Sun Jan 22 13:47:20 2012 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(scripts/dbs_update): fix CSV imports
+
+* Tue Nov 1 17:07:06 2011 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(scripts/dbs_update): use Val hash key instead of Value method to retrieve 
+values from spreadsheet cells.
+
+* Tue Nov 1 16:49:32 2011 CET Stefan Hornburg (Racke) <racke@linuxia.de>
+(scripts/dbs_update): fix crash with undefined values inside of
+spreadsheet cells.
+
+* Sat Oct 29 15:31:28 2011 CEST
+(scripts/dbs_update): add --insert-only commandline option.
+
+* Thu Oct 20 11:42:05 2011 CEST
+(Easy.pm): add special case for specifiying mysql_socket.
+
+* Thu Oct 20 10:56:52 2011 CEST
+(scripts): switch to /usr/bin/env in shebang.
+
 * Thu Jan  8 19:32:57 2009 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 
 DBIx::Easy v0.18 released
