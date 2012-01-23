@@ -127,6 +127,11 @@ my %kwhostmap = (mSQL => 'host', mysql => 'host', Pg => 'host',
 				 Sybase => 'server', ODBC => '', XBase => '');
 my %kwportmap = (mysql => 'port', Pg => 'port');
 
+my %kwutf8map = (mysql => 'mysql_enable_utf8', 
+		 Pg => 'pg_enable_utf8',
+		 SQLite => 'sqlite_unicode', 
+		 Sybase => 'syb_enable_utf8');
+
 # Whether the DBMS supports transactions
 my %transactmap = (mSQL => 0, mysql => 0, Pg => 1, Sybase => 'server',
 				  ODBC => 0, XBase => 0);
@@ -284,7 +289,7 @@ sub fatal {
 sub connect ()
   {
 	my $self = shift;
-	my ($dsn, $oldwarn);
+	my ($dsn, $oldwarn, %dbi_params);
 	my $msg = '';
     
 	unless (defined $self -> {CONN})
@@ -319,10 +324,18 @@ sub connect ()
         # install warn() handler to catch DBI error messages
         $oldwarn = $SIG{__WARN__};
         $SIG{__WARN__} = sub {$msg = "@_";};
-        
-		$self -> {CONN} = DBI
-            -> connect ($dsn, $self -> {USER}, $self -> {PASS},
-                        {AutoCommit => !$transactmap{$self->{DRIVER}}});
+
+		$dbi_params{AutoCommit} = !$transactmap{$self->{DRIVER}};
+
+		if (exists $kwutf8map{$self->{DRIVER}}) {
+		    $dbi_params{$kwutf8map{$self->{DRIVER}}} = 1;
+                }
+
+		$self->{CONN} = DBI->connect ($dsn, 
+					      $self -> {USER}, 
+					      $self -> {PASS},
+					      \%dbi_params,
+		    );
 
         # deinstall warn() handler
         $SIG{__WARN__} = $oldwarn;
