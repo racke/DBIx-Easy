@@ -11,7 +11,9 @@ my @scripts = ("./scripts/dbs_empty",
 
 WriteMakefile(
     'NAME'	=> 'DBIx::Easy',
+    AUTHOR        => q{Stefan Hornburg (Racke) <racke@linuxia.de>},
     'VERSION_FROM' => 'Easy.pm', # finds $VERSION
+    'ABSTRACT_FROM' => 'Easy.pm',
     'INSTALLMAN3DIR' => '/usr/share/man/man3',
 	'INSTALLHTMLSCRIPTDIR' => '/usr/share/doc',
 	'INSTALLHTMLSITELIBDIR' => '/usr/share/doc',
