@@ -432,22 +432,18 @@ sub insert ($$$;@)
 		push (@values, $value);
 	  }
 
-	# get the table structure
-	$sthtest = $self -> process
-	  (&{$obtstatmap{$self -> {'DRIVER'}}} ($table, @columns));
-	$flags = $sthtest -> {'TYPE'};
-    $sthtest -> finish ();
-
+    $flags = $self->typemap($table);
+    
 	for (my $i = 0; $i <= $#values; $i++) {
         if (ref ($values[$i]) eq 'SCALAR') {
 			$values[$i] = ${$values[$i]};
-        } elsif ($$flags[$i] == DBI::SQL_INTEGER
-				 || $$flags[$i] == DBI::SQL_SMALLINT
-				 || $$flags[$i] == DBI::SQL_DECIMAL
-				 || $$flags[$i] == DBI::SQL_FLOAT
-				 || $$flags[$i] == DBI::SQL_REAL
-				 || $$flags[$i] == DBI::SQL_DOUBLE
-				 || $$flags[$i] == DBI::SQL_NUMERIC) {
+        } elsif ($flags->{$columns[$i]} == DBI::SQL_INTEGER
+				 || $flags->{$columns[$i]} == DBI::SQL_SMALLINT
+				 || $flags->{$columns[$i]} == DBI::SQL_DECIMAL
+				 || $flags->{$columns[$i]} == DBI::SQL_FLOAT
+				 || $flags->{$columns[$i]} == DBI::SQL_REAL
+				 || $flags->{$columns[$i]} == DBI::SQL_DOUBLE
+				 || $flags->{$columns[$i]} == DBI::SQL_NUMERIC) {
 			# we don't need to quote numeric values, but
 			# we have to check for empty input
 			unless (defined $values[$i] && $values[$i] =~ /\S/) {
