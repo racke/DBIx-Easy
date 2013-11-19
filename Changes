@@ -2,7 +2,7 @@ Revision history for Perl module DBIx::Easy.
 
 * Sun Jan 22 14:02:29 2012 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 
-DBI::Easy v0.19 released
+DBIx::Easy v0.19 released
 
 * Sun Jan 22 13:47:20 2012 CET Stefan Hornburg (Racke) <racke@linuxia.de>
 (scripts/dbs_update): fix CSV imports
