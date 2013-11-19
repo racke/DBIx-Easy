@@ -1,12 +1,12 @@
 # Easy.pm - Easy to Use DBI interface
 
 # Copyright (C) 1999-2002 Stefan Hornburg, Dennis Schön
-# Copyright (C) 2003-2012 Stefan Hornburg (Racke) <racke@linuxia.de>
+# Copyright (C) 2003-2013 Stefan Hornburg (Racke) <racke@linuxia.de>
 
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <ds@1d10t.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.19
+# Version: 0.20
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -38,7 +38,7 @@ require Exporter;
 
 # Public variables
 use vars qw($cache_structs);
-$VERSION = '0.19';
+$VERSION = '0.20';
 $cache_structs = 1;
 
 use DBI;
@@ -1541,7 +1541,7 @@ David B. Bitton <david@codenoevil.com>.
 
 =head1 VERSION
 
-0.18
+0.20
 
 =head1 SEE ALSO
 
