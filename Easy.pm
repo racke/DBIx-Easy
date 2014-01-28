@@ -6,7 +6,7 @@
 # Authors: Stefan Hornburg (Racke) <racke@linuxia.de>
 #          Dennis Schön <ds@1d10t.de>
 # Maintainer: Stefan Hornburg (Racke) <racke@linuxia.de>
-# Version: 0.20
+# Version: 0.21
 
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by the
@@ -38,7 +38,7 @@ require Exporter;
 
 # Public variables
 use vars qw($cache_structs);
-$VERSION = '0.20';
+$VERSION = '0.21';
 $cache_structs = 1;
 
 use DBI;
