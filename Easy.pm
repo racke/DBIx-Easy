@@ -962,7 +962,7 @@ this database.
 =cut
 
 sub is_table {
-    my ($self, $name) = shift;
+    my ($self, $name) = @_;
     
     grep {$_ eq $name} ($self->tables);
 }
@@ -982,10 +982,13 @@ sub tables {
 	my @t;
 	
 	if ($self->{DRIVER} eq 'mysql') {
-		map {s/^`(.*)`$/$1/; $_}  ($self -> connect () -> tables ());
+        my $dbname = $self->{DATABASE};
+        @t = map {s/^(`\Q$dbname\E`\.)?`(.*)`$/$2/; $_}
+          ($self -> connect () -> tables ());
 	} else {
-		$self -> connect () -> tables ();
+		@t = $self -> connect () -> tables ();
 	}
+    return @t;
 }
 
 =over 4
