@@ -7,7 +7,7 @@ Build-Depends: debhelper
 
 Package: libdbix-easy-perl
 Architecture: all
-Depends: ${perl:Depends}, libdbi-perl
+Depends: ${perl:Depends}, ${misc:Depends}, libdbi-perl
 Recommends: libterm-readkey-perl, libtext-csv-perl
 Suggests: libdbd-mysql-perl | libdbd-pg-perl
 Description: Easy to Use DBI Interface
