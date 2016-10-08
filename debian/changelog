@@ -2,6 +2,7 @@ dbix-easy-perl (0.21-1) unstable; urgency=low
 
   * New upstream version
   * Switch to generic debian/rules file (Closes: #831923).
+  * Bump up Standards-Version.
 
  -- Stefan Hornburg (Racke) <racke@linuxia.de>  Sat, 08 Oct 2016 14:34:15 +0200
 
