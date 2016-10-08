@@ -46,7 +46,7 @@ install: build
 	dh_installdirs
 
 # Add here commands to install the package into debian/tmp.
-	$(MAKE) install PREFIX=$(CURDIR)/debian/libdbix-easy-perl/usr
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/libdbix-easy-perl
 
 	for pf in Easy.pm scripts/*; do \
 		if [ -f $$pf ]; then \

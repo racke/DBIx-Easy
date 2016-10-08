@@ -1,14 +1,17 @@
-dbix-easy-perl (0.19-1) unstable; urgency=low
+dbix-easy-perl (0.21-1) unstable; urgency=low
 
   * New upstream version
 
  -- Stefan Hornburg (Racke) <racke@linuxia.de>  Sun, 22 Jan 2012 14:07:20 +0100
 
-dbix-easy-perl (0.18-1) unstable; urgency=low
+dbix-easy-perl (0.17-1.1) unstable; urgency=medium
 
-  * New upstream version
+  * Non-maintainer upload.
+  * Fix "FTBFS with perl 5.22 in experimental (MakeMaker changes)":
+    use DESTDIR in debian/rules.
+    (Closes: #792376)
 
- -- Stefan Hornburg (Racke) <racke@linuxia.de>  Thu,  8 Jan 2009 19:33:37 +0100
+ -- gregor herrmann <gregoa@debian.org>  Wed, 26 Aug 2015 13:48:35 +0200
 
 dbix-easy-perl (0.17-1) unstable; urgency=low
 
